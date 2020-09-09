@@ -1,0 +1,9 @@
+{
+    "version": "0.0.11",
+    "logging": {
+        "enabled": false
+    },
+    "apiServer": {
+        "rest": "https://api.alpdesk.de"
+    }
+}

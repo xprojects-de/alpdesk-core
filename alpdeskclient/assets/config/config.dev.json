@@ -1,0 +1,9 @@
+{
+    "version": "0.0.11-dev",
+    "logging": {
+        "enabled": true
+    },
+    "apiServer": {
+        "rest": "http://xdebian"
+    }
+}
