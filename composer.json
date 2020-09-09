@@ -3,7 +3,6 @@
   "description": "Alpdesk-Core for Contao",
   "keywords": ["contao", "alpdesk"],
   "type": "contao-bundle",
-  "version": "0.1.0",
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": ">=7.4",
@@ -13,11 +12,17 @@
     "heimrichhannot/contao-fieldpalette-bundle": "^0.5",
     "menatwork/contao-multicolumnwizard-bundle": "^3.4"
   },
+  "conflict": {
+    "contao/manager-plugin": "<2.0 || >=3.0"
+  },
+  "require-dev": {
+    "contao/manager-plugin": "^2.0"
+  },
   "authors": [
     {
-      "name": "Alpdesk",
-      "homepage": "https://alpdesk.de",
-      "email": "infos@alpdesk.de",
+      "name": "xprojects",
+      "homepage": "https://x-projects.de",
+      "email": "infos@x-projects.de",
       "role": "Developer"
     }
   ],
