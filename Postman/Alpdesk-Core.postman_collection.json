@@ -1,0 +1,720 @@
+{
+	"info": {
+		"_postman_id": "5df90fa2-29f7-4aec-ba79-f2ee4e9e1d1b",
+		"name": "Alpdesk",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://api.alpdesk.de/upload",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/benjaminhummel/Documents/Github/mobilemenu/contao-mobilemenu/src/Resources/public/closeicon.png"
+						},
+						{
+							"key": "alpdesk_token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"type": "text"
+						},
+						{
+							"key": "target",
+							"value": "/",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://xdebian/upload",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/auth",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\"\n}"
+				},
+				"url": {
+					"raw": "http://xdebian/auth",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/download",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"target\":\"/closeicon.png\"}",
+					"options": {
+						"formdata": {},
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/download",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"download"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/auth/verify",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjkwODI2LCJuYmYiOjE1OTIyOTA4MjYsImV4cCI6MTU5MjI5NDQyNiwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.n7TrLAiMfMf5Vbv4aN_PmLZrVPNzlSi1GBXDNFl_9a4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/auth/verify",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"auth",
+						"verify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/auth/logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/auth/logout",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/mandant",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMzA5MTUxLCJuYmYiOjE1OTIzMDkxNTEsImV4cCI6MTU5MjMxMjc1MSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.5xKxQhCLhO9N4LpLGDkW0MkqKr5mtOi7byO-nIcNGR0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/mandant",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"mandant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"hello\",\n    \"data\":[]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Jira)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjQ2NjQwLCJuYmYiOjE1OTIyNDY2NDAsImV4cCI6MTU5MjI1MDI0MCwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.YJhJotb4g6HLTm8LMC_AkK-UyjuOOWIYnlKhegkRH6M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"jira\",\n    \"data\":{\n        \"method\":\"list\",\n        \"param\": \"\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Jira-Status)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMzA5MTUxLCJuYmYiOjE1OTIzMDkxNTEsImV4cCI6MTU5MjMxMjc1MSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.5xKxQhCLhO9N4LpLGDkW0MkqKr5mtOi7byO-nIcNGR0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"jira\",\n    \"data\":{\n        \"method\":\"status\",\n        \"param\": \"Rechnung\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Jira-Issue)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMzA5MTUxLCJuYmYiOjE1OTIzMDkxNTEsImV4cCI6MTU5MjMxMjc1MSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.5xKxQhCLhO9N4LpLGDkW0MkqKr5mtOi7byO-nIcNGR0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"jira\",\n    \"data\":{\n        \"method\":\"issue\",\n        \"param\": \"XPROJ-11\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Jira-Worklog)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMzA5MTUxLCJuYmYiOjE1OTIzMDkxNTEsImV4cCI6MTU5MjMxMjc1MSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.5xKxQhCLhO9N4LpLGDkW0MkqKr5mtOi7byO-nIcNGR0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"jira\",\n    \"data\":{\n        \"method\":\"worklog\",\n        \"param\": \"XPROJ-11\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Bill)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMzA5MTUxLCJuYmYiOjE1OTIzMDkxNTEsImV4cCI6MTU5MjMxMjc1MSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.5xKxQhCLhO9N4LpLGDkW0MkqKr5mtOi7byO-nIcNGR0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"billofferlib\",\n    \"data\":{\n        \"method\":\"bill\",\n        \"param\": {\n            \"address\":\"Benjamin Hummel\\nAuf der Halde 1\\n87545 Oberstaufen\",\n            \"subject\":\"Rechnungsbetreff\",\n            \"billnumber\":\"XP-20-XX\",  \n            \"items\":[\n                {\n                    \"label\": \"Test\",\n                    \"value\": 24.50\n                },\n                {\n                    \"label\": \"Test 1\",\n                    \"value\": 25.00\n                }\n            ]\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Offer)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMzA1NDcyLCJuYmYiOjE1OTIzMDU0NzIsImV4cCI6MTU5MjMwOTA3MiwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.E75cq1I-x8p8Iah4BQkI_35-s5eJzMQqIFx99jSEVWk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"billofferlib\",\n    \"data\":{\n        \"method\":\"offer\",\n        \"param\": {\n            \"address\":\"Benjamin Hummel\\nAuf der Halde 1\\n87545 Oberstaufen\",\n            \"subject\":\"Angebotsbetreff 123\", \n            \"items\":[\n                {\n                    \"label\": \"Test\",\n                    \"value\": 24.50,\n                    \"optional\": false\n                },\n                {\n                    \"label\": \"Test 1\",\n                    \"value\": 25.00,\n                    \"optional\": true\n                }\n            ]\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Homeautomationrequest)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTE0LCJuYmYiOjE1OTIyMTU5MTQsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.WfFT6X6e1RCb40MRE9WGicT4zeOSQDHocAe7ybwTMBk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"plugin\":\"automation\",\n   \"data\":{\n      \"method\":\"commit\",\n      \"params\":{\n         \"-2049\":{\n            \"categorie\":\"Bad OG\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2050\":{\n            \"categorie\":\"Lüftungsanlage\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2052\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Lüftungsanlage\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2053\":{\n            \"categorie\":\"Garage\",\n            \"name\":\"Brunnen\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2054\":{\n            \"categorie\":\"Garage\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2056\":{\n            \"categorie\":\"Garage\",\n            \"name\":\"Tor\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2057\":{\n            \"categorie\":\"Aussen\",\n            \"name\":\"Licht Terrasse\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2058\":{\n            \"categorie\":\"Aussen\",\n            \"name\":\"Licht Süd\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2059\":{\n            \"categorie\":\"Aussen\",\n            \"name\":\"Licht West\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2060\":{\n            \"categorie\":\"Aussen\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2061\":{\n            \"categorie\":\"Hobbyraum\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2062\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Heizung Keller\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2063\":{\n            \"categorie\":\"Waschküche\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2064\":{\n            \"categorie\":\"Bad EG\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-10000\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Lüftungsanlage\",\n            \"type\":10000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"0\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":1,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Sens.Temp.\",\n                  \"handle\":2,\n                  \"value\":\"Technik (Aussen Nord);\"\n               },\n               {\n                  \"displayName\":\"Abh. Outputs\",\n                  \"handle\":3,\n                  \"value\":\"Technik (Lüftungsanlage);\"\n               },\n               {\n                  \"displayName\":\"Running\",\n                  \"handle\":4,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Force Activ\",\n                  \"handle\":5,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":6,\n                  \"value\":\"19:00:00\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":7,\n                  \"value\":\"06:30:00\"\n               },\n               {\n                  \"displayName\":\"AUS-Zeit Status\",\n                  \"handle\":8,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2065\":{\n            \"categorie\":\"Gästezimmer\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2066\":{\n            \"categorie\":\"Büro\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-2067\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2068\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-2069\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2070\":{\n            \"categorie\":\"Bad OG\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-2071\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2072\":{\n            \"categorie\":\"Ankleide\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2073\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"Heizung\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2074\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"JAL-1 auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2075\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"JAL-1 ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2076\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"JAL-2 auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2077\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"JAL-2 ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2078\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"JAL-3 auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2079\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"JAL-3 ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2080\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Markise rein\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2081\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Markise raus\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2082\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"JAL-1 auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2083\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"JAL-1 ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2084\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"JAL-2 auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2085\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"JAL-2 ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2086\":{\n            \"categorie\":\"Büro\",\n            \"name\":\"JAL auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2087\":{\n            \"categorie\":\"Büro\",\n            \"name\":\"JAL ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2088\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"JAL auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-9000\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Heizkreispumpe\",\n            \"type\":9000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":0,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Sens.Temp.\",\n                  \"handle\":1,\n                  \"value\":\"Technik (Wasser);Technik (Puffer);Technik (Vorlauftemp.);\"\n               },\n               {\n                  \"displayName\":\"Abh. Outputs\",\n                  \"handle\":2,\n                  \"value\":\"Technik (Heizkreispumpe);Technik (Mischer WARM);Technik (Mischer KALT);\"\n               },\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":3,\n                  \"value\":\"19:30:00\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":4,\n                  \"value\":\"07:00:00\"\n               },\n               {\n                  \"displayName\":\"Running\",\n                  \"handle\":5,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Force Activ\",\n                  \"handle\":6,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2089\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"JAL ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2090\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"JAL auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2091\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"JAL ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2092\":{\n            \"categorie\":\"Ankleide\",\n            \"name\":\"JAL auf\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2093\":{\n            \"categorie\":\"Ankleide\",\n            \"name\":\"JAL ab\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2094\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Licht Kellergang\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2096\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Haustüre\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2097\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Zirkulationspumpe\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2098\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Heizkreispumpe\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2099\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Mischer WARM\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2100\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Mischer KALT\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-7013\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Wasser\",\n            \"type\":7000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Temp. (°C)\",\n                  \"handle\":0,\n                  \"value\":\"575\"\n               },\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":1,\n                  \"value\":\"480\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Valid\",\n                  \"handle\":3,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-7014\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Puffer\",\n            \"type\":7000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Temp. (°C)\",\n                  \"handle\":0,\n                  \"value\":\"559\"\n               },\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":1,\n                  \"value\":\"300\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Valid\",\n                  \"handle\":3,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-7015\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Vorlauftemp.\",\n            \"type\":7000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Temp. (°C)\",\n                  \"handle\":0,\n                  \"value\":\"248\"\n               },\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":1,\n                  \"value\":\"370\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Valid\",\n                  \"handle\":3,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-7016\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Aussen Nord\",\n            \"type\":7000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Temp. (°C)\",\n                  \"handle\":0,\n                  \"value\":\"319\"\n               },\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":1,\n                  \"value\":\"0\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Valid\",\n                  \"handle\":3,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-7017\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Aussen Süd\",\n            \"type\":7000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Temp. (°C)\",\n                  \"handle\":0,\n                  \"value\":\"515\"\n               },\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":1,\n                  \"value\":\"400\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Valid\",\n                  \"handle\":3,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3000\":{\n            \"categorie\":\"Hobbyraum\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"175\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"65\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"Bad OG (Heizung);\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3001\":{\n            \"categorie\":\"Gästezimmer\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"185\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"169\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3002\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Heizung Keller\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"175\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"293\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"Bad OG (Heizung);\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3003\":{\n            \"categorie\":\"Waschküche\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"175\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"258\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"Bad OG (Heizung);\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3004\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"170\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"67\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3005\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"230\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"2\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3006\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"185\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"97\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3007\":{\n            \"categorie\":\"Büro\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"200\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"172\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3008\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"230\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"253\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3009\":{\n            \"categorie\":\"Ankleide\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"185\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"287\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3010\":{\n            \"categorie\":\"Bad OG\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"240\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"33\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3011\":{\n            \"categorie\":\"Bad EG\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"230\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"244\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-3012\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"Heizung\",\n            \"type\":3000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Sollwert ändern\",\n                  \"handle\":0,\n                  \"value\":\"185\"\n               },\n               {\n                  \"displayName\":\"Aktuelle Temp. (°C)\",\n                  \"handle\":1,\n                  \"value\":\"229\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle unten (°C)\",\n                  \"handle\":2,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Schaltschwelle oben (°C)\",\n                  \"handle\":3,\n                  \"value\":\"10\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":4,\n                  \"value\":\"OFF\"\n               },\n               {\n                  \"displayName\":\"Enabled\",\n                  \"handle\":5,\n                  \"value\":\"ON\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp.\",\n                  \"handle\":6,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Abh. Temp. Status\",\n                  \"handle\":7,\n                  \"value\":\"ON\"\n               }\n            ]\n         },\n         \"-2000\":{\n            \"categorie\":\"Eingang\",\n            \"name\":\"Licht Gardarobe\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2001\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Licht Podest\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2002\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Licht EG\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2003\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Licht OG\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2004\":{\n            \"categorie\":\"Flur\",\n            \"name\":\"Licht Treppe\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"16:30:00\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"07:45:00\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2005\":{\n            \"categorie\":\"Eingang\",\n            \"name\":\"Licht Aussen\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"17:00:00\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"07:30:00\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2006\":{\n            \"categorie\":\"Eingang\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2007\":{\n            \"categorie\":\"Hobbyraum\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2008\":{\n            \"categorie\":\"Hobbyraum\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2009\":{\n            \"categorie\":\"Werkstatt\",\n            \"name\":\"Licht 1\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2010\":{\n            \"categorie\":\"Werkstatt\",\n            \"name\":\"Licht 2\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2011\":{\n            \"categorie\":\"Holzkeller\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2012\":{\n            \"categorie\":\"Technik\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2013\":{\n            \"categorie\":\"Waschküche\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2014\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Licht zum Büro\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2015\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Licht Fenster\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2016\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Licht Tisch\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2017\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Licht Ofen\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2018\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Steckdose Fernseh\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2019\":{\n            \"categorie\":\"Wohnzimmer\",\n            \"name\":\"Steckdose Sofa\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2020\":{\n            \"categorie\":\"Büro\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2021\":{\n            \"categorie\":\"Büro\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2022\":{\n            \"categorie\":\"Gästezimmer\",\n            \"name\":\"Licht Decke\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2023\":{\n            \"categorie\":\"Gästezimmer\",\n            \"name\":\"Licht Nachttisch rechts\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2024\":{\n            \"categorie\":\"Gästezimmer\",\n            \"name\":\"Licht Nachttisch links\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2025\":{\n            \"categorie\":\"Gästezimmer\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2026\":{\n            \"categorie\":\"Bad EG\",\n            \"name\":\"Licht Decke\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2027\":{\n            \"categorie\":\"Bad EG\",\n            \"name\":\"Licht Spiegel\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2028\":{\n            \"categorie\":\"Speiß\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2029\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"Licht Kochen\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2030\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"Licht Gang\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2031\":{\n            \"categorie\":\"Küche\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2032\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"Licht Decke\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2033\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"Licht Bett\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2034\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"Licht Schreibtisch\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2035\":{\n            \"categorie\":\"Kinderzimmer Ost\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2036\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"Licht Decke\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2037\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"Licht Bett\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2038\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"Licht Schreibtisch\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2039\":{\n            \"categorie\":\"Kinderzimmer West\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2040\":{\n            \"categorie\":\"Ankleide\",\n            \"name\":\"Licht\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2041\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Licht Decke\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2042\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Licht Nachtisch links\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2043\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Licht Nachtisch rechts\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2044\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Steckdose\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2045\":{\n            \"categorie\":\"Schlafzimmer\",\n            \"name\":\"Licht Abseite\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2046\":{\n            \"categorie\":\"Bad OG\",\n            \"name\":\"Licht Decke\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2047\":{\n            \"categorie\":\"Bad OG\",\n            \"name\":\"Licht Spiegel\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         },\n         \"-2048\":{\n            \"categorie\":\"Bad OG\",\n            \"name\":\"Licht Badewanne\",\n            \"type\":2000,\n            \"properties\":[\n               {\n                  \"displayName\":\"Start-Zeit\",\n                  \"handle\":0,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Stop-Zeit\",\n                  \"handle\":1,\n                  \"value\":\"-\"\n               },\n               {\n                  \"displayName\":\"Status\",\n                  \"handle\":2,\n                  \"value\":\"OFF\"\n               }\n            ]\n         }\n      }\n   }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Homeautomationrequest List)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTE0LCJuYmYiOjE1OTIyMTU5MTQsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.WfFT6X6e1RCb40MRE9WGicT4zeOSQDHocAe7ybwTMBk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"plugin\":\"automation\",\n   \"data\":{\n      \"method\":\"list\",\n      \"params\":\"\"\n   }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Homeautomationrequest Change)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTE0LCJuYmYiOjE1OTIyMTU5MTQsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.WfFT6X6e1RCb40MRE9WGicT4zeOSQDHocAe7ybwTMBk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"plugin\":\"automation\",\n   \"data\":{\n      \"method\":\"change\",\n      \"params\": {\n         \"devicehandle\": \"-2020\",\n         \"devicevalue\": {\n            \"devicehandle\": -2020,\n            \"propertiehandle\": 2,\n            \"value\": 1\n         }\n      }\n   }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (customTemplate)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyNTY0ODM5LCJuYmYiOjE1OTI1NjQ4MzksImV4cCI6MTU5MjU2ODQzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.3w9P3672W1lrkslaATUvcU5keQ4X3W3WJjF3zY525Fs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"customTemplate\",\n    \"data\":{\"key1\":\"Value1\",\"key2\":\"Value2\",\"key3\":\"Value3\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Customer List)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyNTY0ODM5LCJuYmYiOjE1OTI1NjQ4MzksImV4cCI6MTU5MjU2ODQzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.3w9P3672W1lrkslaATUvcU5keQ4X3W3WJjF3zY525Fs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"customer\",\n    \"data\":{\n\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/plugin (Customer Detail)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyNjI2ODIxLCJuYmYiOjE1OTI2MjY4MjEsImV4cCI6MTU5MjYzMDQyMSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.pAk05ZY5F36-7c6zN78MJXVfyWTIw38p_1wqc_Yy3lo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\":\"customer\",\n    \"data\":{\n        \"id\":\"13\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://xdebian/plugin",
+					"protocol": "http",
+					"host": [
+						"xdebian"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
