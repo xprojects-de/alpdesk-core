@@ -7,6 +7,8 @@ namespace Alpdesk\AlpdeskCore\Database;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Schema\Column;
 
 class AlpdeskcoreConnectionFactory {
 
@@ -45,40 +47,89 @@ class AlpdeskcoreConnectionFactory {
 
     try {
       $connection->connect();
-      $sm = $connection->getSchemaManager();
+      $tables = $connection->getSchemaManager()->createSchema()->getTables();
       $structure = array();
-      $tables = $sm->listTableNames();
       foreach ($tables as $table) {
-        $columns = $sm->listTableColumns($table);
-        if (is_array($columns) && count($columns) > 0) {
-          $structure[$table] = array();
-          foreach ($columns as $column) {
-            $type = $column->getType();
-            $autoincrement = $column->getAutoincrement();
-            $output = $type->getName();
-            if ($column->getAutoincrement()) {
-              $output .= ' | autoincrement';
+        if ($table instanceof Table) {
+
+          $options = "";
+          $tableOptions = $table->getOptions();
+          if ($tableOptions !== null && \is_array($tableOptions) && count($tableOptions) > 0) {
+            if (\array_key_exists('engine', $tableOptions)) {
+              $options .= 'engine: ' . $tableOptions['engine'];
             }
-            if ($column->getUnsigned()) {
-              $output .= ' | unsigned';
+            if (\array_key_exists('collation', $tableOptions)) {
+              $options .= ' | collation: ' . $tableOptions['collation'];
             }
-            if ($column->getNotnull()) {
-              $output .= ' | NOT NULL';
+            if (\array_key_exists('autoincrement', $tableOptions)) {
+              $options .= ' | autoincrement: ' . $tableOptions['autoincrement'];
             }
-            $default = $column->getDefault();
-            if ($default !== null && $default != "") {
-              $output .= ' | DEFAULT ' . $default;
+          }
+
+          $primaryKey = array();
+          foreach ($table->getPrimaryKey()->getColumns() as $column) {
+            array_push($primaryKey, $column);
+          }
+          $indexes = array();
+          foreach ($table->getIndexes() as $indexEntry) {
+            if ('PRIMARY' !== $indexEntry->getName()) {
+              $indexInfo = array(
+                  'indextype' => ($indexEntry->isUnique() ? 1 : 0),
+                  'indexfields' => '',
+                  'indexname' => $indexEntry->getName()
+              );
+              $tmpIndexFields = array();
+              foreach ($indexEntry->getColumns() as $column) {
+                array_push($tmpIndexFields, $column);
+              }
+              $indexInfo['indexfields'] = implode(',', $tmpIndexFields);
+              array_push($indexes, $indexInfo);
             }
-            $length = $column->getLength();
-            if ($length !== null && $length != "") {
-              $output .= ' | LENGTH ' . $length;
+          }
+
+          $structure[$table->getName()] = array(
+              'options' => $options,
+              'primary' => implode(', ', $primaryKey),
+              'indexes' => implode(', ', $indexes)
+          );
+
+          $columns = $table->getColumns();
+          if ($columns !== null && \is_array($columns) && count($columns) > 0) {
+            foreach ($columns as $column) {
+              if ($column instanceof Column) {
+                $type = $column->getType();
+                $autoincrement = $column->getAutoincrement();
+                $output = $type->getName();
+                if ($column->getAutoincrement()) {
+                  $output .= ' | autoincrement';
+                }
+                if ($column->getUnsigned()) {
+                  $output .= ' | unsigned';
+                }
+                if ($column->getNotnull()) {
+                  $output .= ' | NOT NULL';
+                }
+                $default = $column->getDefault();
+                if ($default !== null) {
+                  $output .= ' | DEFAULT "' . $default . '"';
+                }
+                $length = $column->getLength();
+                if ($length !== null && $length != "") {
+                  $output .= ' | LENGTH ' . $length;
+                }
+                $platformOptions = $column->getPlatformOptions();
+                if ($platformOptions !== null && is_array($platformOptions) && count($platformOptions) > 0) {
+                  foreach ($platformOptions as $pKey => $pValue) {
+                    $output .= ' | ' . $pKey . ' ' . $pValue;
+                  }
+                }
+                $structure[$table->getName()][$column->getName()] = $output;
+              }
             }
-            $structure[$table][$column->getName()] = $output;
           }
         }
       }
-      //dump($structure);
-      //die;
+
       return $structure;
     } catch (\Exception $e) {
       throw new \Exception($e->getMessage());

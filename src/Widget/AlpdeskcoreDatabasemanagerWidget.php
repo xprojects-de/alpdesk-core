@@ -35,7 +35,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
               if (is_array($value) && count($value) > 0) {
                 $outputValue .= '<div class="alpdeskcore_widget_databasemanager_tablecolumns">';
                 foreach ($value as $cKey => $cValue) {
-                  $outputValue .= '<p>';
+                  $outputValue .= '<p' . (($cKey == 'options' || $cKey == 'primary' || $cKey == 'indexes') ? ' class="alpdeskcore_widget_databasemanager_specialtablecolumns"' : '') . '>';
                   $outputValue .= '<strong>' . $cKey . '</strong><br>';
                   $outputValue .= $cValue;
                   $outputValue .= '</p>';
