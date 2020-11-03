@@ -5,8 +5,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
     'config' => array
         (
         'dataContainer' => 'Table',
-        'ctable' => array('tl_alpdeskcore_databasemanager_tables'),
-        'switchToEdit' => true,
         'enableVersioning' => true,
         'sql' => array
             (
@@ -15,11 +13,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
                 'id' => 'primary',
                 'title' => 'index',
             )
-        ),
-        'ondelete_callback' => array
-            (
-            array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'databasemanagerOnDeleteCallback'),
-        ),
+        )
     ),
     'list' => array
         (
@@ -40,14 +34,8 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
             'edit' => array
                 (
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['edit'],
-                'href' => 'table=tl_alpdeskcore_databasemanager_tables',
-                'icon' => 'edit.gif'
-            ),
-            'editheader' => array
-                (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['editheader'],
                 'href' => 'act=edit',
-                'icon' => 'header.gif',
+                'icon' => 'edit.gif'
             ),
             'delete' => array
                 (
@@ -60,7 +48,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
     ),
     'palettes' => array
         (
-        'default' => 'title;host,port;database,username,password;dbprefix;dbmigration'
+        'default' => 'title;host,port;database,username,password;dbmigration'
     ),
     'fields' => array
         (
@@ -134,16 +122,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
                 (
                 array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'regenerateEncryptPassword')
             ),
-            'sql' => "varchar(250) NOT NULL default ''"
-        ),
-        'dbprefix' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['dbprefix'],
-            'exclude' => true,
-            'search' => false,
-            'inputType' => 'text',
-            'default' => 'alpdesk_',
-            'eval' => array('mandatory' => false, 'maxlength' => 250, 'tl_class' => 'w50'),
             'sql' => "varchar(250) NOT NULL default ''"
         ),
         'dbmigration' => array

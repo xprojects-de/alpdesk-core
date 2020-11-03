@@ -29,3 +29,13 @@
   background: #f0f0f0;
 }
 
+.alpdeskcore_widget_databasemanager_table {
+  margin-bottom: 25px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+}
+
+.alpdeskcore_widget_databasemanager_tablecolumns {
+  margin-top: 20px
+}
+
