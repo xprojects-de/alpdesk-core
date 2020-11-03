@@ -10,7 +10,6 @@ use Contao\DataContainer;
 use Contao\Backend;
 use Contao\Input;
 use Contao\Image;
-use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerTablesModel;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
@@ -100,65 +99,6 @@ class AlpdeskCoreDcaUtils extends Backend {
 
   public function listPDFElements($arrRow): string {
     return $arrRow['name'];
-  }
-
-  public function listDatabasemanagerChildElements($arrRow): string {
-    return $arrRow['dbtable'];
-  }
-
-  public function databasemanagerelementsOnCopyCallback(int $newId, DataContainer $dc): void {
-    $id = Input::get('id');
-    $table = Input::get('table');
-    if (!$id || !$table) {
-      return;
-    }
-    $oldItems = FieldPaletteModel::findBy(array('pid=?', 'ptable=?'), array($id, $table));
-    if ($oldItems === null) {
-      return;
-    }
-    foreach ($oldItems as $item) {
-      $itemsArray = $item->row();
-      unset($itemsArray['id']);
-      $newItem = new FieldPaletteModel();
-      $newItem->setRow($itemsArray);
-      $newItem->pid = $newId;
-      $newItem->save();
-    }
-  }
-
-  public function databasemanagerelementsOnDeleteCallback(DataContainer $dc, int $undoId): void {
-    $id = Input::get('id');
-    $table = Input::get('table');
-    if (!$id || !$table) {
-      return;
-    }
-    $deleteItems = FieldPaletteModel::findBy(array('pid=?', 'ptable=?'), array($id, $table));
-    if ($deleteItems === null) {
-      return;
-    }
-    foreach ($deleteItems as $item) {
-      $item->delete();
-    }
-  }
-
-  public function databasemanagerOnDeleteCallback(DataContainer $dc, int $undoId): void {
-    $id = Input::get('id');
-    if (!$id) {
-      return;
-    }
-    $elements = AlpdeskcoreDatabasemanagerTablesModel::findBy(array('pid=?'), array($id));
-    if ($elements === null) {
-      return;
-    }
-    foreach ($elements as $element) {
-      $deleteItems = FieldPaletteModel::findBy(array('pid=?', 'ptable=?'), array($element->id, $dc->childTable[0]));
-      if ($deleteItems === null) {
-        continue;
-      }
-      foreach ($deleteItems as $item) {
-        $item->delete();
-      }
-    }
   }
 
   public function mandantOnDeleteCallback(DataContainer $dc, int $undoId): void {
