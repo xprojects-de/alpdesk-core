@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Widget;
 
 use Contao\Widget;
-use Alpdesk\AlpdeskCore\Database\AlpdeskcoreConnectionFactory;
+use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
 
 class AlpdeskcoreDatabasemanagerWidget extends Widget {
 
@@ -16,6 +16,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
   public function generate(): string {
     $outputValue = '';
     if ($this->activeRecord !== null) {
+      $id = intval($this->activeRecord->id);
       $host = $this->activeRecord->host;
       $port = intval($this->activeRecord->port);
       $username = $this->activeRecord->username;
@@ -23,10 +24,11 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
       $database = $this->activeRecord->database;
       if ($host != '' && $port != '' && $username != '' && $password != '' && $database != '') {
         $outputValue = $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_parameters'] . '<br>';
-        $connection = AlpdeskcoreConnectionFactory::create($host, $port, $username, $password, $database);
+        $connection = AlpdeskcoreDatabasemanagerModel::connectionById($id);
         try {
           if ($connection !== null) {
-            $structure = AlpdeskcoreConnectionFactory::listTables($connection, $database);
+            $structure = AlpdeskcoreDatabasemanagerModel::listTables($id, $database);
+            AlpdeskcoreDatabasemanagerModel::destroy($id);
             $outputValue .= $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_connection'] . '<br>';
             $outputValue .= '<hr>';
             foreach ($structure as $key => $value) {
