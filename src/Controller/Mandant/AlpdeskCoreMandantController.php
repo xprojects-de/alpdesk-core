@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Controller\Mandant;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandant;
@@ -16,7 +16,7 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreMandantListEvent;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AlpdeskCoreMandantController extends Controller {
+class AlpdeskCoreMandantController extends AbstractController {
 
   protected ContaoFramework $framework;
   protected AlpdeskCoreEventService $eventService;

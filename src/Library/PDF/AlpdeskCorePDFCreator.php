@@ -7,6 +7,8 @@ namespace Alpdesk\AlpdeskCore\Library\PDF;
 use Alpdesk\AlpdeskCore\Model\PDF\AlpdeskcorePdfElementsModel;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePDFException;
 use Contao\Controller;
+use Contao\StringUtil;
+use Contao\File;
 
 class AlpdeskCorePDFCreator extends \TCPDF {
 
@@ -91,7 +93,7 @@ class AlpdeskCorePDFCreator extends \TCPDF {
     if ($pdfData === null) {
       throw new AlpdeskCorePDFException("id for PDF not found");
     }
-    $font = \StringUtil::deserialize($pdfData->font);
+    $font = StringUtil::deserialize($pdfData->font);
     $settingsarray = array(
         'font_family' => ($font[0] != "" ? $font[0] : 'helvetica'),
         'font_size' => ($font[1] != "" ? $font[1] : '12'),
@@ -99,8 +101,8 @@ class AlpdeskCorePDFCreator extends \TCPDF {
         'pdfauthor' => $pdfData->pdfauthor,
         'pdftitel' => $pdfData->name
     );
-    $footerglobalsize = \StringUtil::deserialize($pdfData->footer_globalsize);
-    $footerglobalfont = \StringUtil::deserialize($pdfData->footer_globalfont);
+    $footerglobalsize = StringUtil::deserialize($pdfData->footer_globalsize);
+    $footerglobalfont = StringUtil::deserialize($pdfData->footer_globalfont);
     $this->footersesstingsarray = array(
         'valid' => ($pdfData->footer_text != '' ? true : false),
         'text' => $pdfData->footer_text,
@@ -112,8 +114,8 @@ class AlpdeskCorePDFCreator extends \TCPDF {
         'width' => intval($footerglobalsize[0]),
         'height' => intval($footerglobalsize[1])
     );
-    $headerglobalsize = \StringUtil::deserialize($pdfData->header_globalsize);
-    $headerglobalfont = \StringUtil::deserialize($pdfData->header_globalfont);
+    $headerglobalsize = StringUtil::deserialize($pdfData->header_globalsize);
+    $headerglobalfont = StringUtil::deserialize($pdfData->header_globalfont);
     $this->headersesstingsarray = array(
         'valid' => ($pdfData->header_text != '' ? true : false),
         'text' => $pdfData->header_text,
@@ -124,7 +126,7 @@ class AlpdeskCorePDFCreator extends \TCPDF {
         'fontsize' => ($headerglobalfont[1] != "" ? intval($headerglobalfont[1]) : '10'),
         'alignment' => ($headerglobalfont[3] != "" ? $headerglobalfont[3] : '')
     );
-    $objFile = new \File($path . "/" . $pdfname, true);
+    $objFile = new File($path . "/" . $pdfname, true);
     if ($objFile->exists()) {
       $objFile->delete();
     }

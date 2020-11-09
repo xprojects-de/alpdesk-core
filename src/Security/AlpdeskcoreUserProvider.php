@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Security;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
@@ -20,7 +21,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
   private $framework;
   protected AlpdeskcoreLogger $logger;
 
-  public function __construct(ContaoFrameworkInterface $framework, AlpdeskcoreLogger $logger) {
+  public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger) {
     $this->framework = $framework;
     $this->framework->initialize();
     $this->logger = $logger;
@@ -79,7 +80,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
     return $alpdeskUser;
   }
 
-  public function refreshUser(\Symfony\Component\Security\Core\User\UserInterface $user) {
+  public function refreshUser(UserInterface $user) {
     throw new UnsupportedUserException('Refresh not possible');
   }
 

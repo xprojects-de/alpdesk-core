@@ -9,6 +9,8 @@ use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantElementsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandantResponse;
 use Contao\StringUtil;
+use Contao\System;
+use Contao\Controller;
 use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 
@@ -19,7 +21,7 @@ class AlpdeskCoreMandant {
     $plugins = AlpdeskcoreMandantElementsModel::findEnabledAndVisibleByPid($mandantPid);
     if ($plugins !== null) {
       // @ToDo load for other languages
-      \System::loadLanguageFile('modules', 'de');
+      System::loadLanguageFile('modules', 'de');
       foreach ($plugins as $pluginElement) {
         $type = (string) $pluginElement->type;
         if (isset($GLOBALS['TL_ADME'][$type])) {
@@ -51,8 +53,8 @@ class AlpdeskCoreMandant {
       unset($data['tstamp']);
       $returnData = array();
       // @ToDo load for other languages
-      \System::loadLanguageFile('tl_alpdeskcore_mandant', 'de');
-      \Controller::loadDataContainer('tl_alpdeskcore_mandant');
+      System::loadLanguageFile('tl_alpdeskcore_mandant', 'de');
+      Controller::loadDataContainer('tl_alpdeskcore_mandant');
       foreach ($data as $key => $value) {
         if (isset($GLOBALS['TL_DCA']['tl_alpdeskcore_mandant']['fields'][$key]['eval']['alpdesk_apishow']) && $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant']['fields'][$key]['eval']['alpdesk_apishow'] == true) {
           $returnData[$key] = array(

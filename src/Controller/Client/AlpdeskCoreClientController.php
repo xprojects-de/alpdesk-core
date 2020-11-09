@@ -7,13 +7,13 @@ namespace Alpdesk\AlpdeskCore\Controller\Client;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Contao\Environment;
 use Symfony\Component\Filesystem\Filesystem;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 
-class AlpdeskCoreClientController extends Controller {
+class AlpdeskCoreClientController extends AbstractController {
 
   protected ContaoFramework $framework;
   protected AlpdeskCoreEventService $eventService;

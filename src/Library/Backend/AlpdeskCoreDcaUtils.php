@@ -10,6 +10,7 @@ use Contao\DataContainer;
 use Contao\Backend;
 use Contao\Input;
 use Contao\Image;
+use Contao\File;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
@@ -80,12 +81,12 @@ class AlpdeskCoreDcaUtils extends Backend {
     return $groups;
   }
 
-  public function pdfElementsloadCallback(\DataContainer $dc) {
-    if (\Input::get('act') == 'generatetestpdf') {
+  public function pdfElementsloadCallback(DataContainer $dc) {
+    if (Input::get('act') == 'generatetestpdf') {
       try {
         $pdf = new AlpdeskCorePDFCreator();
-        $tmpFile = $pdf->generateById(intval(\Input::get('id')), "files/tmp", time() . ".pdf");
-        $objFile = new \File($tmpFile, true);
+        $tmpFile = $pdf->generateById(intval(Input::get('id')), "files/tmp", time() . ".pdf");
+        $objFile = new File($tmpFile, true);
         if ($objFile->exists()) {
           $objFile->sendToBrowser(time() . '.pdf');
           $objFile->delete();
@@ -93,7 +94,7 @@ class AlpdeskCoreDcaUtils extends Backend {
       } catch (\Exception $ex) {
         
       }
-      $this->redirect('contao?do=' . \Input::get('do') . '&table=' . \Input::get('table') . '&id=' . \Input::get('id') . '&rt=' . \Input::get('rt'));
+      $this->redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
     }
   }
 
