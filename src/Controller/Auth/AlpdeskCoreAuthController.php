@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Controller\Auth;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthToken;
@@ -19,7 +19,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AlpdeskCoreAuthController extends Controller {
+class AlpdeskCoreAuthController extends AbstractController {
 
   protected ContaoFramework $framework;
   protected AlpdeskCoreEventService $eventService;

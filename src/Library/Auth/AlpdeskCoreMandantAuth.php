@@ -7,6 +7,7 @@ namespace Alpdesk\AlpdeskCore\Library\Auth;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
+use Contao\Encryption;
 
 class AlpdeskCoreMandantAuth {
 
@@ -14,7 +15,8 @@ class AlpdeskCoreMandantAuth {
     try {
       $autResult = AlpdeskcoreMandantModel::findByAuthUsername($username);
       if ($autResult !== null) {
-        if (!\Encryption::verify($password, $autResult->password)) {
+        // @TODO Change Algo for verify in Contao 5
+        if (!Encryption::verify($password, $autResult->password)) {
           throw new AlpdeskCoreAuthException("error auth - invalid password for username:" . $username);
         }
         return $autResult;

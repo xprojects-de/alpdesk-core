@@ -7,7 +7,6 @@ namespace Alpdesk\AlpdeskCore\Model\Database;
 use Contao\Model;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Column;
@@ -42,7 +41,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
         self::$connectionsTable[$id]->connect();
       }
       return self::$connectionsTable[$id];
-    } catch (DBALException $e) {
+    } catch (\Exception $e) {
       
     }
     return null;

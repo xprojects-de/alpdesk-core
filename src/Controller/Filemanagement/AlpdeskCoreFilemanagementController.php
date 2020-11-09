@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFilemanagement;
@@ -17,7 +17,7 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadEvent;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AlpdeskCoreFilemanagementController extends Controller {
+class AlpdeskCoreFilemanagementController extends AbstractController {
 
   protected string $rootDir;
   protected ContaoFramework $framework;

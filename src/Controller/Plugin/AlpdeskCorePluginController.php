@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Controller\Plugin;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugin;
@@ -17,7 +17,7 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCorePlugincallEvent;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AlpdeskCorePluginController extends Controller {
+class AlpdeskCorePluginController extends AbstractController {
 
   protected string $rootDir;
   protected ContaoFramework $framework;

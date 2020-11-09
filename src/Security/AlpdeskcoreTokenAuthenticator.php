@@ -6,7 +6,7 @@ namespace Alpdesk\AlpdeskCore\Security;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +22,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator {
   protected $framework;
   protected AlpdeskcoreLogger $logger;
 
-  public function __construct(ContaoFrameworkInterface $framework, AlpdeskcoreLogger $logger) {
+  public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger) {
     $this->framework = $framework;
     $this->framework->initialize();
     $this->logger = $logger;
