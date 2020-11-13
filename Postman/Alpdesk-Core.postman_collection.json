@@ -37,7 +37,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://xdebian/upload",
+					"raw": "https://contao.local:8890/upload",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -65,7 +65,7 @@
 					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\"\n}"
 				},
 				"url": {
-					"raw": "http://xdebian/auth",
+					"raw": "https://contao.local:8890/auth",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -109,7 +109,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/download",
+					"raw": "https://contao.local:8890/download",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -146,7 +146,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/auth/verify",
+					"raw": "https://contao.local:8890/auth/verify",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -184,7 +184,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/auth/logout",
+					"raw": "https://contao.local:8890/auth/logout",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -222,7 +222,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/mandant",
+					"raw": "https://contao.local:8890/mandant",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -259,7 +259,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -296,7 +296,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -333,7 +333,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -370,7 +370,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -407,7 +407,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -444,7 +444,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -481,7 +481,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -518,7 +518,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -555,7 +555,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -592,7 +592,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -629,7 +629,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -666,7 +666,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
@@ -703,7 +703,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://xdebian/plugin",
+					"raw": "https://contao.local:8890/plugin",
 					"protocol": "http",
 					"host": [
 						"xdebian"
