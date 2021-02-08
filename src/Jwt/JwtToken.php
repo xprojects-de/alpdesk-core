@@ -89,9 +89,13 @@ class JwtToken {
 
     $value = false;
     try {
-      $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
       $signer = new SignedWith($config->signer(), InMemory::plainText(self::getDefaultKeyString()));
       $validator->assert($tokenObject, $signer);
+      $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
+      if ($value == true) {
+        $now = (new \DateTimeImmutable())->setTimestamp(time());
+        $value = !$tokenObject->isExpired($now);
+      }
     } catch (\Exception $ex) {
       $value = false;
     }
