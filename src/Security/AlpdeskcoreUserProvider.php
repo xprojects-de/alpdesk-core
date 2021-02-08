@@ -40,7 +40,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
   }
 
   public static function extractUsernameFromToken(string $jwtToken): string {
-    $username = JwtToken::parse($jwtToken)->getClaim('username');
+    $username = JwtToken::getClaim($jwtToken, 'username');
     if ($username == null || $username == '') {
       throw new AuthenticationException('invalid username');
     }

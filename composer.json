@@ -6,9 +6,9 @@
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": ">=7.4",
-    "contao/core-bundle": "^4.9",
+    "contao/core-bundle": "^4.9.11",
     "tecnickcom/tcpdf": "^6.3",
-    "lcobucci/jwt": "^3.4",
+    "lcobucci/jwt": "^4.0",
     "heimrichhannot/contao-fieldpalette-bundle": "^0.5"
   },
   "conflict": {
