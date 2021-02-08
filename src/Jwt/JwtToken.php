@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Jwt;
 
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\ValidationData;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use Lcobucci\JWT\Validation\Constraint\IdentifiedBy;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Contao\System;
 
 class JwtToken {
@@ -22,57 +24,79 @@ class JwtToken {
     return substr($keyString, 10, 32);
   }
 
-  public static function generate(string $jti, int $nbf = 3600, array $claims = array(), string $keyString = ''): string {
+  private static function getConfig(): Configuration {
+    return Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(self::getDefaultKeyString()));
+  }
+
+  public static function generate(string $jti, int $nbf = 3600, array $claims = array()): string {
+
     $time = time();
-    $signer = new Sha256();
-    if ($keyString == '') {
-      $keyString = self::getDefaultKeyString();
-    }
-    $key = new Key($keyString);
-    $tokenBuilder = new Builder();
-    $tokenBuilder->issuedBy(self::$issuedBy); // iss claim
-    $tokenBuilder->permittedFor(self::$permittedFor); // iss claim
-    $tokenBuilder->identifiedBy($jti, true); // jti claim
-    $tokenBuilder->issuedAt($time); // iat claim
-    $tokenBuilder->canOnlyBeUsedAfter($time + 0); // Configures the time that the token can be used (nbf claim)
+
+    $config = self::getConfig();
+
+    $issuesAt = (new \DateTimeImmutable())->setTimestamp($time);
+    $usedAfter = (new \DateTimeImmutable())->setTimestamp($time + 0);
+    $expiresAt = (new \DateTimeImmutable())->setTimestamp($time + $nbf);
+
+    $builder = $config->builder();
+    $builder->issuedBy(self::$issuedBy); // iss claim
+    $builder->permittedFor(self::$permittedFor); // iss claim
+    $builder->identifiedBy($jti, true); // jti claim
+    $builder->issuedAt($issuesAt); // iat claim
+
+    $builder->canOnlyBeUsedAfter($usedAfter); // Configures the time that the token can be used (nbf claim)
     if ($nbf > 0) {
-      $tokenBuilder->expiresAt($time + $nbf); // Configures the expiration time of the token (exp claim)
+      $builder->expiresAt($expiresAt); // Configures the expiration time of the token (exp claim)
     }
     if (count($claims) > 0) {
       foreach ($claims as $keyClaim => $valueClaim) {
-        $tokenBuilder->withClaim($keyClaim, $valueClaim);
+        $builder->withClaim($keyClaim, $valueClaim);
       }
     }
-    $token = $tokenBuilder->getToken($signer, $key);
-    return (string) $token;
+    $token = $builder->getToken($config->signer(), $config->signingKey());
+    $tokenString = $token->toString();
+    return $tokenString;
   }
 
   public static function parse(string $token): Token {
-    return (new Parser())->parse((string) $token);
+    $config = self::getConfig();
+    $parser = $config->parser();
+    $tokenObject = $parser->parse((string) $token);
+    return $tokenObject;
   }
 
-  public static function validate(string $token, string $jti): bool {
-    $tokenObject = self::parse($token);
-    $validation = new ValidationData();
-    $validation->setIssuer(self::$issuedBy);
-    $validation->setAudience(self::$permittedFor);
-    $validation->setId($jti);
-    return $tokenObject->validate($validation);
-  }
-
-  public static function verify(string $token, string $keyString = ''): bool {
-    $tokenObject = self::parse($token);
-    $signer = new Sha256();
-    if ($keyString == '') {
-      $keyString = self::getDefaultKeyString();
+  public static function getClaim(string $token, string $name) {
+    $value = null;
+    try {
+      $tokenObject = self::parse($token);
+      $value = $tokenObject->claims()->get($name);
+    } catch (\Exception $ex) {
+      $value = null;
     }
-    return $tokenObject->verify($signer, $keyString);
+    return $value;
   }
 
   public static function validateAndVerify(string $token, string $jti): bool {
-    $validate = self::validate($token, $jti);
-    $verify = self::verify($token);
-    return ($validate == true && $verify == true);
+    $tokenObject = self::parse($token);
+
+    $config = self::getConfig();
+
+    $issuedByConstraints = new IssuedBy(self::$issuedBy);
+    $permittedForConstraints = new PermittedFor(self::$permittedFor);
+    $identifiedByConstraints = new IdentifiedBy($jti);
+
+    $validator = $config->validator();
+
+    $value = false;
+    try {
+      $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
+      $signer = new SignedWith($config->signer(), InMemory::plainText(self::getDefaultKeyString()));
+      $validator->assert($tokenObject, $signer);
+    } catch (\Exception $ex) {
+      $value = false;
+    }
+
+    return $value;
   }
 
 }
