@@ -1,9 +1,9 @@
 {
-    "version": "0.0.14-dev",
+    "version": "0.0.15-dev",
     "logging": {
         "enabled": true
     },
     "apiServer": {
-        "rest": "http://contao.local"
+        "rest": "https://contao.local:8890"
     }
 }
