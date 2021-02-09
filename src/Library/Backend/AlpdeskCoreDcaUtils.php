@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Backend;
 
 use Alpdesk\AlpdeskCore\Library\PDF\AlpdeskCorePDFCreator;
-use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 use Contao\DataContainer;
 use Contao\Backend;
 use Contao\Input;
@@ -100,21 +99,6 @@ class AlpdeskCoreDcaUtils extends Backend {
 
   public function listPDFElements($arrRow): string {
     return $arrRow['name'];
-  }
-
-  public function mandantOnDeleteCallback(DataContainer $dc, int $undoId): void {
-    $id = Input::get('id');
-    $table = Input::get('do');
-    if (!$id || !$table) {
-      return;
-    }
-    $table = 'tl_' . $table;
-    $deleteItems = FieldPaletteModel::findBy(array('pid=?', 'ptable=?'), array($id, $table));
-    if ($deleteItems !== null) {
-      foreach ($deleteItems as $item) {
-        $item->delete();
-      }
-    }
   }
 
 }

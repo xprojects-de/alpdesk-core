@@ -7,47 +7,21 @@ namespace Alpdesk\AlpdeskCore\Library\Auth;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
-use Contao\Encryption;
+use Contao\System;
+use Contao\User;
 
 class AlpdeskCoreMandantAuth {
 
-  public function login(string $username, string $password) {
+  public function login(string $username, string $password): void {
     try {
-      $autResult = AlpdeskcoreMandantModel::findByAuthUsername($username);
+      $autResult = AlpdeskcoreMandantModel::findByUsername($username);
       if ($autResult !== null) {
-        // @TODO Change Algo for verify in Contao 5
-        if (!Encryption::verify($password, $autResult->password)) {
+        $encoder = System::getContainer()->get('security.encoder_factory')->getEncoder(User::class);
+        if (!$encoder->isPasswordValid($password, $autResult->password, null)) {
           throw new AlpdeskCoreAuthException("error auth - invalid password for username:" . $username);
         }
-        return $autResult;
       } else {
         throw new AlpdeskCoreAuthException("error auth - invalid password for username:" . $username);
-      }
-    } catch (AlpdeskCoreModelException $ex) {
-      throw new AlpdeskCoreAuthException($ex->getMessage());
-    }
-  }
-
-  public function loginByFixtoken(string $username, string $fixtoken) {
-    try {
-      $autResult = AlpdeskcoreMandantModel::findByAuthUsernameAndFixtoken($username, $fixtoken);
-      if ($autResult !== null) {
-        return $autResult;
-      } else {
-        throw new AlpdeskCoreAuthException("error auth - invalid username or Fixtoken for username:" . $username);
-      }
-    } catch (AlpdeskCoreModelException $ex) {
-      throw new AlpdeskCoreAuthException($ex->getMessage());
-    }
-  }
-
-  public function getMandantByUsername(string $username) {
-    try {
-      $autResult = AlpdeskcoreMandantModel::findByAuthUsername($username);
-      if ($autResult !== null) {
-        return $autResult;
-      } else {
-        throw new AlpdeskCoreAuthException("error get MandantInformation for username: " . $username);
       }
     } catch (AlpdeskCoreModelException $ex) {
       throw new AlpdeskCoreAuthException($ex->getMessage());

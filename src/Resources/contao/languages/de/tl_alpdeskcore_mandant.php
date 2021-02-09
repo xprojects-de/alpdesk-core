@@ -1,6 +1,7 @@
 <?php
 
 $GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['mandant'] = array('Mandant', '');
+$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'] = array('Auth-Mitglied', 'Wählen sie das Mitglied aus welches sich authentifizieren kann');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['auth'] = array('Authentifikation', '');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['username'] = array('Benutzername', '');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['password'] = array('Passwort', '');

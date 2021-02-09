@@ -9,19 +9,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class AlpdeskcoreUser implements UserInterface {
 
   private int $mandantPid = 0;
-  private int $mandantid = 0;
   private $username = '';
   private $token = '';
   private $fixToken = '';
   private $fixTokenAuth = false;
-
-  public function getMandantid(): int {
-    return $this->mandantid;
-  }
-
-  public function setMandantid(int $mandantid): void {
-    $this->mandantid = $mandantid;
-  }
 
   public function getMandantPid(): int {
     return $this->mandantPid;
