@@ -15,40 +15,16 @@ class AlpdeskcoreMandantModel extends Model {
 
   public static function findByUsername($username): AlpdeskcoreUser {
 
-    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?'], [1, 1, $username]);
+    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?', 'tl_member.alpdeskcore_mandant!=?'], [1, 1, $username, 0]);
     if ($memberObject !== null) {
-      $mandantObject = self::findAll();
-      if ($mandantObject !== null) {
-        $currentMandatObject = null;
-        foreach ($mandantObject as $mandant) {
-          if ($mandant->member_1 == $memberObject->id ||
-                  $mandant->member_2 == $memberObject->id ||
-                  $mandant->member_3 == $memberObject->id ||
-                  $mandant->member_4 == $memberObject->id ||
-                  $mandant->member_5 == $memberObject->id ||
-                  $mandant->member_6 == $memberObject->id ||
-                  $mandant->member_7 == $memberObject->id ||
-                  $mandant->member_8 == $memberObject->id ||
-                  $mandant->member_9 == $memberObject->id ||
-                  $mandant->member_10 == $memberObject->id) {
-            $currentMandatObject = $mandant;
-            break;
-          }
-        }
-        if ($currentMandatObject !== null) {
-          $alpdeskUser = new AlpdeskcoreUser();
-          $alpdeskUser->setUsername($memberObject->username);
-          $alpdeskUser->setMandantPid(intval($currentMandatObject->id));
-          $alpdeskUser->setFixToken($memberObject->fixtoken);
-        } else {
-          throw new AlpdeskCoreModelException("error auth - invalid no mandant found");
-        }
-      } else {
-        throw new AlpdeskCoreModelException("error auth - invalid mandat object");
-      }
+      $alpdeskUser = new AlpdeskcoreUser();
+      $alpdeskUser->setUsername($memberObject->username);
+      $alpdeskUser->setPassword($memberObject->password);
+      $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
+      $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
       return $alpdeskUser;
     } else {
-      throw new AlpdeskCoreModelException("error auth - invalid username");
+      throw new AlpdeskCoreModelException("error auth - invalid member");
     }
   }
 

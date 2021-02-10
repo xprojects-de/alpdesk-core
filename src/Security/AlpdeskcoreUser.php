@@ -10,6 +10,7 @@ class AlpdeskcoreUser implements UserInterface {
 
   private int $mandantPid = 0;
   private $username = '';
+  private $password = '';
   private $token = '';
   private $fixToken = '';
   private $fixTokenAuth = false;
@@ -65,8 +66,12 @@ class AlpdeskcoreUser implements UserInterface {
     return array('ROLE_USER');
   }
 
-  public function getPassword() {
-    
+  public function getPassword(): string {
+    return $this->password;
+  }
+
+  public function setPassword($password): void {
+    $this->password = $password;
   }
 
   public function getSalt() {

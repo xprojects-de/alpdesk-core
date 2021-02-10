@@ -1,8 +1,5 @@
 <?php
 
-use Contao\Backend;
-use Contao\MemberModel;
-
 $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
     (
     'config' => array
@@ -59,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
     ),
     'palettes' => array
         (
-        'default' => 'mandant;member_1,member_2,member_3,member_4,member_5,member_6,member_7,member_8,member_9,member_10;filemount'
+        'default' => 'mandant;filemount'
     ),
     'fields' => array
         (
@@ -81,116 +78,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
             'eval' => array('alpdesk_apishow' => true, 'mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 250),
             'sql' => "varchar(250) NOT NULL default ''"
         ),
-        'member_1' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_2' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_3' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_4' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_5' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_6' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_7' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_8' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_9' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'member_10' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['member'],
-            'exclude' => true,
-            'search' => true,
-            'sorting' => true,
-            'inputType' => 'select',
-            'options_callback' => ['tl_alpdeskcore_mandant', 'getMembers'],
-            'eval' => array('mandatory' => false, 'tl_class' => 'w50', 'multiple' => false, 'includeBlankOption' => true, 'unique' => true),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
         'filemount' => array
             (
             'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['filemount'],
@@ -201,20 +88,3 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
         ),
     )
 );
-
-class tl_alpdeskcore_mandant extends Backend {
-
-  public function getMembers(): array {
-    $data = [];
-
-    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?'], [1, 1]);
-    if ($memberObject !== null) {
-      foreach ($memberObject as $member) {
-        $data[$member->id] = $member->firstname . ' ' . $member->lastname . ' (' . $member->username . ')';
-      }
-    }
-
-    return $data;
-  }
-
-}

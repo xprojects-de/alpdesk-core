@@ -14,13 +14,9 @@ class AlpdeskCoreMandantAuth {
 
   public function login(string $username, string $password): void {
     try {
-      $autResult = AlpdeskcoreMandantModel::findByUsername($username);
-      if ($autResult !== null) {
-        $encoder = System::getContainer()->get('security.encoder_factory')->getEncoder(User::class);
-        if (!$encoder->isPasswordValid($password, $autResult->password, null)) {
-          throw new AlpdeskCoreAuthException("error auth - invalid password for username:" . $username);
-        }
-      } else {
+      $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
+      $encoder = System::getContainer()->get('security.encoder_factory')->getEncoder(User::class);
+      if (!$encoder->isPasswordValid($alpdeskUserInstance->getPassword(), $password, null)) {
         throw new AlpdeskCoreAuthException("error auth - invalid password for username:" . $username);
       }
     } catch (AlpdeskCoreModelException $ex) {
