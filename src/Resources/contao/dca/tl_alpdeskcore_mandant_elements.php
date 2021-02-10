@@ -12,7 +12,9 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant_elements'] = array
             'keys' => array
                 (
                 'id' => 'primary',
-                'pid' => 'index'
+                'pid' => 'index',
+                'pid,disabled' => 'index',
+                'pid,disabled,invisible' => 'index',
             )
         )
     ),

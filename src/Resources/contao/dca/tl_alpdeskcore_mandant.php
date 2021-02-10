@@ -12,8 +12,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
             (
             'keys' => array
                 (
-                'id' => 'primary',
-                'mandant' => 'index',
+                'id' => 'primary'
             )
         ),
     ),
