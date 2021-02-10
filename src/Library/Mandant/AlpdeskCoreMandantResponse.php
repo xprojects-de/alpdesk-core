@@ -8,6 +8,9 @@ class AlpdeskCoreMandantResponse {
 
   private string $alpdesk_token = '';
   private string $username = '';
+  private $firstname = '';
+  private $lastname = '';
+  private $email = '';
   private int $memberId = 0;
   private int $mandantId = 0;
   private array $plugins = array();
@@ -59,6 +62,30 @@ class AlpdeskCoreMandantResponse {
 
   public function setMemberId(int $memberId): void {
     $this->memberId = $memberId;
+  }
+
+  public function getFirstname() {
+    return $this->firstname;
+  }
+
+  public function getLastname() {
+    return $this->lastname;
+  }
+
+  public function getEmail() {
+    return $this->email;
+  }
+
+  public function setFirstname($firstname): void {
+    $this->firstname = $firstname;
+  }
+
+  public function setLastname($lastname): void {
+    $this->lastname = $lastname;
+  }
+
+  public function setEmail($email): void {
+    $this->email = $email;
   }
 
 }

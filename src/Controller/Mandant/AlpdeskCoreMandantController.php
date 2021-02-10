@@ -35,6 +35,9 @@ class AlpdeskCoreMandantController extends AbstractController {
                 'alpdesk_token' => $data->getAlpdesk_token(),
                 'mandantId' => $data->getMandantId(),
                 'memberId' => $data->getMemberId(),
+                'memberFirstname' => $data->getFirstname(),
+                'memberLastname' => $data->getLastname(),
+                'memberEmail' => $data->getEmail(),
                 'plugins' => $data->getPlugins(),
                 'data' => $data->getData(),
                     ), $statusCode

@@ -21,6 +21,9 @@ class AlpdeskcoreMandantModel extends Model {
       $alpdeskUser->setMemberId(\intval($memberObject->id));
       $alpdeskUser->setUsername($memberObject->username);
       $alpdeskUser->setPassword($memberObject->password);
+      $alpdeskUser->setFirstname($memberObject->firstname);
+      $alpdeskUser->setLastname($memberObject->lastname);
+      $alpdeskUser->setEmail($memberObject->email);
       $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
       $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
       return $alpdeskUser;
