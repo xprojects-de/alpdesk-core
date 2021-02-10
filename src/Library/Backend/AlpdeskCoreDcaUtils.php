@@ -9,7 +9,9 @@ use Contao\DataContainer;
 use Contao\Backend;
 use Contao\Input;
 use Contao\Image;
+use Contao\StringUtil;
 use Contao\File;
+use Contao\Controller;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
@@ -72,7 +74,7 @@ class AlpdeskCoreDcaUtils extends Backend {
 
   public function getMandantElements() {
     $groups = array();
-    if (isset($GLOBALS['TL_ADME']) && count($GLOBALS['TL_ADME'])) {
+    if (isset($GLOBALS['TL_ADME']) && \count($GLOBALS['TL_ADME'])) {
       foreach ($GLOBALS['TL_ADME'] as $k => $v) {
         $groups[$k] = $GLOBALS['TL_LANG']['ADME'][$k];
       }
@@ -83,22 +85,21 @@ class AlpdeskCoreDcaUtils extends Backend {
   public function pdfElementsloadCallback(DataContainer $dc) {
     if (Input::get('act') == 'generatetestpdf') {
       try {
-        $pdf = new AlpdeskCorePDFCreator();
-        $tmpFile = $pdf->generateById(intval(Input::get('id')), "files/tmp", time() . ".pdf");
-        $objFile = new File($tmpFile, true);
-        if ($objFile->exists()) {
-          $objFile->sendToBrowser(time() . '.pdf');
-          $objFile->delete();
-        }
+        (new AlpdeskCorePDFCreator())->generateById(intval(Input::get('pdfid')), "files/tmp", time() . ".pdf");
       } catch (\Exception $ex) {
         
       }
-      $this->redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
+      Controller::redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
     }
   }
 
   public function listPDFElements($arrRow): string {
     return $arrRow['name'];
+  }
+
+  public function generatetestpdfLinkCallback($row, $href, $label, $title, $icon, $attributes) {
+
+    return '<a href="' . $this->addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
   }
 
 }
