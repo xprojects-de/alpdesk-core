@@ -8,19 +8,23 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskcoreUser implements UserInterface {
 
+  private int $memberId = 0;
   private int $mandantPid = 0;
-  private int $mandantid = 0;
   private $username = '';
+  private $password = '';
+  private $firstname = '';
+  private $lastname = '';
+  private $email = '';
   private $token = '';
   private $fixToken = '';
   private $fixTokenAuth = false;
 
-  public function getMandantid(): int {
-    return $this->mandantid;
+  public function getMemberId(): int {
+    return $this->memberId;
   }
 
-  public function setMandantid(int $mandantid): void {
-    $this->mandantid = $mandantid;
+  public function setMemberId(int $memberId): void {
+    $this->memberId = $memberId;
   }
 
   public function getMandantPid(): int {
@@ -45,6 +49,30 @@ class AlpdeskcoreUser implements UserInterface {
 
   public function getUsername() {
     return $this->username;
+  }
+
+  public function getFirstname() {
+    return $this->firstname;
+  }
+
+  public function getLastname() {
+    return $this->lastname;
+  }
+
+  public function getEmail() {
+    return $this->email;
+  }
+
+  public function setFirstname($firstname): void {
+    $this->firstname = $firstname;
+  }
+
+  public function setLastname($lastname): void {
+    $this->lastname = $lastname;
+  }
+
+  public function setEmail($email): void {
+    $this->email = $email;
   }
 
   public function getFixToken() {
@@ -74,8 +102,12 @@ class AlpdeskcoreUser implements UserInterface {
     return array('ROLE_USER');
   }
 
-  public function getPassword() {
-    
+  public function getPassword(): string {
+    return $this->password;
+  }
+
+  public function setPassword($password): void {
+    $this->password = $password;
   }
 
   public function getSalt() {

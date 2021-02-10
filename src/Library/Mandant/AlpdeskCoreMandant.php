@@ -76,6 +76,10 @@ class AlpdeskCoreMandant {
     $response->setUsername($user->getUsername());
     $response->setAlpdesk_token($user->getUsedToken());
     $response->setMandantId($user->getMandantPid());
+    $response->setMemberId($user->getMemberId());
+    $response->setFirstname($user->getFirstname());
+    $response->setLastname($user->getLastname());
+    $response->setEmail($user->getEmail());
     $response->setPlugins($pluginData);
     $response->setData($dataData);
     return $response;

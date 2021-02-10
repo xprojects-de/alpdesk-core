@@ -10,12 +10,12 @@ class AlpdeskcoreMandantElementsModel extends Model {
 
   protected static $strTable = 'tl_alpdeskcore_mandant_elements';
 
-  public function findEnabledByPid(int $pid) {
-    return self::findBy(array('pid=?', 'disabled!=?'), array($pid, 1));
+  public static function findEnabledByPid(int $pid) {
+    return self::findBy(['tl_alpdeskcore_mandant_elements.pid=?', 'tl_alpdeskcore_mandant_elements.disabled!=?'], [$pid, 1]);
   }
 
-  public function findEnabledAndVisibleByPid(int $pid) {
-    return self::findBy(array('pid=?', 'disabled!=?', 'invisible!=?'), array($pid, 1, 1), array('order' => 'sorting ASC'));
+  public static function findEnabledAndVisibleByPid(int $pid) {
+    return self::findBy(['tl_alpdeskcore_mandant_elements.pid=?', 'tl_alpdeskcore_mandant_elements.disabled!=?', 'tl_alpdeskcore_mandant_elements.invisible!=?'], [$pid, 1, 1], ['order' => 'sorting ASC']);
   }
 
 }
