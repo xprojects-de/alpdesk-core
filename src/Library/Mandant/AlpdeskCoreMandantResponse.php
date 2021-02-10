@@ -8,6 +8,7 @@ class AlpdeskCoreMandantResponse {
 
   private string $alpdesk_token = '';
   private string $username = '';
+  private int $memberId = 0;
   private int $mandantId = 0;
   private array $plugins = array();
   private array $data = array();
@@ -50,6 +51,14 @@ class AlpdeskCoreMandantResponse {
 
   public function setData(array $data): void {
     $this->data = $data;
+  }
+
+  public function getMemberId(): int {
+    return $this->memberId;
+  }
+
+  public function setMemberId(int $memberId): void {
+    $this->memberId = $memberId;
   }
 
 }

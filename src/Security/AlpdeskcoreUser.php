@@ -8,12 +8,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskcoreUser implements UserInterface {
 
+  private int $memberId = 0;
   private int $mandantPid = 0;
   private $username = '';
   private $password = '';
   private $token = '';
   private $fixToken = '';
   private $fixTokenAuth = false;
+
+  public function getMemberId(): int {
+    return $this->memberId;
+  }
+
+  public function setMemberId(int $memberId): void {
+    $this->memberId = $memberId;
+  }
 
   public function getMandantPid(): int {
     return $this->mandantPid;

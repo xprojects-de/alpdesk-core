@@ -18,6 +18,7 @@ class AlpdeskcoreMandantModel extends Model {
     $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?', 'tl_member.alpdeskcore_mandant!=?'], [1, 1, $username, 0]);
     if ($memberObject !== null) {
       $alpdeskUser = new AlpdeskcoreUser();
+      $alpdeskUser->setMemberId(\intval($memberObject->id));
       $alpdeskUser->setUsername($memberObject->username);
       $alpdeskUser->setPassword($memberObject->password);
       $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));

@@ -77,6 +77,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
     try {
       $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
       $alpdeskUser->setPassword($alpdeskUserInstance->getPassword());
+      $alpdeskUser->setMemberId($alpdeskUserInstance->getMemberId());
       $alpdeskUser->setMandantPid($alpdeskUserInstance->getMandantPid());
       $alpdeskUser->setFixToken($alpdeskUserInstance->getFixToken());
     } catch (\Exception $ex) {
