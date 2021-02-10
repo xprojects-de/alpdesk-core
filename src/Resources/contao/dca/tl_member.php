@@ -7,6 +7,8 @@ PaletteManipulator::create()
         ->addField('alpdeskcore_fixtoken', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->applyToSubpalette('login', 'tl_member');
 
+$GLOBALS['TL_DCA']['tl_member']['config']['sql']['keys']['disable,login,username,alpdeskcore_mandant'] = 'index';
+
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandant'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_mandant'],
     'exclude' => true,

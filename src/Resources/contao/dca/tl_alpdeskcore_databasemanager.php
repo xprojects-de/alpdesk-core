@@ -10,8 +10,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
             (
             'keys' => array
                 (
-                'id' => 'primary',
-                'title' => 'index',
+                'id' => 'primary'
             )
         )
     ),

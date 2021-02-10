@@ -109,10 +109,16 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
             }
           }
 
+          $indiciesStringArray = array();
+          if (\is_array($indexes) && \count($indexes) > 0) {
+            foreach ($indexes as $ind) {
+              \array_push($indiciesStringArray, 'Type: ' . $ind['indextype'] . ', Fields: ' . $ind['indexfields'] . ', name: ' . $ind['indexname']);
+            }
+          }
           $structure[$table->getName()] = array(
               'options' => $options,
               'primary' => \implode(', ', $primaryKey),
-              'indexes' => \implode(', ', $indexes)
+              'indexes' => \implode(' | ', $indiciesStringArray)
           );
 
           $columns = $table->getColumns();

@@ -15,14 +15,14 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
 
 class AlpdeskCoreAuthToken {
 
-  private function setAuthSession(string $username) {
+  private function setAuthSession(string $username, int $ttl_token = 3600) {
     $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
     if ($sessionModel === null) {
       $sessionModel = new AlpdeskcoreSessionsModel();
     }
     $sessionModel->tstamp = time();
     $sessionModel->username = $username;
-    $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, AlpdeskCoreConstants::$TOKENTTL);
+    $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, $ttl_token);
     $sessionModel->save();
     return $sessionModel;
   }
@@ -42,6 +42,10 @@ class AlpdeskCoreAuthToken {
     if (!\array_key_exists('username', $authdata) || !\array_key_exists('password', $authdata)) {
       throw new AlpdeskCoreAuthException('invalid key-parameters for auth');
     }
+    $ttlToken = AlpdeskCoreConstants::$TOKENTTL;
+    if (\array_key_exists('ttltoken', $authdata)) {
+      $ttlToken = (int) AlpdeskcoreInputSecurity::secureValue($authdata['ttltoken']);
+    }
     $username = (string) AlpdeskcoreInputSecurity::secureValue($authdata['username']);
     $password = (string) AlpdeskcoreInputSecurity::secureValue($authdata['password']);
     try {
@@ -53,7 +57,7 @@ class AlpdeskCoreAuthToken {
     $response->setUsername($username);
     $response->setInvalid(false);
     $response->setVerify(true);
-    $tokenData = $this->setAuthSession($username);
+    $tokenData = $this->setAuthSession($username, $ttlToken);
     $response->setAlpdesk_token($tokenData->token);
     return $response;
   }

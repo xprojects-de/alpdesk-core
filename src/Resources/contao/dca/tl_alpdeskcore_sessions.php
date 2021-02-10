@@ -10,7 +10,8 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
             (
             'keys' => array
                 (
-                'id' => 'primary'
+                'id' => 'primary',
+                'username' => 'index'
             )
         )
     ),
