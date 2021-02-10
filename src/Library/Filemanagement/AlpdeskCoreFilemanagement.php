@@ -22,12 +22,13 @@ class AlpdeskCoreFilemanagement {
     $this->rootDir = $rootDir;
   }
 
-  private function getMandantInformation($id): AlpdescCoreBaseMandantInfo {
-    $mandantInfo = AlpdeskcoreMandantModel::findById($id);
+  private function getMandantInformation(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo {
+    $mandantInfo = AlpdeskcoreMandantModel::findById($user->getMandantPid());
     if ($mandantInfo !== null) {
       $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
       $mInfo = new AlpdescCoreBaseMandantInfo();
       $mInfo->setId(intval($mandantInfo->id));
+      $mInfo->setMemberId($user->getMemberId());
       $mInfo->setMandant($mandantInfo->mandant);
       $mInfo->setFilemount_uuid($mandantInfo->filemount);
       $mInfo->setFilemount_path($rootPath->path);
@@ -93,7 +94,7 @@ class AlpdeskCoreFilemanagement {
     if ($uploadFile == null) {
       throw new AlpdeskCoreFilemanagementException("invalid key-parameters for upload");
     }
-    $mandantInfo = $this->getMandantInformation($user->getMandantPid());
+    $mandantInfo = $this->getMandantInformation($user);
     $response = new AlpdeskCoreFileuploadResponse();
     $this->copyToTarget($uploadFile, $target, $mandantInfo, $response);
     $response->setUsername($user->getUsername());
@@ -107,7 +108,7 @@ class AlpdeskCoreFilemanagement {
       throw new AlpdeskCoreFilemanagementException("invalid key-parameters for download");
     }
     $target = (string) $downloadData['target'];
-    $mandantInfo = $this->getMandantInformation($user->getMandantPid());
+    $mandantInfo = $this->getMandantInformation($user);
     return $this->downloadFile($target, $mandantInfo);
   }
 

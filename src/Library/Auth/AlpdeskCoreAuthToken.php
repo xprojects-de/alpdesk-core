@@ -28,10 +28,8 @@ class AlpdeskCoreAuthToken {
   }
 
   private function invalidTokenData(string $username, string $token): void {
-    $sessionModel = AlpdeskcoreSessionsModel::findBy(array('username=?', 'token=?'), array($username, $token));
+    $sessionModel = AlpdeskcoreSessionsModel::findBy(['tl_alpdeskcore_sessions.username=?', 'tl_alpdeskcore_sessions.token=?'], [$username, $token]);
     if ($sessionModel !== null) {
-      // Create new Token with 1 sec validity as workaround
-      // @ToDo mabe create other invalid JWT
       $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, 1);
       $sessionModel->save();
     } else {

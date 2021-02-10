@@ -43,12 +43,13 @@ class AlpdeskCorePlugin {
     }
   }
 
-  private function getMandantInformation($id): AlpdescCoreBaseMandantInfo {
-    $mandantInfo = AlpdeskcoreMandantModel::findById($id);
+  private function getMandantInformation(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo {
+    $mandantInfo = AlpdeskcoreMandantModel::findById($user->getMandantPid());
     if ($mandantInfo !== null) {
       $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
       $mInfo = new AlpdescCoreBaseMandantInfo();
       $mInfo->setId(intval($mandantInfo->id));
+      $mInfo->setMemberId($user->getMemberId());
       $mInfo->setMandant($mandantInfo->mandant);
       $mInfo->setFilemount_uuid($mandantInfo->filemount);
       $mInfo->setFilemount_path($rootPath->path);
@@ -69,7 +70,7 @@ class AlpdeskCorePlugin {
     $plugin = (string) AlpdeskcoreInputSecurity::secureValue($plugindata['plugin']);
     $data = (array) $plugindata['data'];
     $this->verifyPlugin($user->getUsername(), $user->getMandantPid(), $plugin);
-    $mandantInfo = $this->getMandantInformation($user->getMandantPid());
+    $mandantInfo = $this->getMandantInformation($user);
     $response = new AlpdeskCorePlugincallResponse();
     $response->setUsername($user->getUsername());
     $response->setAlpdesk_token($user->getUsedToken());

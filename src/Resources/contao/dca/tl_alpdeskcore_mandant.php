@@ -16,10 +16,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
                 'mandant' => 'index',
             )
         ),
-        'ondelete_callback' => array
-            (
-            array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'mandantOnDeleteCallback'),
-        ),
     ),
     'list' => array
         (
@@ -60,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
     ),
     'palettes' => array
         (
-        'default' => 'mandant;auth;filemount'
+        'default' => 'mandant;filemount'
     ),
     'fields' => array
         (
@@ -82,83 +78,12 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
             'eval' => array('alpdesk_apishow' => true, 'mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 250),
             'sql' => "varchar(250) NOT NULL default ''"
         ),
-        'auth' => array
-            (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['auth'],
-            'exclude' => true,
-            'inputType' => 'fieldpalette',
-            'foreignKey' => 'tl_fieldpalette.id',
-            'relation' => array('type' => 'hasMany', 'load' => 'eager'),
-            'sql' => "blob NULL",
-            'fieldpalette' => array
-                (
-                'config' => array(
-                    'hidePublished' => false,
-                    'sql' => array
-                        (
-                        'keys' => array
-                            (
-                            'id' => 'primary',
-                            'username' => 'index',
-                            'fixtoken' => 'index',
-                            'username,pfield,ptable,published' => 'index',
-                            'username,pfield,ptable,fixtoken,published' => 'index',
-                        )
-                    )
-                ),
-                'list' => array
-                    (
-                    'label' => array
-                        (
-                        'fields' => array('username'),
-                        'format' => '%s',
-                    ),
-                ),
-                'palettes' => array
-                    (
-                    'default' => 'username;password;fixtoken',
-                ),
-                'fields' => array
-                    (
-                    'username' => array
-                        (
-                        'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['username'],
-                        'search' => true,
-                        'sorting' => true,
-                        'flag' => 1,
-                        'inputType' => 'text',
-                        'eval' => array('mandatory' => true, 'rgxp' => 'extnd', 'nospace' => true, 'unique' => true, 'maxlength' => 64, 'tl_class' => 'w50'),
-                        'sql' => "varchar(64) BINARY NULL"
-                    ),
-                    'password' => array
-                        (
-                        'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['password'],
-                        'exclude' => true,
-                        'inputType' => 'password',
-                        'eval' => array('mandatory' => true, 'preserveTags' => true, 'minlength' => Contao\Config::get('minPasswordLength')),
-                        'sql' => "varchar(255) NOT NULL default ''"
-                    ),
-                    'fixtoken' => array
-                        (
-                        'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['fixtoken'],
-                        'exclude' => true,
-                        'search' => true,
-                        'inputType' => 'text',
-                        'eval' => array('unique' => true, 'doNotCopy' => true, 'tl_class' => 'w50 clr'),
-                        'save_callback' => array(
-                            array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'generateFixToken')
-                        ),
-                        'sql' => "text NULL"
-                    ),
-                ),
-            )
-        ),
         'filemount' => array
             (
             'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['filemount'],
             'exclude' => true,
             'inputType' => 'fileTree',
-            'eval' => array('multiple' => false, 'fieldType' => 'radio'),
+            'eval' => array('multiple' => false, 'fieldType' => 'radio', 'mandatory' => true),
             'sql' => "blob NULL"
         ),
     )

@@ -7,6 +7,7 @@ namespace Alpdesk\AlpdeskCore\Library\Mandant;
 class AlpdescCoreBaseMandantInfo {
 
   private int $id;
+  private int $memberId;
   private string $mandant;
   private string $filemount_uuid;
   private string $filemount_path;
@@ -59,6 +60,14 @@ class AlpdescCoreBaseMandantInfo {
 
   public function setAdditionalDatabaseInformation(array $additionalDatabaseInformation): void {
     $this->additionalDatabaseInformation = $additionalDatabaseInformation;
+  }
+
+  public function getMemberId(): int {
+    return $this->memberId;
+  }
+
+  public function setMemberId(int $memberId): void {
+    $this->memberId = $memberId;
   }
 
 }

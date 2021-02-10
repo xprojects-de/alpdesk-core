@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Backend;
 
 use Alpdesk\AlpdeskCore\Library\PDF\AlpdeskCorePDFCreator;
-use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 use Contao\DataContainer;
 use Contao\Backend;
 use Contao\Input;
 use Contao\Image;
+use Contao\StringUtil;
 use Contao\File;
+use Contao\Controller;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
@@ -73,7 +74,7 @@ class AlpdeskCoreDcaUtils extends Backend {
 
   public function getMandantElements() {
     $groups = array();
-    if (isset($GLOBALS['TL_ADME']) && count($GLOBALS['TL_ADME'])) {
+    if (isset($GLOBALS['TL_ADME']) && \count($GLOBALS['TL_ADME'])) {
       foreach ($GLOBALS['TL_ADME'] as $k => $v) {
         $groups[$k] = $GLOBALS['TL_LANG']['ADME'][$k];
       }
@@ -84,17 +85,11 @@ class AlpdeskCoreDcaUtils extends Backend {
   public function pdfElementsloadCallback(DataContainer $dc) {
     if (Input::get('act') == 'generatetestpdf') {
       try {
-        $pdf = new AlpdeskCorePDFCreator();
-        $tmpFile = $pdf->generateById(intval(Input::get('id')), "files/tmp", time() . ".pdf");
-        $objFile = new File($tmpFile, true);
-        if ($objFile->exists()) {
-          $objFile->sendToBrowser(time() . '.pdf');
-          $objFile->delete();
-        }
+        (new AlpdeskCorePDFCreator())->generateById(intval(Input::get('pdfid')), "files/tmp", time() . ".pdf");
       } catch (\Exception $ex) {
         
       }
-      $this->redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
+      Controller::redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
     }
   }
 
@@ -102,19 +97,9 @@ class AlpdeskCoreDcaUtils extends Backend {
     return $arrRow['name'];
   }
 
-  public function mandantOnDeleteCallback(DataContainer $dc, int $undoId): void {
-    $id = Input::get('id');
-    $table = Input::get('do');
-    if (!$id || !$table) {
-      return;
-    }
-    $table = 'tl_' . $table;
-    $deleteItems = FieldPaletteModel::findBy(array('pid=?', 'ptable=?'), array($id, $table));
-    if ($deleteItems !== null) {
-      foreach ($deleteItems as $item) {
-        $item->delete();
-      }
-    }
+  public function generatetestpdfLinkCallback($row, $href, $label, $title, $icon, $attributes) {
+
+    return '<a href="' . $this->addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
   }
 
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Auth;
 
+use Alpdesk\AlpdeskCore\Jwt\JwtToken;
+
 class AlpdeskCoreAuthResponse {
 
   private string $alpdesk_token = '';
@@ -41,6 +43,23 @@ class AlpdeskCoreAuthResponse {
 
   public function setInvalid(bool $invalid): void {
     $this->invalid = $invalid;
+  }
+
+  public function getExp(): int {
+    $exp = -1;
+    if ($this->alpdesk_token != '') {
+      $expvalue = JwtToken::getClaim($this->alpdesk_token, 'exp');
+      if ($expvalue !== null) {
+        if ($expvalue instanceof \DateTimeImmutable) {
+          $exp = $expvalue->getTimestamp() - time();
+          if ($exp < 0) {
+            $exp = 0;
+          }
+        }
+      }
+    }
+
+    return $exp;
   }
 
 }

@@ -63,20 +63,30 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
    * @throws AuthenticationException
    */
   public function loadUserByUsername($username) {
+
     $alpdeskUser = new AlpdeskcoreUser();
     $alpdeskUser->setUsername($username);
+
     $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
     if ($sessionModel !== null) {
       if (self::validateAndVerifyToken($sessionModel->token, $username)) {
         $alpdeskUser->setToken($sessionModel->token);
       }
     }
-    $userData = AlpdeskcoreMandantModel::findByAuthUsername($username);
-    if ($userData !== null) {
-      $alpdeskUser->setMandantid(intval($userData->id));
-      $alpdeskUser->setMandantPid(intval($userData->pid));
-      $alpdeskUser->setFixToken($userData->fixtoken);
+
+    try {
+      $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
+      $alpdeskUser->setPassword($alpdeskUserInstance->getPassword());
+      $alpdeskUser->setMemberId($alpdeskUserInstance->getMemberId());
+      $alpdeskUser->setFirstname($alpdeskUserInstance->getFirstname());
+      $alpdeskUser->setLastname($alpdeskUserInstance->getLastname());
+      $alpdeskUser->setEmail($alpdeskUserInstance->getEmail());
+      $alpdeskUser->setMandantPid($alpdeskUserInstance->getMandantPid());
+      $alpdeskUser->setFixToken($alpdeskUserInstance->getFixToken());
+    } catch (\Exception $ex) {
+      
     }
+
     return $alpdeskUser;
   }
 

@@ -3,13 +3,13 @@
   "description": "Alpdesk-Core for Contao",
   "keywords": ["contao", "alpdesk"],
   "type": "contao-bundle",
-  "license": "LGPL-3.0-or-later",
+  "homepage": "https://github.com/xprojects-de/alpdesk-core",
+  "license": "MIT",
   "require": {
     "php": ">=7.4",
     "contao/core-bundle": "^4.9.11",
     "tecnickcom/tcpdf": "^6.3",
-    "lcobucci/jwt": "^4.0",
-    "heimrichhannot/contao-fieldpalette-bundle": "^0.5"
+    "lcobucci/jwt": "^4.0"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
@@ -19,12 +19,15 @@
   },
   "authors": [
     {
-      "name": "xprojects",
+      "name": "XProjects",
       "homepage": "https://x-projects.de",
       "email": "infos@x-projects.de",
       "role": "Developer"
     }
   ],
+  "support": {
+    "issues": "https://github.com/xprojects-de/alpdesk-core/issues"
+  },
   "autoload": {
     "psr-4": {
       "Alpdesk\\AlpdeskCore\\": "src/"

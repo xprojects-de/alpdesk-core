@@ -65,7 +65,8 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
                 (
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['generatetestpdf'],
                 'icon' => 'redirect.gif',
-                'href' => 'act=generatetestpdf'
+                'href' => 'act=generatetestpdf',
+                'button_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'generatetestpdfLinkCallback')
             ),
         )
     ),

@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Model\Mandant;
 
 use Contao\Model;
-use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
+use Contao\MemberModel;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 
 class AlpdeskcoreMandantModel extends Model {
 
   protected static $strTable = 'tl_alpdeskcore_mandant';
 
-  public static function findByAuthUsername($username) {
-    $fieldPalettesModel = new FieldPaletteModel();
-    $r = $fieldPalettesModel->findPublishedBy(array('username=?', 'pfield=?', 'ptable=?'), array($username, 'auth', self::$strTable));
-    if ($r !== null) {
-      return $r;
-    } else {
-      throw new AlpdeskCoreModelException("error auth - invalid username");
-    }
-  }
+  public static function findByUsername($username): AlpdeskcoreUser {
 
-  public static function findByAuthUsernameAndFixtoken($username, $fixtoken) {
-    $fieldPalettesModel = new FieldPaletteModel();
-    $r = $fieldPalettesModel->findPublishedBy(array('username=?', 'pfield=?', 'ptable=?', 'fixtoken=?'), array($username, 'auth', self::$strTable, $fixtoken));
-    if ($r !== null) {
-      return $r;
+    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?', 'tl_member.alpdeskcore_mandant!=?'], [1, 1, $username, 0]);
+    if ($memberObject !== null) {
+      $alpdeskUser = new AlpdeskcoreUser();
+      $alpdeskUser->setMemberId(\intval($memberObject->id));
+      $alpdeskUser->setUsername($memberObject->username);
+      $alpdeskUser->setPassword($memberObject->password);
+      $alpdeskUser->setFirstname($memberObject->firstname);
+      $alpdeskUser->setLastname($memberObject->lastname);
+      $alpdeskUser->setEmail($memberObject->email);
+      $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
+      $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
+      return $alpdeskUser;
     } else {
-      throw new AlpdeskCoreModelException("error auth - invalid username or fixtoken");
+      throw new AlpdeskCoreModelException("error auth - invalid member");
     }
   }
 

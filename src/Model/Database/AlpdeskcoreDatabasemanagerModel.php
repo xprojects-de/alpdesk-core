@@ -76,7 +76,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
 
           $options = "";
           $tableOptions = $table->getOptions();
-          if ($tableOptions !== null && \is_array($tableOptions) && count($tableOptions) > 0) {
+          if ($tableOptions !== null && \is_array($tableOptions) && \count($tableOptions) > 0) {
             if (\array_key_exists('engine', $tableOptions)) {
               $options .= 'engine: ' . $tableOptions['engine'];
             }
@@ -102,21 +102,21 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
               );
               $tmpIndexFields = array();
               foreach ($indexEntry->getColumns() as $column) {
-                array_push($tmpIndexFields, $column);
+                \array_push($tmpIndexFields, $column);
               }
-              $indexInfo['indexfields'] = implode(',', $tmpIndexFields);
-              array_push($indexes, $indexInfo);
+              $indexInfo['indexfields'] = \implode(',', $tmpIndexFields);
+              \array_push($indexes, $indexInfo);
             }
           }
 
           $structure[$table->getName()] = array(
               'options' => $options,
-              'primary' => implode(', ', $primaryKey),
-              'indexes' => implode(', ', $indexes)
+              'primary' => \implode(', ', $primaryKey),
+              'indexes' => \implode(', ', $indexes)
           );
 
           $columns = $table->getColumns();
-          if ($columns !== null && \is_array($columns) && count($columns) > 0) {
+          if ($columns !== null && \is_array($columns) && \count($columns) > 0) {
             foreach ($columns as $column) {
               if ($column instanceof Column) {
                 $type = $column->getType();
@@ -140,7 +140,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
                   $output .= ' | LENGTH ' . $length;
                 }
                 $platformOptions = $column->getPlatformOptions();
-                if ($platformOptions !== null && is_array($platformOptions) && count($platformOptions) > 0) {
+                if ($platformOptions !== null && \is_array($platformOptions) && \count($platformOptions) > 0) {
                   foreach ($platformOptions as $pKey => $pValue) {
                     $output .= ' | ' . $pKey . ' ' . $pValue;
                   }
@@ -158,12 +158,12 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
     }
   }
 
-  public function connectionById(int $id): ?Connection {
+  public static function connectionById(int $id): ?Connection {
     $result = self::findByPk($id);
     if ($result !== null) {
       $decryption = new Cryption(true);
       $result->password = $decryption->safeDecrypt($result->password);
-      return self::create($id, $result->host, intval($result->port), $result->username, $result->password, $result->database);
+      return self::create($id, $result->host, \intval($result->port), $result->username, $result->password, $result->database);
     }
     return null;
   }

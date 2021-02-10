@@ -6,58 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "https://api.alpdesk.de/upload",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/Users/benjaminhummel/Documents/Github/mobilemenu/contao-mobilemenu/src/Resources/public/closeicon.png"
-						},
-						{
-							"key": "alpdesk_token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
-							"type": "text"
-						},
-						{
-							"key": "target",
-							"value": "/",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://contao.local:8888/upload?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
-					"host": [
-						"contao",
-						"local"
-					],
-					"port": "8888",
-					"path": [
-						"upload"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "https://api.alpdesk.de/auth",
 			"request": {
 				"method": "POST",
@@ -101,7 +49,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMjk0NDg2OSwibmJmIjoxNjEyOTQ0ODY5LCJleHAiOjE2MTI5NDg0NjksInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.xK-lhRTA-_QVie8AO7RwKSl0SXmjFbyYyZlCl6vMtEM",
 							"type": "string"
 						}
 					]
@@ -116,9 +64,8 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"target\":\"/closeicon.png\"}",
+					"raw": "{\"target\":\"/README.md\"}",
 					"options": {
-						"formdata": {},
 						"raw": {
 							"language": "json"
 						}
@@ -153,7 +100,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjkwODI2LCJuYmYiOjE1OTIyOTA4MjYsImV4cCI6MTU5MjI5NDQyNiwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.n7TrLAiMfMf5Vbv4aN_PmLZrVPNzlSi1GBXDNFl_9a4",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMjg0OTI4OCwibmJmIjoxNjEyODQ5Mjg4LCJleHAiOjE2MTI4NTI4ODgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ZUcG9rSd3zfAl3gEnD0JQOMPLO3Lh4Gr-PTNh0qw6YI",
 							"type": "string"
 						}
 					]
@@ -199,7 +146,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMjg0OTI4OCwibmJmIjoxNjEyODQ5Mjg4LCJleHAiOjE2MTI4NTI4ODgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ZUcG9rSd3zfAl3gEnD0JQOMPLO3Lh4Gr-PTNh0qw6YI",
 							"type": "string"
 						}
 					]
@@ -290,7 +237,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IllXeHdaR1Z6YTE5MFpYTjBiV0Z1WkdGdWRBPT0ifQ.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6XC9cL2FscGRlc2suZGUiLCJqdGkiOiJZV3h3WkdWemExOTBaWE4wYldGdVpHRnVkQT09IiwiaWF0IjoxNTkyMjE1OTM5LCJuYmYiOjE1OTIyMTU5MzksImV4cCI6MTU5MjIxOTUzOSwidXNlcm5hbWUiOiJ0ZXN0bWFuZGFudCJ9.uJ55HQSD1DTiM9QPU-1X0N3EQVa2ypUyZ-f__Io1tuw",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMjk0NTA1OCwibmJmIjoxNjEyOTQ1MDU4LCJleHAiOjE2MTI5NDg2NTgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.LWnhS5ixY7hwf8_S7iq9F785_gpF8XYv1Em9tRnddG4",
 							"type": "string"
 						}
 					]
@@ -326,7 +273,57 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "https://api.alpdesk.de/upload",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMjk0NDg2OSwibmJmIjoxNjEyOTQ0ODY5LCJleHAiOjE2MTI5NDg0NjksInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.xK-lhRTA-_QVie8AO7RwKSl0SXmjFbyYyZlCl6vMtEM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/benjaminhummel/Documents/Github/alpdesk-core/README.md"
+						},
+						{
+							"key": "target",
+							"value": "/",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://contao.local:8888/upload",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
