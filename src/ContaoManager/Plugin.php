@@ -93,6 +93,13 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                         'guard' => $guard,
                         'provider' => 'alpdeskcore.security.user_provider',
                     ],
+                    'alpdeskcore_finder' => [
+                        'pattern' => '/finder',
+                        'anonymous' => true,
+                        'stateless' => true,
+                        'guard' => $guard,
+                        'provider' => 'alpdeskcore.security.user_provider',
+                    ],
                 ],
                 array_slice($extensionConfig['firewalls'], $offset, null, true)
         );

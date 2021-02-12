@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Symfony\Component\Finder\Finder;
 
 class AlpdeskCoreFilemanagement {
 
@@ -96,6 +97,40 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
+  private function getContentOfDir(string $target, AlpdescCoreBaseMandantInfo $mandantInfo): array {
+    try {
+      if ($this->startsWith('/', $target)) {
+        $target = substr($target, 1, strlen($target));
+      }
+      if ($this->endsWith('/', $target)) {
+        $target = substr($target, 0, strlen($target) - 1);
+      }
+      if ($target === null) {
+        throw new AlpdeskCoreFilemanagementException("No valid target file");
+      }
+      $pDest = $mandantInfo->getFilemount_rootpath() . '/' . $target;
+
+      $data = [];
+
+      $finder = new Finder();
+      $finder->in($pDest)->sortByType();
+
+      if ($finder->hasResults()) {
+        foreach ($finder as $object) {
+          $parent = $object->getRelativePath();
+          array_push($data, array(
+              'name' => $object->getFilename(),
+              'isFolder' => ($object->isFile() == false)
+          ));
+        }
+      }
+
+      return $data;
+    } catch (\Exception $ex) {
+      throw new AlpdeskCoreFilemanagementException("there was an error at finder process");
+    }
+  }
+
   public function upload(UploadedFile $uploadFile, string $target, AlpdeskcoreUser $user): AlpdeskCoreFileuploadResponse {
     if ($uploadFile == null) {
       throw new AlpdeskCoreFilemanagementException("invalid key-parameters for upload");
@@ -116,6 +151,15 @@ class AlpdeskCoreFilemanagement {
     $target = (string) $downloadData['target'];
     $mandantInfo = $this->getMandantInformation($user);
     return $this->downloadFile($target, $mandantInfo);
+  }
+
+  public function finder(AlpdeskcoreUser $user, array $finderData): array {
+    if (!\array_key_exists('target', $finderData)) {
+      throw new AlpdeskCoreFilemanagementException("invalid key-parameters for finder");
+    }
+    $target = (string) $finderData['target'];
+    $mandantInfo = $this->getMandantInformation($user);
+    return $this->getContentOfDir($target, $mandantInfo);
   }
 
 }
