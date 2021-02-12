@@ -16,7 +16,7 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 
 class AlpdeskCoreMandant {
 
-  private function getPlugins(int $mandantPid): array {
+  private function getPlugins(int $mandantPid, array $invalidElements): array {
     $data = array();
     $plugins = AlpdeskcoreMandantElementsModel::findEnabledAndVisibleByPid($mandantPid);
     if ($plugins !== null) {
@@ -24,18 +24,20 @@ class AlpdeskCoreMandant {
       System::loadLanguageFile('modules', 'de');
       foreach ($plugins as $pluginElement) {
         $type = (string) $pluginElement->type;
-        if (isset($GLOBALS['TL_ADME'][$type])) {
-          $c = new $GLOBALS['TL_ADME'][$type]();
-          if ($c instanceof AlpdeskCoreElement) {
-            $customTemplate = false;
-            if ($c->getCustomTemplate() == true) {
-              $customTemplate = true;
+        if (!\in_array($type, $invalidElements)) {
+          if (isset($GLOBALS['TL_ADME'][$type])) {
+            $c = new $GLOBALS['TL_ADME'][$type]();
+            if ($c instanceof AlpdeskCoreElement) {
+              $customTemplate = false;
+              if ($c->getCustomTemplate() == true) {
+                $customTemplate = true;
+              }
+              \array_push($data, array(
+                  'value' => $pluginElement->type,
+                  'label' => $GLOBALS['TL_LANG']['ADME'][$pluginElement->type],
+                  'customTemplate' => $customTemplate
+              ));
             }
-            \array_push($data, array(
-                'value' => $pluginElement->type,
-                'label' => $GLOBALS['TL_LANG']['ADME'][$pluginElement->type],
-                'customTemplate' => $customTemplate
-            ));
           }
         }
       }
@@ -70,7 +72,7 @@ class AlpdeskCoreMandant {
   }
 
   public function list(AlpdeskcoreUser $user): AlpdeskCoreMandantResponse {
-    $pluginData = $this->getPlugins($user->getMandantPid());
+    $pluginData = $this->getPlugins($user->getMandantPid(), $user->getInvalidElements());
     $dataData = $this->getData($user->getMandantPid());
     $response = new AlpdeskCoreMandantResponse();
     $response->setUsername($user->getUsername());

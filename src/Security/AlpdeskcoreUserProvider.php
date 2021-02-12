@@ -83,6 +83,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
       $alpdeskUser->setEmail($alpdeskUserInstance->getEmail());
       $alpdeskUser->setMandantPid($alpdeskUserInstance->getMandantPid());
       $alpdeskUser->setFixToken($alpdeskUserInstance->getFixToken());
+      $alpdeskUser->setInvalidElements($alpdeskUserInstance->getInvalidElements());
     } catch (\Exception $ex) {
       
     }
