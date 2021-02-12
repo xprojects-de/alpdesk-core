@@ -9,6 +9,7 @@ class AlpdescCoreBaseMandantInfo {
   private int $id;
   private int $memberId;
   private string $mandant;
+  private string $filemountmandant_uuid;
   private string $filemount_uuid;
   private string $filemount_path;
   private string $filemount_rootpath;
@@ -20,6 +21,14 @@ class AlpdescCoreBaseMandantInfo {
 
   public function getMandant(): string {
     return $this->mandant;
+  }
+
+  public function getFilemountmandant_uuid(): string {
+    return $this->filemountmandant_uuid;
+  }
+
+  public function setFilemountmandant_uuid(string $filemountmandant_uuid): void {
+    $this->filemountmandant_uuid = $filemountmandant_uuid;
   }
 
   public function getFilemount_uuid(): string {

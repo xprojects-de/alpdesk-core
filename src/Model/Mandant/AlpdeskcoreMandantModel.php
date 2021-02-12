@@ -34,6 +34,9 @@ class AlpdeskcoreMandantModel extends Model {
           $alpdeskUser->setInvalidElements($invalidElementsArray);
         }
       }
+      if ($memberObject->assignDir && $memberObject->homeDir !== null) {
+        $alpdeskUser->setHomeDir($memberObject->homeDir);
+      }
       return $alpdeskUser;
     } else {
       throw new AlpdeskCoreModelException("error auth - invalid member");
