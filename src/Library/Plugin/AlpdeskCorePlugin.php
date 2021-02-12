@@ -23,13 +23,15 @@ class AlpdeskCorePlugin {
     $this->rootDir = $rootDir;
   }
 
-  private function verifyPlugin(string $username, int $mandantPid, string $plugin): void {
+  private function verifyPlugin(string $username, int $mandantPid, array $invalidElements, string $plugin): void {
     $plugins = AlpdeskcoreMandantElementsModel::findEnabledByPid($mandantPid);
     if ($plugins !== null) {
       $validPlugin = false;
       foreach ($plugins as $pluginElement) {
         if ($pluginElement->type == $plugin) {
-          $validPlugin = true;
+          if (!\in_array($pluginElement->type, $invalidElements)) {
+            $validPlugin = true;
+          }
           break;
         }
       }
@@ -47,11 +49,17 @@ class AlpdeskCorePlugin {
     $mandantInfo = AlpdeskcoreMandantModel::findById($user->getMandantPid());
     if ($mandantInfo !== null) {
       $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
+      $filemount = $mandantInfo->filemount;
+      if ($user->getHomeDir() !== null) {
+        $rootPath = FilesModel::findByUuid($user->getHomeDir());
+        $filemount = $user->getHomeDir();
+      }
       $mInfo = new AlpdescCoreBaseMandantInfo();
       $mInfo->setId(intval($mandantInfo->id));
       $mInfo->setMemberId($user->getMemberId());
       $mInfo->setMandant($mandantInfo->mandant);
-      $mInfo->setFilemount_uuid($mandantInfo->filemount);
+      $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
+      $mInfo->setFilemount_uuid($filemount);
       $mInfo->setFilemount_path($rootPath->path);
       $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
       $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
@@ -69,7 +77,7 @@ class AlpdeskCorePlugin {
     }
     $plugin = (string) AlpdeskcoreInputSecurity::secureValue($plugindata['plugin']);
     $data = (array) $plugindata['data'];
-    $this->verifyPlugin($user->getUsername(), $user->getMandantPid(), $plugin);
+    $this->verifyPlugin($user->getUsername(), $user->getMandantPid(), $user->getInvalidElements(), $plugin);
     $mandantInfo = $this->getMandantInformation($user);
     $response = new AlpdeskCorePlugincallResponse();
     $response->setUsername($user->getUsername());

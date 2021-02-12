@@ -18,6 +18,8 @@ class AlpdeskcoreUser implements UserInterface {
   private $token = '';
   private $fixToken = '';
   private $fixTokenAuth = false;
+  private $invalidElements = [];
+  private $homeDir = null;
 
   public function getMemberId(): int {
     return $this->memberId;
@@ -108,6 +110,22 @@ class AlpdeskcoreUser implements UserInterface {
 
   public function setPassword($password): void {
     $this->password = $password;
+  }
+
+  public function getInvalidElements(): array {
+    return $this->invalidElements;
+  }
+
+  public function setInvalidElements($invalidElements): void {
+    $this->invalidElements = $invalidElements;
+  }
+
+  public function getHomeDir() {
+    return $this->homeDir;
+  }
+
+  public function setHomeDir($homeDir): void {
+    $this->homeDir = $homeDir;
   }
 
   public function getSalt() {

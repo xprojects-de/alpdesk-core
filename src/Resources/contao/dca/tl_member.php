@@ -5,6 +5,7 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 PaletteManipulator::create()
         ->addField('alpdeskcore_mandant', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->addField('alpdeskcore_fixtoken', 'login_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_elements', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->applyToSubpalette('login', 'tl_member');
 
 $GLOBALS['TL_DCA']['tl_member']['config']['sql']['keys']['disable,login,username,alpdeskcore_mandant'] = 'index';
@@ -29,4 +30,15 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_fixtoken'] = [
         ['Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'generateFixToken']
     ],
     'sql' => "text NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_elements'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'checkbox',
+    'options_callback' => ['Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'getMandantElements'],
+    'reference' => &$GLOBALS['TL_LANG']['ADME'],
+    'eval' => ['tl_class' => 'clr', 'multiple' => true],
+    'sql' => "blob NULL"
 ];

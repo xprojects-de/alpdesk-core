@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskCore\Model\Mandant;
 
 use Contao\Model;
 use Contao\MemberModel;
+use Contao\StringUtil;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 
@@ -26,6 +27,16 @@ class AlpdeskcoreMandantModel extends Model {
       $alpdeskUser->setEmail($memberObject->email);
       $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
       $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
+      $invalidElements = $memberObject->alpdeskcore_elements;
+      if ($invalidElements !== null && $invalidElements != '') {
+        $invalidElementsArray = StringUtil::deserialize($invalidElements);
+        if (\is_array($invalidElementsArray) && \count($invalidElementsArray) > 0) {
+          $alpdeskUser->setInvalidElements($invalidElementsArray);
+        }
+      }
+      if ($memberObject->assignDir && $memberObject->homeDir !== null) {
+        $alpdeskUser->setHomeDir($memberObject->homeDir);
+      }
       return $alpdeskUser;
     } else {
       throw new AlpdeskCoreModelException("error auth - invalid member");

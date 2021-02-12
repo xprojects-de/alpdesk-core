@@ -69,3 +69,11 @@ alpdesk_filemanagement_download:
         _scope: alpdeskapi
         _token_check: false
     methods: [POST]
+    
+alpdesk_filemanagement_finder:
+    path: /finder
+    defaults:
+        _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:finder
+        _scope: alpdeskapi
+        _token_check: false
+    methods: [POST]

@@ -86,4 +86,16 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
     }
   }
 
+  public function finder(Request $request, UserInterface $user) {
+    try {
+      $finderData = (array) json_decode($request->getContent(), true);
+      $response = (new AlpdeskCoreFilemanagement($this->rootDir))->finder($user, $finderData);
+      $this->logger->info('Finder successfully', __METHOD__);
+      return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
+    } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
+      $this->logger->error($exception->getMessage(), __METHOD__);
+      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+    }
+  }
+
 }
