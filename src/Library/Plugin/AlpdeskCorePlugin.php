@@ -62,6 +62,13 @@ class AlpdeskCorePlugin {
       $mInfo->setFilemount_uuid($filemount);
       $mInfo->setFilemount_path($rootPath->path);
       $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
+      $mInfo->setAccessDownload($user->getAccessDownload());
+      $mInfo->setAccessUpload($user->getAccessUpload());
+      $mInfo->setAccessCreate($user->getAccessCreate());
+      $mInfo->setAccessDelete($user->getAccessDelete());
+      $mInfo->setAccessRename($user->getAccessRename());
+      $mInfo->setAccessMove($user->getAccessMove());
+      $mInfo->setAccessCopy($user->getAccessCopy());
       $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
       return $mInfo;
     } else {

@@ -85,6 +85,13 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
       $alpdeskUser->setFixToken($alpdeskUserInstance->getFixToken());
       $alpdeskUser->setInvalidElements($alpdeskUserInstance->getInvalidElements());
       $alpdeskUser->setHomeDir($alpdeskUserInstance->getHomeDir());
+      $alpdeskUser->setAccessDownload($alpdeskUserInstance->getAccessDownload());
+      $alpdeskUser->setAccessUpload($alpdeskUserInstance->getAccessUpload());
+      $alpdeskUser->setAccessCreate($alpdeskUserInstance->getAccessCreate());
+      $alpdeskUser->setAccessDelete($alpdeskUserInstance->getAccessDelete());
+      $alpdeskUser->setAccessRename($alpdeskUserInstance->getAccessRename());
+      $alpdeskUser->setAccessMove($alpdeskUserInstance->getAccessMove());
+      $alpdeskUser->setAccessCopy($alpdeskUserInstance->getAccessCopy());
     } catch (\Exception $ex) {
       
     }

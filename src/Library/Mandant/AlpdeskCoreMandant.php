@@ -82,6 +82,13 @@ class AlpdeskCoreMandant {
     $response->setFirstname($user->getFirstname());
     $response->setLastname($user->getLastname());
     $response->setEmail($user->getEmail());
+    $response->setAccessDownload($user->getAccessDownload());
+    $response->setAccessUpload($user->getAccessUpload());
+    $response->setAccessCreate($user->getAccessCreate());
+    $response->setAccessDelete($user->getAccessDelete());
+    $response->setAccessRename($user->getAccessRename());
+    $response->setAccessMove($user->getAccessMove());
+    $response->setAccessCopy($user->getAccessCopy());
     $response->setPlugins($pluginData);
     $response->setData($dataData);
     return $response;

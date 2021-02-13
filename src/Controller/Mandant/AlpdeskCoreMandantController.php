@@ -38,6 +38,13 @@ class AlpdeskCoreMandantController extends AbstractController {
                 'memberFirstname' => $data->getFirstname(),
                 'memberLastname' => $data->getLastname(),
                 'memberEmail' => $data->getEmail(),
+                'accessFinderDownload' => $data->getAccessDownload(),
+                'accessFinderUpload' => $data->getAccessUpload(),
+                'accessFinderCreate' => $data->getAccessCreate(),
+                'accessFinderDelete' => $data->getAccessDelete(),
+                'accessFinderRename' => $data->getAccessRename(),
+                'accessFinderMove' => $data->getAccessMove(),
+                'accessFinderCopy' => $data->getAccessCopy(),
                 'plugins' => $data->getPlugins(),
                 'data' => $data->getData(),
                     ), $statusCode

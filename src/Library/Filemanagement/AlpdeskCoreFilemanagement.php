@@ -41,6 +41,13 @@ class AlpdeskCoreFilemanagement {
       $mInfo->setFilemount_uuid($filemount);
       $mInfo->setFilemount_path($rootPath->path);
       $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
+      $mInfo->setAccessDownload($user->getAccessDownload());
+      $mInfo->setAccessUpload($user->getAccessUpload());
+      $mInfo->setAccessCreate($user->getAccessCreate());
+      $mInfo->setAccessDelete($user->getAccessDelete());
+      $mInfo->setAccessRename($user->getAccessRename());
+      $mInfo->setAccessMove($user->getAccessMove());
+      $mInfo->setAccessCopy($user->getAccessCopy());
       $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
       return $mInfo;
     } else {
@@ -83,6 +90,10 @@ class AlpdeskCoreFilemanagement {
 
   private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void {
 
+    if ($mandantInfo->getAccessUpload() == false) {
+      throw new AlpdeskCoreFilemanagementException("access denied");
+    }
+
     $target = self::preparePath($target);
     $pDest = $mandantInfo->getFilemount_rootpath() . '/' . $target;
 
@@ -100,6 +111,10 @@ class AlpdeskCoreFilemanagement {
   }
 
   private function downloadFile(string $target, AlpdescCoreBaseMandantInfo $mandantInfo): BinaryFileResponse {
+
+    if ($mandantInfo->getAccessDownload() == false) {
+      throw new AlpdeskCoreFilemanagementException("access denied");
+    }
 
     $target = self::preparePath($target);
     $pDest = $mandantInfo->getFilemount_rootpath() . '/' . $target;
@@ -140,7 +155,11 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function create(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo): void {
+  public static function create(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
+
+    if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
+      throw new AlpdeskCoreFilemanagementException("access denied");
+    }
 
     try {
 
@@ -167,7 +186,11 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function delete(string $src, AlpdescCoreBaseMandantInfo $mandantInfo): void {
+  public static function delete(string $src, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
+
+    if ($accessCheck == true && $mandantInfo->getAccessDelete() == false) {
+      throw new AlpdeskCoreFilemanagementException("access denied");
+    }
 
     try {
 
@@ -185,7 +208,11 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function rename(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo): void {
+  public static function rename(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
+
+    if ($accessCheck == true && $mandantInfo->getAccessRename() == false) {
+      throw new AlpdeskCoreFilemanagementException("access denied");
+    }
 
     try {
 
@@ -206,7 +233,17 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function moveOrCopy(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy): void {
+  public static function moveOrCopy(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): void {
+
+    if ($copy == true) {
+      if ($accessCheck == true && $mandantInfo->getAccessCopy() == false) {
+        throw new AlpdeskCoreFilemanagementException("access denied");
+      }
+    } else {
+      if ($accessCheck == true && $mandantInfo->getAccessMove() == false) {
+        throw new AlpdeskCoreFilemanagementException("access denied");
+      }
+    }
 
     try {
 
