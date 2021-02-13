@@ -27,6 +27,7 @@ class AlpdeskcoreMandantModel extends Model {
       $alpdeskUser->setEmail($memberObject->email);
       $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
       $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
+
       $invalidElements = $memberObject->alpdeskcore_elements;
       if ($invalidElements !== null && $invalidElements != '') {
         $invalidElementsArray = StringUtil::deserialize($invalidElements);
@@ -34,9 +35,39 @@ class AlpdeskcoreMandantModel extends Model {
           $alpdeskUser->setInvalidElements($invalidElementsArray);
         }
       }
+
       if ($memberObject->assignDir && $memberObject->homeDir !== null) {
         $alpdeskUser->setHomeDir($memberObject->homeDir);
       }
+
+      if ($memberObject->alpdeskcore_download !== null && $memberObject->alpdeskcore_download == 1) {
+        $alpdeskUser->setAccessDownload(false);
+      }
+
+      if ($memberObject->alpdeskcore_upload !== null && $memberObject->alpdeskcore_upload == 1) {
+        $alpdeskUser->setAccessUpload(false);
+      }
+
+      if ($memberObject->alpdeskcore_create !== null && $memberObject->alpdeskcore_create == 1) {
+        $alpdeskUser->setAccessCreate(false);
+      }
+
+      if ($memberObject->alpdeskcore_delete !== null && $memberObject->alpdeskcore_delete == 1) {
+        $alpdeskUser->setAccessDelete(false);
+      }
+
+      if ($memberObject->alpdeskcore_rename !== null && $memberObject->alpdeskcore_rename == 1) {
+        $alpdeskUser->setAccessRename(false);
+      }
+
+      if ($memberObject->alpdeskcore_move !== null && $memberObject->alpdeskcore_move == 1) {
+        $alpdeskUser->setAccessMove(false);
+      }
+
+      if ($memberObject->alpdeskcore_copy !== null && $memberObject->alpdeskcore_copy == 1) {
+        $alpdeskUser->setAccessCopy(false);
+      }
+
       return $alpdeskUser;
     } else {
       throw new AlpdeskCoreModelException("error auth - invalid member");

@@ -8,6 +8,16 @@ PaletteManipulator::create()
         ->addField('alpdeskcore_elements', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->applyToSubpalette('login', 'tl_member');
 
+PaletteManipulator::create()
+        ->addField('alpdeskcore_upload', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_download', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_create', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_delete', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_rename', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_move', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_copy', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+        ->applyToPalette('default', 'tl_member');
+
 $GLOBALS['TL_DCA']['tl_member']['config']['sql']['keys']['disable,login,username,alpdeskcore_mandant'] = 'index';
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandant'] = [
@@ -41,4 +51,67 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
     'reference' => &$GLOBALS['TL_LANG']['ADME'],
     'eval' => ['tl_class' => 'clr', 'multiple' => true],
     'sql' => "blob NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_upload'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_upload'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_download'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_download'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_create'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_create'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_delete'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_delete'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_rename'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_rename'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_move'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_move'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_copy'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_copy'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
 ];

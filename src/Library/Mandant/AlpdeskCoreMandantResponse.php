@@ -11,6 +11,13 @@ class AlpdeskCoreMandantResponse {
   private $firstname = '';
   private $lastname = '';
   private $email = '';
+  private bool $accessDownload = true;
+  private bool $accessUpload = true;
+  private bool $accessCreate = true;
+  private bool $accessDelete = true;
+  private bool $accessRename = true;
+  private bool $accessMove = true;
+  private bool $accessCopy = true;
   private int $memberId = 0;
   private int $mandantId = 0;
   private array $plugins = array();
@@ -86,6 +93,62 @@ class AlpdeskCoreMandantResponse {
 
   public function setEmail($email): void {
     $this->email = $email;
+  }
+
+  public function getAccessDownload(): bool {
+    return $this->accessDownload;
+  }
+
+  public function getAccessUpload(): bool {
+    return $this->accessUpload;
+  }
+
+  public function getAccessCreate(): bool {
+    return $this->accessCreate;
+  }
+
+  public function getAccessDelete(): bool {
+    return $this->accessDelete;
+  }
+
+  public function getAccessRename(): bool {
+    return $this->accessRename;
+  }
+
+  public function getAccessMove(): bool {
+    return $this->accessMove;
+  }
+
+  public function getAccessCopy(): bool {
+    return $this->accessCopy;
+  }
+
+  public function setAccessDownload(bool $accessDownload): void {
+    $this->accessDownload = $accessDownload;
+  }
+
+  public function setAccessUpload(bool $accessUpload): void {
+    $this->accessUpload = $accessUpload;
+  }
+
+  public function setAccessCreate(bool $accessCreate): void {
+    $this->accessCreate = $accessCreate;
+  }
+
+  public function setAccessDelete(bool $accessDelete): void {
+    $this->accessDelete = $accessDelete;
+  }
+
+  public function setAccessRename(bool $accessRename): void {
+    $this->accessRename = $accessRename;
+  }
+
+  public function setAccessMove(bool $accessMove): void {
+    $this->accessMove = $accessMove;
+  }
+
+  public function setAccessCopy(bool $accessCopy): void {
+    $this->accessCopy = $accessCopy;
   }
 
 }

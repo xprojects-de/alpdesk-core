@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "https://api.alpdesk.de/auth",
+			"name": "Auth-Login",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -42,58 +42,7 @@
 			"response": []
 		},
 		{
-			"name": "https://api.alpdesk.de/download",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzE2MjMzNywibmJmIjoxNjEzMTYyMzM3LCJleHAiOjE2MTMxNjU5MzcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ieIN0xz_bo6iWD2NdyLPmfr2A7qQ65-BYBiyVi6sCbE",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"target\":\"/1613153411_README.md\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://contao.local:8888/download?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
-					"host": [
-						"contao",
-						"local"
-					],
-					"port": "8888",
-					"path": [
-						"download"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "https://api.alpdesk.de/auth/verify",
+			"name": "Auth-Verify",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -139,7 +88,7 @@
 			"response": []
 		},
 		{
-			"name": "https://api.alpdesk.de/auth/logout",
+			"name": "Auth-Logout",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -185,7 +134,7 @@
 			"response": []
 		},
 		{
-			"name": "https://api.alpdesk.de/mandant",
+			"name": "Mandant",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -230,7 +179,7 @@
 			"response": []
 		},
 		{
-			"name": "https://api.alpdesk.de/plugin",
+			"name": "Plugin",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -275,14 +224,14 @@
 			"response": []
 		},
 		{
-			"name": "https://api.alpdesk.de/upload",
+			"name": "Upload File",
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzE2MjMzNywibmJmIjoxNjEzMTYyMzM3LCJleHAiOjE2MTMxNjU5MzcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ieIN0xz_bo6iWD2NdyLPmfr2A7qQ65-BYBiyVi6sCbE",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIzMjc4NSwibmJmIjoxNjEzMjMyNzg1LCJleHAiOjE2MTMyMzYzODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.VLQmsjb9zsmbOFkEP7qV71X-FhZIc5qN7kAnXk_VFy4",
 							"type": "string"
 						}
 					]
@@ -305,7 +254,7 @@
 						},
 						{
 							"key": "target",
-							"value": "/",
+							"value": "/alpdesk",
 							"type": "text"
 						}
 					]
@@ -326,14 +275,65 @@
 			"response": []
 		},
 		{
-			"name": "https://api.alpdesk.de/finder",
+			"name": "Download File",
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzE2MjMzNywibmJmIjoxNjEzMTYyMzM3LCJleHAiOjE2MTMxNjU5MzcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ieIN0xz_bo6iWD2NdyLPmfr2A7qQ65-BYBiyVi6sCbE",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIzMjc4NSwibmJmIjoxNjEzMjMyNzg1LCJleHAiOjE2MTMyMzYzODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.VLQmsjb9zsmbOFkEP7qV71X-FhZIc5qN7kAnXk_VFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"target\": \"/alpdesk/README.md\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/download?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"download"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder List",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIyOTE2MCwibmJmIjoxNjEzMjI5MTYwLCJleHAiOjE2MTMyMzI3NjAsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.eNAdFSmjWODXacVgmcz5qKD2HKXl_VLVPH13u9bjCzI",
 							"type": "string"
 						}
 					]
@@ -342,7 +342,232 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"target\":\"\"\n}",
+					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"/\", \n    \"target\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"finder"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder Create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIyOTE2MCwibmJmIjoxNjEzMjI5MTYwLCJleHAiOjE2MTMyMzI3NjAsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.eNAdFSmjWODXacVgmcz5qKD2HKXl_VLVPH13u9bjCzI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/alpdesk\", \n    \"target\": \"dir\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"finder"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIyOTE2MCwibmJmIjoxNjEzMjI5MTYwLCJleHAiOjE2MTMyMzI3NjAsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.eNAdFSmjWODXacVgmcz5qKD2HKXl_VLVPH13u9bjCzI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mode\": \"delete\", \n    \"src\": \"/alpdesk1\", \n    \"target\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"finder"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder Rename",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIzMjc4NSwibmJmIjoxNjEzMjMyNzg1LCJleHAiOjE2MTMyMzYzODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.VLQmsjb9zsmbOFkEP7qV71X-FhZIc5qN7kAnXk_VFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mode\": \"rename\", \n    \"src\": \"/alpdesk2\", \n    \"target\": \"alpdesk3\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"finder"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder Move",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIzMjc4NSwibmJmIjoxNjEzMjMyNzg1LCJleHAiOjE2MTMyMzYzODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.VLQmsjb9zsmbOFkEP7qV71X-FhZIc5qN7kAnXk_VFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mode\": \"move\", \n    \"src\": \"/alpdesk3\", \n    \"target\": \"/alpdesk4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"finder"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzIzMjc4NSwibmJmIjoxNjEzMjMyNzg1LCJleHAiOjE2MTMyMzYzODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.VLQmsjb9zsmbOFkEP7qV71X-FhZIc5qN7kAnXk_VFy4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mode\": \"copy\", \n    \"src\": \"/alpdesk3\", \n    \"target\": \"/alpdesk/alpdesk3\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
