@@ -27,20 +27,29 @@ class AlpdeskCoreFilemanagement {
   private function getMandantInformation(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo {
     $mandantInfo = AlpdeskcoreMandantModel::findById($user->getMandantPid());
     if ($mandantInfo !== null) {
-      $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
-      $filemount = $mandantInfo->filemount;
-      if ($user->getHomeDir() !== null) {
-        $rootPath = FilesModel::findByUuid($user->getHomeDir());
-        $filemount = $user->getHomeDir();
-      }
+
       $mInfo = new AlpdescCoreBaseMandantInfo();
+
+      $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
+
+      $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
+      $mInfo->setFilemountmandant_path($rootPath->path);
+      $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $rootPath->path);
+
+      $mInfo->setFilemount_uuid($mandantInfo->filemount);
+      $mInfo->setFilemount_path($rootPath->path);
+      $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
+
+      if ($user->getHomeDir() !== null) {
+        $rootPathMember = FilesModel::findByUuid($user->getHomeDir());
+        $mInfo->setFilemount_uuid($user->getHomeDir());
+        $mInfo->setFilemount_path($rootPathMember->path);
+        $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPathMember->path);
+      }
+
       $mInfo->setId(intval($mandantInfo->id));
       $mInfo->setMemberId($user->getMemberId());
       $mInfo->setMandant($mandantInfo->mandant);
-      $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
-      $mInfo->setFilemount_uuid($filemount);
-      $mInfo->setFilemount_path($rootPath->path);
-      $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
       $mInfo->setAccessDownload($user->getAccessDownload());
       $mInfo->setAccessUpload($user->getAccessUpload());
       $mInfo->setAccessCreate($user->getAccessCreate());
@@ -49,9 +58,10 @@ class AlpdeskCoreFilemanagement {
       $mInfo->setAccessMove($user->getAccessMove());
       $mInfo->setAccessCopy($user->getAccessCopy());
       $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
+
       return $mInfo;
     } else {
-      throw new AlpdeskCoreFilemanagementException("cannot get Mandant informations");
+      throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations");
     }
   }
 
