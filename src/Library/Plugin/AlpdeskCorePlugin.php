@@ -100,6 +100,9 @@ class AlpdeskCorePlugin {
     $response->setAlpdesk_token($user->getUsedToken());
     $response->setMandantInfo($mandantInfo);
     $response->setPlugin($plugin);
+    /**
+     * @deprecated Deprecated since 1.0, to be removed in Contao 2.0; use the Symfony-Events instead => alpdesk.plugincall
+     */
     if (isset($GLOBALS['TL_ADME'][$plugin])) {
       $c = new $GLOBALS['TL_ADME'][$plugin]();
       if ($c instanceof AlpdeskCoreElement) {
@@ -122,6 +125,7 @@ class AlpdeskCorePlugin {
       $msg = 'plugin not installed for plugin:' . $plugin . ' and username:' . $user->getUsername();
       throw new AlpdeskCorePluginException($msg);
     }
+
     return $response;
   }
 
