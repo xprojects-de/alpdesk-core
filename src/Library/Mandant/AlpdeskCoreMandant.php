@@ -13,18 +13,35 @@ use Contao\System;
 use Contao\Controller;
 use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
 
 class AlpdeskCoreMandant {
 
+  protected AlpdeskCoreEventService $eventService;
+
+  public function __construct(AlpdeskCoreEventService $eventService) {
+    $this->eventService = $eventService;
+  }
+
   private function getPlugins(int $mandantPid, array $invalidElements): array {
+
+    // @ToDo load for other languages identified by REST-Call
+    System::loadLanguageFile('modules', 'de');
+
+    $event = new AlpdeskCoreRegisterPlugin([], []);
+    $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
+    $pluginData = $event->getPluginData();
+    $pluginInfo = $event->getPluginInfo();
+
     $data = array();
     $plugins = AlpdeskcoreMandantElementsModel::findEnabledAndVisibleByPid($mandantPid);
     if ($plugins !== null) {
-      // @ToDo load for other languages
-      System::loadLanguageFile('modules', 'de');
       foreach ($plugins as $pluginElement) {
         $type = (string) $pluginElement->type;
         if (!\in_array($type, $invalidElements)) {
+
+          // Legacy Support
           if (isset($GLOBALS['TL_ADME'][$type])) {
             $c = new $GLOBALS['TL_ADME'][$type]();
             if ($c instanceof AlpdeskCoreElement) {
@@ -38,6 +55,12 @@ class AlpdeskCoreMandant {
                   'customTemplate' => $customTemplate
               ));
             }
+          } else if (isset($pluginData[$type]) && isset($pluginInfo[$type])) {
+            \array_push($data, array(
+                'value' => $pluginElement->type,
+                'label' => $pluginData[$type],
+                'customTemplate' => (isset($pluginInfo[$type]['customTemplate']) ? $pluginInfo[$type]['customTemplate'] : false)
+            ));
           }
         }
       }

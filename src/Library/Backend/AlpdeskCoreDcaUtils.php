@@ -10,7 +10,6 @@ use Contao\Backend;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
-use Contao\File;
 use Contao\Controller;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
@@ -29,13 +28,6 @@ class AlpdeskCoreDcaUtils extends Backend {
     $args[0] = (string) '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $args[0];
     $args[1] = substr($args[1], 0, 25) . ' ...';
     return $args;
-  }
-
-  public function addMandantElementType($arrRow): string {
-    $key = $arrRow['disabled'] ? 'unpublished' : 'published';
-    $icon = (($arrRow['invisible'] | $arrRow['disabled']) ? 'invisible.svg' : 'visible.svg');
-    $type = $GLOBALS['TL_LANG']['ADME'][$arrRow['type']] ?: '- INVALID -';
-    return '<div class="cte_type ' . $key . '">' . Image::getHtml($icon) . '&nbsp;&nbsp;' . $type . '</div>';
   }
 
   public function generateFixToken($varValue, $dc) {
@@ -70,16 +62,6 @@ class AlpdeskCoreDcaUtils extends Backend {
       $varValue = $cryption->safeDecrypt($varValue);
     }
     return $varValue;
-  }
-
-  public function getMandantElements() {
-    $groups = array();
-    if (isset($GLOBALS['TL_ADME']) && \count($GLOBALS['TL_ADME'])) {
-      foreach ($GLOBALS['TL_ADME'] as $k => $v) {
-        $groups[$k] = $GLOBALS['TL_LANG']['ADME'][$k];
-      }
-    }
-    return $groups;
   }
 
   public function pdfElementsloadCallback(DataContainer $dc) {

@@ -55,20 +55,9 @@ class AlpdeskCoreMandantController extends AbstractController {
     return (new JsonResponse($data, $statusCode));
   }
 
-  /**
-   * 
-   * @param Request $request 
-   * ENDPOINT: /mandant
-   * Authorization Bearer TOKEN in Header
-   * 
-   * @return JsonResponse
-   * {"username":"test","alpdesk_token":"alpdesk_test_1591436687_651089","mandantId":"1","plugins":[],"data":[]} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function list(Request $request, UserInterface $user): JsonResponse {
     try {
-      $response = (new AlpdeskCoreMandant())->list($user);
+      $response = (new AlpdeskCoreMandant($this->eventService))->list($user);
       $event = new AlpdeskCoreMandantListEvent($response);
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreMandantListEvent::NAME);
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | MandantList successfully', __METHOD__);
@@ -79,17 +68,6 @@ class AlpdeskCoreMandantController extends AbstractController {
     }
   }
 
-  /**
-   * 
-   * @param Request $request 
-   * ENDPOINT: /mandant/edit
-   * POST-JSON-PARAMS: {"username":"test","alpdesk_token":"alpdesk_test_1591436687_651089","data":[{"email":"infos@x-projects.dee"}]}
-   * 
-   * @return JsonResponse
-   * {"username":"test","alpdesk_token":"alpdesk_test_1591436687_651089","mandantId":"1","plugins":[],"data":[]} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function edit(Request $request, UserInterface $user): JsonResponse {
     return $this->outputError('Not Supported', AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
   }

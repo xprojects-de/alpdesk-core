@@ -46,18 +46,6 @@ class AlpdeskCorePluginController extends AbstractController {
     return (new JsonResponse($data, $statusCode));
   }
 
-  /**
-   * 
-   * @param Request $request 
-   * ENDPOINT: /plugin
-   * Authorization Bearer TOKEN in Header
-   * POST-JSON-PARAMS: {"plugin":"hello","data":[]}
-   * 
-   * @return JsonResponse
-   * {"username":"test","alpdesk_token":"alpdesk_test_1591436687_651089","plugin":"hello","data":[###ResponseData from Plugin###]} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function call(Request $request, UserInterface $user): JsonResponse {
     try {
       $plugindata = (array) json_decode($request->getContent(), true);

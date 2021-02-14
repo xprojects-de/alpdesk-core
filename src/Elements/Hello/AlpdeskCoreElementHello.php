@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Elements\Hello;
 
-use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
-use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCorePlugincallEvent;
 
-class AlpdeskCoreElementHello extends AlpdeskCoreElement {
+class AlpdeskCoreElementHello {
 
-  public function execute(AlpdescCoreBaseMandantInfo $mandantInfo, array $data): array {
-    return array('Mandant' => $mandantInfo->getMandant(), 'Value' => 'Hello AlpdeskPlugin');
+  public function __invoke(AlpdeskCorePlugincallEvent $event): void {
+
+    if ('hello' !== $event->getResultData()->getPlugin()) {
+      return;
+    }
+
+    $data = [
+        'Mandant' => $event->getResultData()->getMandantInfo()->getMandant(),
+        'Value' => 'Hello AlpdeskPlugin'
+    ];
+
+    $event->getResultData()->setData($data);
   }
 
 }

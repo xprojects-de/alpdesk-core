@@ -26,7 +26,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant_elements'] = array
             'fields' => array('sorting'),
             'headerFields' => array('mandant'),
             'panelLayout' => 'limit',
-            'child_record_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'addMandantElementType')
+            //'child_record_callback' => Done using contao.callback event
         ),
         'operations' => array
             (
@@ -87,8 +87,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant_elements'] = array
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'getMandantElements'),
-            'reference' => &$GLOBALS['TL_LANG']['ADME'],
+            //'options_callback' => Done using contao.callback event
             'eval' => array('chosen' => true, 'submitOnChange' => true, 'tl_class' => 'w50'),
             'sql' => array('name' => 'type', 'type' => 'string', 'length' => 64, 'default' => '')
         ),
