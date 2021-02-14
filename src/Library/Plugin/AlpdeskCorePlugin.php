@@ -100,6 +100,7 @@ class AlpdeskCorePlugin {
     $response->setAlpdesk_token($user->getUsedToken());
     $response->setMandantInfo($mandantInfo);
     $response->setPlugin($plugin);
+    $response->setRequestData($data);
 
 
     /**

@@ -12,6 +12,7 @@ class AlpdeskCorePlugincallResponse {
   private string $username = '';
   private string $plugin = '';
   private AlpdescCoreBaseMandantInfo $mandantInfo;
+  private array $requestData = array();
   private array $data = array();
 
   public function getAlpdesk_token(): string {
@@ -52,6 +53,14 @@ class AlpdeskCorePlugincallResponse {
 
   public function setMandantInfo(AlpdescCoreBaseMandantInfo $mandantInfo): void {
     $this->mandantInfo = $mandantInfo;
+  }
+
+  public function getRequestData(): array {
+    return $this->requestData;
+  }
+
+  public function setRequestData(array $requestData): void {
+    $this->requestData = $requestData;
   }
 
 }
