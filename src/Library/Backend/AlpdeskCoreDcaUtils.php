@@ -30,13 +30,6 @@ class AlpdeskCoreDcaUtils extends Backend {
     return $args;
   }
 
-  public function addMandantElementType($arrRow): string {
-    $key = $arrRow['disabled'] ? 'unpublished' : 'published';
-    $icon = (($arrRow['invisible'] | $arrRow['disabled']) ? 'invisible.svg' : 'visible.svg');
-    $type = $GLOBALS['TL_LANG']['ADME'][$arrRow['type']] ?: '- INVALID -';
-    return '<div class="cte_type ' . $key . '">' . Image::getHtml($icon) . '&nbsp;&nbsp;' . $type . '</div>';
-  }
-
   public function generateFixToken($varValue, $dc) {
     if ($varValue == '') {
       $username = 'invalid';
