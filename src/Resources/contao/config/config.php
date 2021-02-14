@@ -44,8 +44,8 @@ $GLOBALS['BE_MOD']['alpdeskcore']['alpdeskcore_pdf'] = array(
     )
 );
 
+// Hello-Plugin is done using EventListener
 $GLOBALS['TL_ADME'] = array(
-    'hello' => 'Alpdesk\\AlpdeskCore\\Elements\\Hello\\AlpdeskCoreElementHello',
     'customTemplate' => 'Alpdesk\\AlpdeskCore\\Elements\\CustomTemplate\\AlpdeskCoreElementCustomTemplate'
 );
 

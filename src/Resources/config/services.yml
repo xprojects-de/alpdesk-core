@@ -72,3 +72,11 @@ services:
       - '@alpdeskcore.loggingservice'
     tags:
       - controller.service_arguments
+      
+  Alpdesk\AlpdeskCore\Events\Callbacks\DcaCallbacks:
+      arguments:
+      - '@alpdeskcore.eventservice'
+      tags:
+      - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: fields.type.options, method: getMandantElements }
+      - { name: contao.callback, table: tl_member, target: fields.alpdeskcore_elements.options, method: getMandantElements }
+      - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: list.sorting.child_record, method: addMandantElementType }

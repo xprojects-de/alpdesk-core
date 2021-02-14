@@ -45,16 +45,6 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
     return (new JsonResponse($data, $statusCode));
   }
 
-  /**
-   * 
-   * @param Request $request
-   * Formupload
-   * 
-   * @return JsonResponse
-   * {"alpdesk_token":"alpdesk_test_1591436687_65108","username":"test","ttl":-3297} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function upload(Request $request, UserInterface $user): JsonResponse {
     try {
       $uploadFile = $request->files->get('file');

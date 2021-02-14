@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
     'exclude' => true,
     'filter' => true,
     'inputType' => 'checkbox',
-    'options_callback' => ['Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'getMandantElements'],
+    //'options_callback' => Done using contao.callback event
     'reference' => &$GLOBALS['TL_LANG']['ADME'],
     'eval' => ['tl_class' => 'clr', 'multiple' => true],
     'sql' => "blob NULL"

@@ -10,7 +10,6 @@ use Contao\Backend;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
-use Contao\File;
 use Contao\Controller;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
@@ -70,16 +69,6 @@ class AlpdeskCoreDcaUtils extends Backend {
       $varValue = $cryption->safeDecrypt($varValue);
     }
     return $varValue;
-  }
-
-  public function getMandantElements() {
-    $groups = array();
-    if (isset($GLOBALS['TL_ADME']) && \count($GLOBALS['TL_ADME'])) {
-      foreach ($GLOBALS['TL_ADME'] as $k => $v) {
-        $groups[$k] = $GLOBALS['TL_LANG']['ADME'][$k];
-      }
-    }
-    return $groups;
   }
 
   public function pdfElementsloadCallback(DataContainer $dc) {

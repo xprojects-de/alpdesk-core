@@ -47,17 +47,6 @@ class AlpdeskCoreAuthController extends AbstractController {
     return (new JsonResponse($data, $statusCode));
   }
 
-  /**
-   * 
-   * @param Request $request
-   * ENDPOINT: /auth
-   * POST-JSON-PARAMS: {"username":"testmandant","password":"1234567890"}
-   * 
-   * @return JsonResponse
-   * {"alpdesk_token":"JWT","username":"test"} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function auth(Request $request): JsonResponse {
     try {
       $authdata = (array) json_decode($request->getContent(), true);
@@ -72,17 +61,6 @@ class AlpdeskCoreAuthController extends AbstractController {
     }
   }
 
-  /**
-   * 
-   * @param Request $request 
-   * ENDPOINT: /auth/verify
-   * Authorization Bearer TOKEN in Header
-   * 
-   * @return JsonResponse
-   * {"username":"test","verify":true,"invalid":false} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function verify(Request $request, UserInterface $user): JsonResponse {
     try {
       $response = new AlpdeskCoreAuthResponse();
@@ -100,16 +78,6 @@ class AlpdeskCoreAuthController extends AbstractController {
     }
   }
 
-  /**
-   * 
-   * @param Request $request 
-   * ENDPOINT: /auth/logout
-   * 
-   * @return JsonResponse
-   * {"alpdesk_token":"JWT","username":"test","invalid":true,"verify":false} with AlpdeskCoreConstants::$STATUSCODE_OK
-   * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
-   * 
-   */
   public function logout(Request $request, UserInterface $user): JsonResponse {
     try {
       $response = (new AlpdeskCoreAuthToken())->invalidToken($user);
