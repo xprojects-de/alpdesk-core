@@ -20,7 +20,7 @@ class JwtToken {
   private static string $permittedFor = 'https://alpdesk.de';
 
   private static function getDefaultKeyString(): string {
-    $keyString = System::getContainer()->getParameter('contao.encryption_key');
+    $keyString = System::getContainer()->getParameter('kernel.secret');
     return substr($keyString, 10, 32);
   }
 
