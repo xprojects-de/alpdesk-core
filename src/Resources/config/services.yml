@@ -30,15 +30,6 @@ services:
       - '@contao.framework'
       - '@alpdeskcore.loggingservice'
 
-  Alpdesk\AlpdeskCore\Controller\Client\AlpdeskCoreClientController:
-    arguments:
-      - '@contao.framework'
-      - '@alpdeskcore.eventservice'
-      - '@alpdeskcore.loggingservice'
-      - '%kernel.project_dir%'
-    tags:
-      - controller.service_arguments
-
   Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:
     arguments:
       - '@contao.framework'
