@@ -1,11 +1,3 @@
-alpdesk_client:
-    path: /client
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Client\AlpdeskCoreClientController:client
-        _scope: frontend
-        _token_check: false
-    methods: [GET]
-
 alpdesk_auth:
     path: /auth
     defaults:

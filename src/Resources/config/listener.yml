@@ -1,10 +1,5 @@
 services:
 
-  alpdeskcore.listener.contao_generatesymlinks:
-    class: Alpdesk\AlpdeskCore\Events\Listener\AlpdeskCoreEventContaoGenerateSymlinkListener
-    tags:
-      - { name: kernel.event_listener, event: contao.generate_symlinks}
-      
   alpdeskcore.listener.registerplugin:
     class: Alpdesk\AlpdeskCore\Events\Listener\AlpdeskCoreRegisterPluginListener
     tags:
