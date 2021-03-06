@@ -343,7 +343,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"f7358908-7eb2-11eb-b7fd-da45c81e3bcc\"\n}",
+					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -434,6 +434,51 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"mode\": \"delete\", \n    \"src\": \"2d6343b9-7eb7-11eb-b7fd-da45c81e3bcc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"finder"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finder Meta",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTA2MjYxNywibmJmIjoxNjE1MDYyNjE3LCJleHAiOjE2MTUwNjYyMTcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.jACoFEbDc30bg_orkylULT4UMpU5Jdhtf1GUTSC8lUY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mode\": \"meta\", \n    \"src\": \"669dd8e0-7eb3-11eb-b7fd-da45c81e3bcc\",\n    \"meta\": {\n        \"de\": {\n            \"title\": \"Ich bin der Titel NEU\",\n            \"alt\": \"Ich bin der Alternativer Text NEU\",\n            \"link\": \"Ich bin der Link NEU\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU\"\n        },\n        \"en\": {\n            \"title\": \"Ich bin der Titel NEU EN\",\n            \"alt\": \"\",\n            \"link\": \"Ich bin der Link NEU EN\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU EN\"\n        }\n    } \n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -441,7 +441,7 @@ class AlpdeskCoreFilemanagement {
       if ($objFileModelTarget === null) {
         throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
       }
-      
+
       if ($objFileModelTarget->type !== 'folder') {
         throw new AlpdeskCoreFilemanagementException("error - target must be folder");
       }
@@ -479,6 +479,71 @@ class AlpdeskCoreFilemanagement {
       } else {
         throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
       }
+    } catch (\Exception $ex) {
+      throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
+    }
+  }
+
+  public static function meta(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array {
+
+    try {
+
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
+      }
+
+      $src = self::preparePath(((string) $finderData['src']));
+
+      if ($src === '') {
+        throw new AlpdeskCoreFilemanagementException("invalid src");
+      }
+
+      // @TODO add AccessCheck for Mandant
+      $objFileModelSrc = FilesModel::findByUuid($src);
+      if ($objFileModelSrc === null) {
+        throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
+      }
+
+      if ($objFileModelSrc->type !== 'file') {
+        throw new AlpdeskCoreFilemanagementException("error - src must be file");
+      }
+
+      $srcObject = new File($objFileModelSrc->path);
+
+      if (!$srcObject->exists()) {
+        throw new AlpdeskCoreFilemanagementException("error - src file does not exists");
+      }
+
+      $metaData = [];
+
+      if ($objFileModelSrc->meta !== null) {
+        $metaData = StringUtil::deserialize($objFileModelSrc->meta);
+      }
+
+      if (\array_key_exists('meta', $finderData)) {
+
+        $metaSet = ((array) $finderData['meta']);
+
+        foreach ($metaSet as $key => $value) {
+          if ($key !== '' && \is_array($value)) {
+            foreach ($value as $valueKey => $valueValue) {
+              if ($valueKey === 'title' || $valueKey === 'alt' || $valueKey === 'link' || $valueKey === 'caption') {
+                $metaData[$key][$valueKey] = $valueValue;
+              }
+            }
+          }
+        }
+
+        $objFileModelSrc->meta = serialize($metaData);
+        $objFileModelSrc->save();
+
+        $metaData = StringUtil::deserialize($objFileModelSrc->meta);
+      }
+
+      return [
+          'uuid' => StringUtil::binToUuid($objFileModelSrc->uuid),
+          'meta' => $metaData
+      ];
     } catch (\Exception $ex) {
       throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
     }
@@ -535,6 +600,9 @@ class AlpdeskCoreFilemanagement {
         }
       case 'copy': {
           return self::moveOrcopy($finderData, $mandantInfo, true);
+        }
+      case 'meta': {
+          return self::meta($finderData, $mandantInfo);
         }
       default:
         throw new AlpdeskCoreFilemanagementException("invalid mode for finder");
