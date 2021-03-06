@@ -37,6 +37,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
                 'username' => $data->getUsername(),
                 'alpdesk_token' => $data->getAlpdesk_token(),
                 'file' => $data->getFileName(),
+                'uuid' => $data->getUuid(),
                     ), $statusCode
             ) );
   }
