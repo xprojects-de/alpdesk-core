@@ -11,6 +11,7 @@ use Contao\FilesModel;
 use Contao\File;
 use Contao\Folder;
 use Contao\StringUtil;
+use Contao\System;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -99,6 +100,25 @@ class AlpdeskCoreFilemanagement {
     }
 
     return $src;
+  }
+
+  private static function scanDir($strFolder): array {
+
+    $strRootDir = System::getContainer()->getParameter('kernel.project_dir');
+
+    $strFolder = $strRootDir . '/' . $strFolder;
+
+    $arrReturn = [];
+
+    foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
+      if ($strFile == '.' || $strFile == '..') {
+        continue;
+      }
+
+      $arrReturn[] = $strFile;
+    }
+
+    return $arrReturn;
   }
 
   private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void {
@@ -215,7 +235,7 @@ class AlpdeskCoreFilemanagement {
         }
       }
 
-      $files = scan($path, true);
+      $files = self::scanDir($path);
 
       foreach ($files as $file) {
 
