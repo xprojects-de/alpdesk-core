@@ -9,6 +9,7 @@ class AlpdescCoreBaseMandantInfo {
   private int $id;
   private int $memberId;
   private string $mandant;
+  private string $rootDir;
   private string $filemountmandant_uuid;
   private string $filemountmandant_path;
   private string $filemountmandant_rootpath;
@@ -159,5 +160,15 @@ class AlpdescCoreBaseMandantInfo {
   public function setAccessCopy(bool $accessCopy): void {
     $this->accessCopy = $accessCopy;
   }
+  
+  public function getRootDir(): string {
+    return $this->rootDir;
+  }
+
+  public function setRootDir(string $rootDir): void {
+    $this->rootDir = $rootDir;
+  }
+
+
 
 }

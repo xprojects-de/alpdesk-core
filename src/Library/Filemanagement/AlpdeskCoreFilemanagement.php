@@ -8,13 +8,15 @@ use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\FilesModel;
+use Contao\File;
+use Contao\Folder;
+use Contao\StringUtil;
+use Contao\System;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Filesystem\Filesystem;
 
 class AlpdeskCoreFilemanagement {
 
@@ -31,6 +33,8 @@ class AlpdeskCoreFilemanagement {
       $mInfo = new AlpdescCoreBaseMandantInfo();
 
       $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
+
+      $mInfo->setRootDir($this->rootDir);
 
       $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
       $mInfo->setFilemountmandant_path($rootPath->path);
@@ -98,6 +102,25 @@ class AlpdeskCoreFilemanagement {
     return $src;
   }
 
+  private static function scanDir($strFolder): array {
+
+    $strRootDir = System::getContainer()->getParameter('kernel.project_dir');
+
+    $strFolder = $strRootDir . '/' . $strFolder;
+
+    $arrReturn = [];
+
+    foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
+      if ($strFile == '.' || $strFile == '..') {
+        continue;
+      }
+
+      $arrReturn[] = $strFile;
+    }
+
+    return $arrReturn;
+  }
+
   private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void {
 
     if ($mandantInfo->getAccessUpload() == false) {
@@ -105,18 +128,44 @@ class AlpdeskCoreFilemanagement {
     }
 
     $target = self::preparePath($target);
-    $pDest = $mandantInfo->getFilemount_rootpath() . '/' . $target;
+
+    if ($target === '/' || $target === '') {
+      $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
+    }
+
+    $objTarget = FilesModel::findByUuid($target);
+    if ($objTarget === null) {
+      throw new AlpdeskCoreFilemanagementException("invalid target filemount");
+    }
 
     if (\file_exists($uploadFile->getPathName())) {
+
       $fileName = $uploadFile->getClientOriginalName();
-      if (\file_exists($pDest . '/' . $fileName)) {
-        $fileName = time() . '_' . $uploadFile->getClientOriginalName();
+      $tmpFileName = time() . '_' . $fileName;
+      $uploadFile->move($this->rootDir . '/' . $objTarget->path, $tmpFileName);
+
+      $tmpFile = new File($objTarget->path . '/' . $tmpFileName);
+      if (!$tmpFile->exists()) {
+        throw new AlpdeskCoreFilemanagementException("error upload file");
       }
-      $uploadFile->move($pDest, $fileName);
-      $response->setRootFileName($pDest . '/' . $fileName);
-      $response->setFileName($target . '/' . $fileName);
+      $tmpFile->copyTo($objTarget->path . '/' . $fileName);
+      $tmpFile->delete();
+
+      $nFile = new File($objTarget->path . '/' . $fileName);
+      if (!$nFile->exists()) {
+        throw new AlpdeskCoreFilemanagementException("error upload file");
+      }
+
+      $objnFile = FilesModel::findByPath($objTarget->path . '/' . $fileName);
+      if ($objnFile === null) {
+        throw new AlpdeskCoreFilemanagementException("error upload file");
+      }
+
+      $response->setUuid(StringUtil::binToUuid($objnFile->uuid));
+      $response->setRootFileName($objTarget->path . '/' . $fileName);
+      $response->setFileName($nFile->basename);
     } else {
-      throw new AlpdeskCoreFilemanagementException("Src-File not found on server");
+      throw new AlpdeskCoreFilemanagementException("error upload file");
     }
   }
 
@@ -127,7 +176,24 @@ class AlpdeskCoreFilemanagement {
     }
 
     $target = self::preparePath($target);
-    $pDest = $mandantInfo->getFilemount_rootpath() . '/' . $target;
+
+    $objTarget = FilesModel::findByUuid($target);
+    if ($objTarget === null) {
+      throw new AlpdeskCoreFilemanagementException("invalid target filemount");
+    }
+
+    if ($objTarget->type === 'folder') {
+      throw new AlpdeskCoreFilemanagementException("invalid src file - must be file");
+    }
+
+    // @TODO add AccessCheck for Mandant
+    $objFileModel = FilesModel::findByUuid($target);
+    if ($objFileModel === null) {
+      throw new AlpdeskCoreFilemanagementException("src file not found");
+    }
+
+    $target = $objFileModel->path;
+    $pDest = $mandantInfo->getRootDir() . '/' . $target;
 
     if (\file_exists($pDest) && \is_file($pDest)) {
       $response = new BinaryFileResponse($pDest);
@@ -139,33 +205,68 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function getContentOfDir(string $src, AlpdescCoreBaseMandantInfo $mandantInfo): array {
+  public static function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array {
+
     try {
+
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
+      }
+
+      $src = self::preparePath(((string) $finderData['src']));
 
       $data = [];
 
-      $pDest = $mandantInfo->getFilemount_rootpath() . '/' . self::preparePath($src);
+      $objTargetBase = FilesModel::findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+      if ($objTargetBase === null) {
+        throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
+      }
 
-      $finder = new Finder();
-      $finder->depth('== 0')->in($pDest)->sortByType();
+      $path = $objTargetBase->path;
 
-      if ($finder->hasResults()) {
-        foreach ($finder as $object) {
-          $parent = $object->getRelativePath();
+      if ($src !== '' && $src !== '/') {
+        $objTargetSrc = FilesModel::findByUuid($src);
+        if ($objTargetSrc === null) {
+          throw new AlpdeskCoreFilemanagementException("invalid src filemount");
+        }
+        $path = $objTargetSrc->path;
+        if ($objTargetSrc->type !== 'folder') {
+          throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
+        }
+      }
+
+      $files = self::scanDir($path);
+
+      foreach ($files as $file) {
+
+        $objFileTmp = FilesModel::findByPath($path . '/' . $file);
+
+        if ($objFileTmp !== null) {
+
+          $basename = $objFileTmp->path;
+          if ($objFileTmp->type === 'folder') {
+            $tmpFolder = new Folder($objFileTmp->path);
+            $basename = $tmpFolder->basename;
+          } else if ($objFileTmp->type === 'file') {
+            $tmpFile = new File($objFileTmp->path);
+            $basename = $tmpFile->basename;
+          }
+
           array_push($data, array(
-              'name' => $object->getFilename(),
-              'isFolder' => ($object->isFile() == false)
+              'name' => $basename,
+              'uuid' => StringUtil::binToUuid($objFileTmp->uuid),
+              'isFolder' => ($objFileTmp->type === 'folder')
           ));
         }
       }
 
       return $data;
     } catch (\Exception $ex) {
-      throw new AlpdeskCoreFilemanagementException("error at getContentOfDir - " . $ex->getMessage());
+      throw new AlpdeskCoreFilemanagementException("error at listFolder - " . $ex->getMessage());
     }
   }
 
-  public static function create(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
+  public static function create(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): string {
 
     if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
       throw new AlpdeskCoreFilemanagementException("access denied");
@@ -173,30 +274,49 @@ class AlpdeskCoreFilemanagement {
 
     try {
 
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
+      }
+
+      $src = self::preparePath(((string) $finderData['src']));
+
+      if (!\array_key_exists('target', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
+      }
+
+      $target = self::preparePath(((string) $finderData['target']));
+
       if ($target == null || $target == "") {
         throw new AlpdeskCoreFilemanagementException("No valid mode in target. Must be 'file' or 'dir'");
       }
 
-      $pDest = $mandantInfo->getFilemount_rootpath() . '/' . self::preparePath($src);
-
-      $filesystem = new Filesystem();
-      if (!$filesystem->exists($pDest)) {
-        if ($target === 'file') {
-          $filesystem->touch($pDest);
-        } else if ($target === 'dir') {
-          $filesystem->mkdir($pDest);
-        } else {
-          throw new AlpdeskCoreFilemanagementException("invalid targetmode");
-        }
-      } else {
-        throw new AlpdeskCoreFilemanagementException("src still exits");
+      $objTargetBase = FilesModel::findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+      if ($objTargetBase === null) {
+        throw new AlpdeskCoreFilemanagementException("invalid Mandant Filemount");
       }
+
+      if ($target === 'file') {
+        $cFile = new File($objTargetBase->path . '/' . $src);
+        $cFile->write('init');
+        $cFile->close();
+      } else if ($target === 'dir') {
+        $cFolder = new Folder($objTargetBase->path . '/' . $src);
+      } else {
+        throw new AlpdeskCoreFilemanagementException("invalid targetmode");
+      }
+
+      $objTargetModel = FilesModel::findByPath($objTargetBase->path . '/' . $src);
+      if ($objTargetBase === null) {
+        throw new AlpdeskCoreFilemanagementException("invalid Mandant Filemount");
+      }
+
+      return StringUtil::binToUuid($objTargetModel->uuid);
     } catch (\Exception $ex) {
       throw new AlpdeskCoreFilemanagementException("error at create - " . $ex->getMessage());
     }
   }
 
-  public static function delete(string $src, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
+  public static function delete(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
 
     if ($accessCheck == true && $mandantInfo->getAccessDelete() == false) {
       throw new AlpdeskCoreFilemanagementException("access denied");
@@ -204,21 +324,33 @@ class AlpdeskCoreFilemanagement {
 
     try {
 
-      $pDest = $mandantInfo->getFilemount_rootpath() . '/' . self::preparePath($src);
-
-      $filesystem = new Filesystem();
-
-      if (!$filesystem->exists($pDest)) {
-        throw new AlpdeskCoreFilemanagementException("src does not exists");
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
       }
 
-      $filesystem->remove($pDest);
+      $src = self::preparePath(((string) $finderData['src']));
+
+      // @TODO add AccessCheck for Mandant
+      $objFileModelSrc = FilesModel::findByUuid($src);
+      if ($objFileModelSrc === null) {
+        throw new AlpdeskCoreFilemanagementException("src not found");
+      }
+
+      if ($objFileModelSrc->type === 'folder') {
+        $srcObject = new Folder($objFileModelSrc->path);
+        $srcObject->delete();
+      } else if ($objFileModelSrc->type === 'file') {
+        $srcObject = new File($objFileModelSrc->path);
+        $srcObject->delete();
+      } else {
+        throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
+      }
     } catch (\Exception $ex) {
       throw new AlpdeskCoreFilemanagementException("error at delete - " . $ex->getMessage());
     }
   }
 
-  public static function rename(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
+  public static function rename(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): string {
 
     if ($accessCheck == true && $mandantInfo->getAccessRename() == false) {
       throw new AlpdeskCoreFilemanagementException("access denied");
@@ -226,26 +358,68 @@ class AlpdeskCoreFilemanagement {
 
     try {
 
-      $pSrc = $mandantInfo->getFilemount_rootpath() . '/' . self::preparePath($src);
-
-      $filesystem = new Filesystem();
-
-      if (!$filesystem->exists($pSrc)) {
-        throw new AlpdeskCoreFilemanagementException("src does not exists");
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
       }
 
-      $pathInfo = \pathinfo($pSrc);
-      $pTarget = \str_replace($pathInfo['basename'], self::preparePath($target), $pSrc);
+      $src = self::preparePath(((string) $finderData['src']));
 
-      $filesystem->rename($pSrc, $pTarget, true);
+      if ($src === '') {
+        throw new AlpdeskCoreFilemanagementException("invalid src");
+      }
+
+      if (!\array_key_exists('target', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
+      }
+
+      $target = self::preparePath(((string) $finderData['target']));
+
+      if ($target === '') {
+        throw new AlpdeskCoreFilemanagementException("invalid target");
+      }
+
+      // @TODO add AccessCheck for Mandant
+      $objFileModelSrc = FilesModel::findByUuid($src);
+      if ($objFileModelSrc === null) {
+        throw new AlpdeskCoreFilemanagementException("src-File by uuid not found on server");
+      }
+
+      if ($objFileModelSrc->type === 'folder') {
+
+        $srcObject = new Folder($objFileModelSrc->path);
+        $parent = \substr($srcObject->path, 0, (\strlen($srcObject->path) - \strlen($srcObject->basename)));
+        $srcObject->renameTo($parent . $target);
+
+        $targetObject = FilesModel::findByPath($parent . $target);
+        if ($targetObject === null) {
+          throw new AlpdeskCoreFilemanagementException("error rename");
+        }
+
+        return StringUtil::binToUuid($targetObject->uuid);
+      } else if ($objFileModelSrc->type === 'file') {
+
+        $srcObject = new File($objFileModelSrc->path);
+        $parent = \substr($srcObject->path, 0, (\strlen($srcObject->path) - \strlen($srcObject->basename)));
+        $srcObject->renameTo($parent . $target);
+
+        $targetObject = FilesModel::findByPath($parent . $target);
+        if ($targetObject === null) {
+          throw new AlpdeskCoreFilemanagementException("error rename");
+        }
+
+        return StringUtil::binToUuid($targetObject->uuid);
+      } else {
+        throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
+      }
     } catch (\Exception $ex) {
       throw new AlpdeskCoreFilemanagementException("error at rename - " . $ex->getMessage());
     }
   }
 
-  public static function moveOrCopy(string $src, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): void {
+  public static function moveOrCopy(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): string {
 
     if ($copy == true) {
+
       if ($accessCheck == true && $mandantInfo->getAccessCopy() == false) {
         throw new AlpdeskCoreFilemanagementException("access denied");
       }
@@ -257,61 +431,139 @@ class AlpdeskCoreFilemanagement {
 
     try {
 
-      $pSrc = $mandantInfo->getFilemount_rootpath() . '/' . self::preparePath($src);
-      $pTarget = $mandantInfo->getFilemount_rootpath() . '/' . self::preparePath($target);
-
-      $filesystem = new Filesystem();
-
-      if (!$filesystem->exists($pSrc)) {
-        throw new AlpdeskCoreFilemanagementException("src does not exists");
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
       }
 
-      if (!$copy) {
-        if (!$filesystem->exists($pTarget)) {
-          throw new AlpdeskCoreFilemanagementException("target does not exists");
-        }
-        if (!\is_dir($pTarget)) {
-          throw new AlpdeskCoreFilemanagementException("target is not a directory");
-        }
+      $src = self::preparePath(((string) $finderData['src']));
+
+      if ($src === '') {
+        throw new AlpdeskCoreFilemanagementException("invalid src");
       }
 
-      if (\is_file($pSrc)) {
+      if (!\array_key_exists('target', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
+      }
 
-        $path_parts = \pathinfo($pSrc);
-        $newFile = $pTarget . '/' . $path_parts['basename'];
+      $target = self::preparePath(((string) $finderData['target']));
 
-        if ($copy) {
-          $newFile = $pTarget;
-        }
+      if ($target === '/' || $target === '') {
+        $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
+      }
 
-        if ($pSrc != $newFile) {
-          $filesystem->copy($pSrc, $newFile, true);
-        } else {
-          throw new AlpdeskCoreFilemanagementException("src and target are same");
-        }
+      // @TODO add AccessCheck for Mandant
+      $objFileModelSrc = FilesModel::findByUuid(self::preparePath($src));
+      if ($objFileModelSrc === null) {
+        throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
+      }
+
+      $objFileModelTarget = FilesModel::findByUuid(self::preparePath($target));
+      if ($objFileModelTarget === null) {
+        throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
+      }
+
+      if ($objFileModelTarget->type !== 'folder') {
+        throw new AlpdeskCoreFilemanagementException("error - target must be folder");
+      }
+
+      if ($objFileModelSrc->type === 'folder') {
+
+        $srcObject = new Folder($objFileModelSrc->path);
+        $srcObject->copyTo($objFileModelTarget->path . '/' . $srcObject->basename);
 
         if (!$copy) {
-          $filesystem->remove($pSrc);
-        }
-      } else if (\is_dir($pSrc)) {
-
-        $dirname = \basename($pSrc);
-        $newFile = $pTarget . '/' . $dirname;
-
-        if ($copy) {
-          $newFile = $pTarget;
+          $srcObject->delete();
         }
 
-        if ($pSrc != $newFile) {
-          $filesystem->mirror($pSrc, $newFile);
-        } else {
-          throw new AlpdeskCoreFilemanagementException("src and target are same");
+        $targetObject = FilesModel::findByPath($objFileModelTarget->path . '/' . $srcObject->basename);
+        if ($targetObject === null) {
+          throw new AlpdeskCoreFilemanagementException("error rename");
         }
+
+        return StringUtil::binToUuid($targetObject->uuid);
+      } else if ($objFileModelSrc->type === 'file') {
+
+        $srcObject = new File($objFileModelSrc->path);
+        $srcObject->copyTo($objFileModelTarget->path . '/' . $srcObject->basename);
 
         if (!$copy) {
-          $filesystem->remove($pSrc);
+          $srcObject->delete();
         }
+
+        $targetObject = FilesModel::findByPath($objFileModelTarget->path . '/' . $srcObject->basename);
+        if ($targetObject === null) {
+          throw new AlpdeskCoreFilemanagementException("error rename");
+        }
+
+        return StringUtil::binToUuid($targetObject->uuid);
+      } else {
+        throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
       }
+    } catch (\Exception $ex) {
+      throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
+    }
+  }
+
+  public static function meta(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array {
+
+    try {
+
+      if (!\array_key_exists('src', $finderData)) {
+        throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
+      }
+
+      $src = self::preparePath(((string) $finderData['src']));
+
+      if ($src === '') {
+        throw new AlpdeskCoreFilemanagementException("invalid src");
+      }
+
+      // @TODO add AccessCheck for Mandant
+      $objFileModelSrc = FilesModel::findByUuid($src);
+      if ($objFileModelSrc === null) {
+        throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
+      }
+
+      if ($objFileModelSrc->type !== 'file') {
+        throw new AlpdeskCoreFilemanagementException("error - src must be file");
+      }
+
+      $srcObject = new File($objFileModelSrc->path);
+
+      if (!$srcObject->exists()) {
+        throw new AlpdeskCoreFilemanagementException("error - src file does not exists");
+      }
+
+      $metaData = [];
+
+      if ($objFileModelSrc->meta !== null) {
+        $metaData = StringUtil::deserialize($objFileModelSrc->meta);
+      }
+
+      if (\array_key_exists('meta', $finderData)) {
+
+        $metaSet = ((array) $finderData['meta']);
+
+        foreach ($metaSet as $key => $value) {
+          if ($key !== '' && \is_array($value)) {
+            foreach ($value as $valueKey => $valueValue) {
+              if ($valueKey === 'title' || $valueKey === 'alt' || $valueKey === 'link' || $valueKey === 'caption') {
+                $metaData[$key][$valueKey] = $valueValue;
+              }
+            }
+          }
+        }
+
+        $objFileModelSrc->meta = serialize($metaData);
+        $objFileModelSrc->save();
+
+        $metaData = StringUtil::deserialize($objFileModelSrc->meta);
+      }
+
+      return [
+          'uuid' => StringUtil::binToUuid($objFileModelSrc->uuid),
+          'meta' => $metaData
+      ];
     } catch (\Exception $ex) {
       throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
     }
@@ -347,43 +599,30 @@ class AlpdeskCoreFilemanagement {
 
     $mode = (string) $finderData['mode'];
 
-    if (!\array_key_exists('src', $finderData)) {
-      throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
-    }
-
-    $src = (string) $finderData['src'];
-
-    if (!\array_key_exists('target', $finderData)) {
-      throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
-    }
-
-    $target = (string) $finderData['target'];
-
     $mandantInfo = $this->getMandantInformation($user);
 
     switch ($mode) {
       case 'list': {
-          return self::getContentOfDir($src, $mandantInfo);
+          return self::listFolder($finderData, $mandantInfo);
         }
       case 'create': {
-          self::create($src, $target, $mandantInfo);
-          return true;
+          return self::create($finderData, $mandantInfo);
         }
       case 'delete': {
-          self::delete($src, $mandantInfo);
+          self::delete($finderData, $mandantInfo);
           return true;
         }
       case 'rename': {
-          self::rename($src, $target, $mandantInfo);
-          return true;
+          return self::rename($finderData, $mandantInfo);
         }
       case 'move': {
-          self::moveOrcopy($src, $target, $mandantInfo, false);
-          return true;
+          return self::moveOrcopy($finderData, $mandantInfo, false);
         }
       case 'copy': {
-          self::moveOrcopy($src, $target, $mandantInfo, true);
-          return true;
+          return self::moveOrcopy($finderData, $mandantInfo, true);
+        }
+      case 'meta': {
+          return self::meta($finderData, $mandantInfo);
         }
       default:
         throw new AlpdeskCoreFilemanagementException("invalid mode for finder");
