@@ -13,6 +13,7 @@ use Contao\Folder;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Environment;
+use Contao\Config;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -163,6 +164,20 @@ class AlpdeskCoreFilemanagement {
     if (\file_exists($uploadFile->getPathName())) {
 
       $fileName = $uploadFile->getClientOriginalName();
+      $fileName = StringUtil::sanitizeFileName($fileName);
+
+      $maxlength_kb = \min(UploadedFile::getMaxFilesize(), Config::get('maxFileSize'));
+      $fileSize = $uploadFile->getSize();
+      if ($fileSize > $maxlength_kb) {
+        throw new AlpdeskCoreFilemanagementException('file is to large. max. ' . $maxlength_kb);
+      }
+
+      $fileExt = \strtolower(\substr($fileName, \strrpos($fileName, '.') + 1));
+      $allowedFileTypes = StringUtil::trimsplit(',', \strtolower(Config::get('uploadTypes')));
+      if (!\in_array($fileExt, $allowedFileTypes)) {
+        throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.');
+      }
+
       $tmpFileName = time() . '_' . $fileName;
       $uploadFile->move($this->rootDir . '/' . $objTarget->path, $tmpFileName);
 
