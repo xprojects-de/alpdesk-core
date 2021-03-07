@@ -170,8 +170,12 @@ class AlpdeskCoreFilemanagement {
       if (!$tmpFile->exists()) {
         throw new AlpdeskCoreFilemanagementException("error upload file");
       }
-      $tmpFile->copyTo($objTarget->path . '/' . $fileName);
-      $tmpFile->delete();
+
+      if (\file_exists($mandantInfo->getRootDir() . '/' . $objTarget->path . '/' . $fileName)) {
+        $fileName = time() . '_' . $fileName;
+      }
+
+      $tmpFile->renameTo($objTarget->path . '/' . $fileName);
 
       $nFile = new File($objTarget->path . '/' . $fileName);
       if (!$nFile->exists()) {
@@ -289,6 +293,7 @@ class AlpdeskCoreFilemanagement {
 
           array_push($data, array(
               'name' => $basename,
+              'path' => $objFileTmp->path,
               'uuid' => StringUtil::binToUuid($objFileTmp->uuid),
               'extention' => $objFileTmp->extension,
               'public' => $public,
@@ -306,7 +311,7 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function create(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): string {
+  public static function create(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array {
 
     if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
       throw new AlpdeskCoreFilemanagementException("access denied");
@@ -338,6 +343,10 @@ class AlpdeskCoreFilemanagement {
       // No Check neccessarry
       // self::checkFilemountPermission($objTarget->path, $objTargetBase->path . '/' . $src, $mandantInfo);
 
+      if (\file_exists($mandantInfo->getRootDir() . '/' . $objTargetBase->path . '/' . $src)) {
+        throw new AlpdeskCoreFilemanagementException("target still exists");
+      }
+
       if ($target === 'file') {
         $cFile = new File($objTargetBase->path . '/' . $src);
         $cFile->write('init');
@@ -353,7 +362,10 @@ class AlpdeskCoreFilemanagement {
         throw new AlpdeskCoreFilemanagementException("invalid Mandant Filemount");
       }
 
-      return StringUtil::binToUuid($objTargetModel->uuid);
+      return [
+          'uuid' => StringUtil::binToUuid($objTargetModel->uuid),
+          'path' => $objTargetModel->path
+      ];
     } catch (\Exception $ex) {
       throw new AlpdeskCoreFilemanagementException("error at create - " . $ex->getMessage());
     }
@@ -394,7 +406,7 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function rename(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): string {
+  public static function rename(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array {
 
     if ($accessCheck == true && $mandantInfo->getAccessRename() == false) {
       throw new AlpdeskCoreFilemanagementException("access denied");
@@ -433,6 +445,11 @@ class AlpdeskCoreFilemanagement {
 
         $srcObject = new Folder($objFileModelSrc->path);
         $parent = \substr($srcObject->path, 0, (\strlen($srcObject->path) - \strlen($srcObject->basename)));
+
+        if (\file_exists($mandantInfo->getRootDir() . '/' . $parent . $target)) {
+          throw new AlpdeskCoreFilemanagementException("target still exists");
+        }
+
         $srcObject->renameTo($parent . $target);
 
         $targetObject = FilesModel::findByPath($parent . $target);
@@ -440,11 +457,19 @@ class AlpdeskCoreFilemanagement {
           throw new AlpdeskCoreFilemanagementException("error rename");
         }
 
-        return StringUtil::binToUuid($targetObject->uuid);
+        return [
+            'uuid' => StringUtil::binToUuid($targetObject->uuid),
+            'path' => $targetObject->path
+        ];
       } else if ($objFileModelSrc->type === 'file') {
 
         $srcObject = new File($objFileModelSrc->path);
         $parent = \substr($srcObject->path, 0, (\strlen($srcObject->path) - \strlen($srcObject->basename)));
+
+        if (\file_exists($mandantInfo->getRootDir() . '/' . $parent . $target)) {
+          throw new AlpdeskCoreFilemanagementException("target still exists");
+        }
+
         $srcObject->renameTo($parent . $target);
 
         $targetObject = FilesModel::findByPath($parent . $target);
@@ -452,7 +477,10 @@ class AlpdeskCoreFilemanagement {
           throw new AlpdeskCoreFilemanagementException("error rename");
         }
 
-        return StringUtil::binToUuid($targetObject->uuid);
+        return [
+            'uuid' => StringUtil::binToUuid($targetObject->uuid),
+            'path' => $targetObject->path
+        ];
       } else {
         throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
       }
@@ -461,7 +489,7 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function moveOrCopy(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): string {
+  public static function moveOrCopy(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): array {
 
     if ($copy == true) {
 
@@ -517,33 +545,53 @@ class AlpdeskCoreFilemanagement {
       if ($objFileModelSrc->type === 'folder') {
 
         $srcObject = new Folder($objFileModelSrc->path);
-        $srcObject->copyTo($objFileModelTarget->path . '/' . $srcObject->basename);
 
-        if (!$copy) {
-          $srcObject->delete();
+        $basename = $srcObject->basename;
+        if (\file_exists($mandantInfo->getRootDir() . '/' . $objFileModelTarget->path . '/' . $basename)) {
+          $basename = time() . '_' . $basename;
         }
 
-        $targetObject = FilesModel::findByPath($objFileModelTarget->path . '/' . $srcObject->basename);
+        if ($copy) {
+          $srcObject->copyTo($objFileModelTarget->path . '/' . $basename);
+        } else {
+          $srcObject->renameTo($objFileModelTarget->path . '/' . $basename);
+        }
+
+        $targetObject = FilesModel::findByPath($objFileModelTarget->path . '/' . $basename);
         if ($targetObject === null) {
           throw new AlpdeskCoreFilemanagementException("error rename");
         }
 
-        return StringUtil::binToUuid($targetObject->uuid);
+        return [
+            'uuid' => StringUtil::binToUuid($targetObject->uuid),
+            'name' => $basename,
+            'path' => $targetObject->path
+        ];
       } else if ($objFileModelSrc->type === 'file') {
 
         $srcObject = new File($objFileModelSrc->path);
-        $srcObject->copyTo($objFileModelTarget->path . '/' . $srcObject->basename);
 
-        if (!$copy) {
-          $srcObject->delete();
+        $basename = $srcObject->basename;
+        if (\file_exists($mandantInfo->getRootDir() . '/' . $objFileModelTarget->path . '/' . $basename)) {
+          $basename = time() . '_' . $basename;
         }
 
-        $targetObject = FilesModel::findByPath($objFileModelTarget->path . '/' . $srcObject->basename);
+        if ($copy) {
+          $srcObject->copyTo($objFileModelTarget->path . '/' . $basename);
+        } else {
+          $srcObject->renameTo($objFileModelTarget->path . '/' . $basename);
+        }
+
+        $targetObject = FilesModel::findByPath($objFileModelTarget->path . '/' . $basename);
         if ($targetObject === null) {
           throw new AlpdeskCoreFilemanagementException("error rename");
         }
 
-        return StringUtil::binToUuid($targetObject->uuid);
+        return [
+            'uuid' => StringUtil::binToUuid($targetObject->uuid),
+            'name' => $basename,
+            'path' => $targetObject->path
+        ];
       } else {
         throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
       }
@@ -626,6 +674,7 @@ class AlpdeskCoreFilemanagement {
       return [
           'uuid' => StringUtil::binToUuid($objFileModelSrc->uuid),
           'name' => $basename,
+          'path' => $objFileModelSrc->path,
           'extention' => $extention,
           'size' => $size,
           'isimage' => $isImage,
