@@ -12,6 +12,7 @@ use Contao\File;
 use Contao\Folder;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Environment;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -243,19 +244,36 @@ class AlpdeskCoreFilemanagement {
 
         if ($objFileTmp !== null) {
 
+          $public = false;
           $basename = $objFileTmp->path;
+          $url = '';
+          $size = '';
+          $isImage = false;
+
           if ($objFileTmp->type === 'folder') {
             $tmpFolder = new Folder($objFileTmp->path);
             $basename = $tmpFolder->basename;
+            $public = $tmpFolder->isUnprotected();
           } else if ($objFileTmp->type === 'file') {
             $tmpFile = new File($objFileTmp->path);
             $basename = $tmpFile->basename;
+            $public = $tmpFile->isUnprotected();
+            if ($public === true) {
+              $url = Environment::get('base') . $tmpFile->path;
+            }
+            $size = $tmpFile->size;
+            $isImage = ($tmpFile->isCmykImage || $tmpFile->isGdImage || $tmpFile->isImage || $tmpFile->isRgbImage || $tmpFile->isSvgImage);
           }
 
           array_push($data, array(
               'name' => $basename,
               'uuid' => StringUtil::binToUuid($objFileTmp->uuid),
-              'isFolder' => ($objFileTmp->type === 'folder')
+              'extention' => $objFileTmp->extension,
+              'public' => $public,
+              'url' => $url,
+              'isFolder' => ($objFileTmp->type === 'folder'),
+              'size' => $size,
+              'isimage' => $isImage
           ));
         }
       }
@@ -534,6 +552,16 @@ class AlpdeskCoreFilemanagement {
         throw new AlpdeskCoreFilemanagementException("error - src file does not exists");
       }
 
+      $url = '';
+      $public = $srcObject->isUnprotected();
+      if ($public === true) {
+        $url = Environment::get('base') . $srcObject->path;
+      }
+      $basename = $srcObject->basename;
+      $extention = $srcObject->extension;
+      $size = $srcObject->size;
+      $isImage = ($srcObject->isCmykImage || $srcObject->isGdImage || $srcObject->isImage || $srcObject->isRgbImage || $srcObject->isSvgImage);
+
       $metaData = [];
 
       if ($objFileModelSrc->meta !== null) {
@@ -562,6 +590,12 @@ class AlpdeskCoreFilemanagement {
 
       return [
           'uuid' => StringUtil::binToUuid($objFileModelSrc->uuid),
+          'name' => $basename,
+          'extention' => $extention,
+          'size' => $size,
+          'isimage' => $isImage,
+          'public' => $public,
+          'url' => $url,
           'meta' => $metaData
       ];
     } catch (\Exception $ex) {
