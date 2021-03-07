@@ -13,6 +13,7 @@ use Contao\Folder;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Environment;
+use Contao\Config;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -81,6 +82,12 @@ class AlpdeskCoreFilemanagement {
   }
 
   private static function preparePath(string $src): string {
+
+    // Remove invisible control characters and unused code points
+    $src = \preg_replace('/[\pC]/u', '', $src);
+
+    // Remove special characters not supported on e.g. Windows
+    $src = \str_replace(array('\\', ':', '*', '?', '"', '<', '>', '|'), '-', $src);
 
     if (\str_contains($src, '..')) {
       throw new AlpdeskCoreFilemanagementException("invalid levelup sequence ..");
@@ -163,6 +170,24 @@ class AlpdeskCoreFilemanagement {
     if (\file_exists($uploadFile->getPathName())) {
 
       $fileName = $uploadFile->getClientOriginalName();
+      try {
+        $fileName = StringUtil::sanitizeFileName($fileName);
+      } catch (\Exception $ex) {
+        throw new AlpdeskCoreFilemanagementException($ex->getMessage());
+      }
+
+      $maxlength_kb = \min(UploadedFile::getMaxFilesize(), Config::get('maxFileSize'));
+      $fileSize = $uploadFile->getSize();
+      if ($fileSize > $maxlength_kb) {
+        throw new AlpdeskCoreFilemanagementException('file is to large. max. ' . $maxlength_kb);
+      }
+
+      $fileExt = \strtolower(\substr($fileName, \strrpos($fileName, '.') + 1));
+      $allowedFileTypes = StringUtil::trimsplit(',', \strtolower(Config::get('uploadTypes')));
+      if (!\in_array($fileExt, $allowedFileTypes)) {
+        throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.');
+      }
+
       $tmpFileName = time() . '_' . $fileName;
       $uploadFile->move($this->rootDir . '/' . $objTarget->path, $tmpFileName);
 
