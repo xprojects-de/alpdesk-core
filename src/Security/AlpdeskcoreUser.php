@@ -8,8 +8,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskcoreUser implements UserInterface {
 
+  public static int $ADMIN_MANDANT_ID = 0;
+  
   private int $memberId = 0;
   private int $mandantPid = 0;
+  private bool $isAdmin = false;
   private $username = '';
   private $password = '';
   private $firstname = '';
@@ -42,6 +45,14 @@ class AlpdeskcoreUser implements UserInterface {
 
   public function setMandantPid(int $mandantPid): void {
     $this->mandantPid = $mandantPid;
+  }
+
+  public function getIsAdmin(): bool {
+    return $this->isAdmin;
+  }
+
+  public function setIsAdmin(bool $isAdmin): void {
+    $this->isAdmin = $isAdmin;
   }
 
   public function getToken() {

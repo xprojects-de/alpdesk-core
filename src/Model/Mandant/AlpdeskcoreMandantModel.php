@@ -16,8 +16,25 @@ class AlpdeskcoreMandantModel extends Model {
 
   public static function findByUsername($username): AlpdeskcoreUser {
 
-    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?', 'tl_member.alpdeskcore_mandant!=?'], [1, 1, $username, 0]);
+    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?'], [1, 1, $username]);
+
     if ($memberObject !== null) {
+
+      if (\intval($memberObject->alpdeskcore_mandant) <= 0) {
+
+        if (\intval($memberObject->alpdeskcore_admin) == 1) {
+
+          $memberObject->alpdeskcore_mandant = AlpdeskcoreUser::$ADMIN_MANDANT_ID;
+          if (\intval($memberObject->alpdeskcore_tmpmandant) > 0) {
+            $memberObject->alpdeskcore_mandant = \intval($memberObject->alpdeskcore_tmpmandant);
+          }
+        } else {
+          throw new AlpdeskCoreModelException("error auth - member has no mandant");
+        }
+      } else {
+        $memberObject->alpdeskcore_admin = 0;
+      }
+
       $alpdeskUser = new AlpdeskcoreUser();
       $alpdeskUser->setMemberId(\intval($memberObject->id));
       $alpdeskUser->setUsername($memberObject->username);
@@ -26,6 +43,7 @@ class AlpdeskcoreMandantModel extends Model {
       $alpdeskUser->setLastname($memberObject->lastname);
       $alpdeskUser->setEmail($memberObject->email);
       $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
+      $alpdeskUser->setIsAdmin((\intval($memberObject->alpdeskcore_admin) == 1));
       $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
 
       $invalidElements = $memberObject->alpdeskcore_elements;

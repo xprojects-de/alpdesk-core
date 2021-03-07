@@ -12,6 +12,7 @@ class AlpdeskCoreAuthResponse {
   private string $username = '';
   private bool $verify = false;
   private bool $invalid = true;
+  private array $additionalData = [];
 
   public function getAlpdesk_token(): string {
     return $this->alpdesk_token;
@@ -61,5 +62,15 @@ class AlpdeskCoreAuthResponse {
 
     return $exp;
   }
+  
+  public function getAdditionalData(): array {
+    return $this->additionalData;
+  }
+
+  public function setAdditionalData(array $additionalData): void {
+    $this->additionalData = $additionalData;
+  }
+
+
 
 }

@@ -38,7 +38,8 @@ class AlpdeskCoreAuthController extends AbstractController {
                 'alpdesk_token' => $data->getAlpdesk_token(),
                 'verify' => $data->getVerify(),
                 'invalid' => $data->getInvalid(),
-                'expires' => ($data->getInvalid() == true ? 0 : $data->getExp())
+                'expires' => ($data->getInvalid() == true ? 0 : $data->getExp()),
+                'data' => $data->getAdditionalData()
                     ), $statusCode
             ) );
   }

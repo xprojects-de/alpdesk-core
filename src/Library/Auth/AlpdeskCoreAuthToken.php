@@ -12,6 +12,8 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
+use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
+use Contao\MemberModel;
 
 class AlpdeskCoreAuthToken {
 
@@ -38,6 +40,39 @@ class AlpdeskCoreAuthToken {
     }
   }
 
+  private function generateAdminResponse(AlpdeskcoreUser $user, int $ttlToken): AlpdeskCoreAuthResponse {
+
+    $mandantData = [];
+
+    $mandantenObject = AlpdeskcoreMandantModel::findAll();
+    if ($mandantenObject !== null) {
+      foreach ($mandantenObject as $mandant) {
+        $mandantData[$mandant->id] = $mandant->mandant;
+      }
+    }
+
+    $response = new AlpdeskCoreAuthResponse();
+    $response->setUsername($user->getUsername());
+    $response->setInvalid(false);
+    $response->setVerify(false);
+
+    if ($user->getMandantPid() !== AlpdeskcoreUser::$ADMIN_MANDANT_ID) {
+
+      $memberObject = MemberModel::findByPk($user->getMemberId());
+      $memberObject->alpdeskcore_tmpmandant = $user->getMandantPid();
+      $memberObject->save();
+
+      $tokenData = $this->setAuthSession($user->getUsername(), $ttlToken);
+      $response->setAlpdesk_token($tokenData->token);
+    } else {
+      $response->setAlpdesk_token('');
+    }
+
+    $response->setAdditionalData($mandantData);
+
+    return $response;
+  }
+
   public function generateToken(array $authdata): AlpdeskCoreAuthResponse {
     if (!\array_key_exists('username', $authdata) || !\array_key_exists('password', $authdata)) {
       throw new AlpdeskCoreAuthException('invalid key-parameters for auth');
@@ -48,11 +83,23 @@ class AlpdeskCoreAuthToken {
     }
     $username = (string) AlpdeskcoreInputSecurity::secureValue($authdata['username']);
     $password = (string) AlpdeskcoreInputSecurity::secureValue($authdata['password']);
-    try {
-      (new AlpdeskCoreMandantAuth())->login($username, $password);
-    } catch (AlpdeskCoreAuthException $ex) {
-      throw new AlpdeskCoreAuthException($ex->getMessage());
+
+    $alpdeskUser = (new AlpdeskCoreMandantAuth())->login($username, $password);
+
+    if ($alpdeskUser->getIsAdmin() === true) {
+
+      if (!\array_key_exists('mandant', $authdata)) {
+        throw new AlpdeskCoreAuthException('invalid key-parameters mandant for Adminlogin');
+      }
+
+      $mandantId = (string) AlpdeskcoreInputSecurity::secureValue($authdata['mandant']);
+      if ($mandantId != '' && $mandantId != '0') {
+        $alpdeskUser->setMandantPid(\intval($mandantId));
+      }
+
+      return $this->generateAdminResponse($alpdeskUser, $ttlToken);
     }
+
     $response = new AlpdeskCoreAuthResponse();
     $response->setUsername($username);
     $response->setInvalid(false);
