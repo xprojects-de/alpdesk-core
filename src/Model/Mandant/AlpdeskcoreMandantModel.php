@@ -20,14 +20,11 @@ class AlpdeskcoreMandantModel extends Model {
 
     if ($memberObject !== null) {
 
-      if (\intval($memberObject->alpdeskcore_mandant) <= 0) {
+      $mandantId = \intval($memberObject->alpdeskcore_mandant);
 
+      if ($mandantId <= 0) {
         if (\intval($memberObject->alpdeskcore_admin) == 1) {
-
-          $memberObject->alpdeskcore_mandant = AlpdeskcoreUser::$ADMIN_MANDANT_ID;
-          if (\intval($memberObject->alpdeskcore_tmpmandant) > 0) {
-            $memberObject->alpdeskcore_mandant = \intval($memberObject->alpdeskcore_tmpmandant);
-          }
+          $mandantId = \intval($memberObject->alpdeskcore_tmpmandant);
         } else {
           throw new AlpdeskCoreModelException("error auth - member has no mandant");
         }
@@ -42,7 +39,7 @@ class AlpdeskcoreMandantModel extends Model {
       $alpdeskUser->setFirstname($memberObject->firstname);
       $alpdeskUser->setLastname($memberObject->lastname);
       $alpdeskUser->setEmail($memberObject->email);
-      $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
+      $alpdeskUser->setMandantPid($mandantId);
       $alpdeskUser->setIsAdmin((\intval($memberObject->alpdeskcore_admin) == 1));
       $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
 

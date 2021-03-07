@@ -43,6 +43,43 @@
 			"response": []
 		},
 		{
+			"name": "Auth-Login Admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\",\n    \"mandant\": \"\",\n    \"ttltoken\": 3600\n}"
+				},
+				"url": {
+					"raw": "http://contao.local:8888/auth?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"auth"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				},
+				"description": "```json \n{\"Test\":\"Test\"}\n```"
+			},
+			"response": []
+		},
+		{
 			"name": "Auth-Verify",
 			"request": {
 				"auth": {
@@ -142,7 +179,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzMzMTMyNywibmJmIjoxNjEzMzMxMzI3LCJleHAiOjE2MTMzMzQ5MjcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.D5Mm09T4YBClZkycFeZ0bDDJoP8IVuxnXhEOVi-bX_M",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE1Nzk1MSwibmJmIjoxNjE1MTU3OTUxLCJleHAiOjE2MTUxNjE1NTEsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.tfntfBl0cPDvMfwmdOK4KFZu6MJ01wZBZ0IU5_8jL00",
 							"type": "string"
 						}
 					]
@@ -232,7 +269,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzMTA3MiwibmJmIjoxNjE1MTMxMDcyLCJleHAiOjE2MTUxMzQ2NzIsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.sKxDJgirIVSHDPNFuzehvvVS1-Mv6jtWBvtJHsPyuB8",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzNzc3MywibmJmIjoxNjE1MTM3NzczLCJleHAiOjE2MTUxNDEzNzMsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.rRfycUqkjtKcTnz7vBnF__K-LgCYDOF2CnsyNFP4UvU",
 							"type": "string"
 						}
 					]
@@ -251,7 +288,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/Users/benjaminhummel/Documents/Github/contao-mobilemenu/contao-mobilemenu/src/Resources/public/Menu-gross.png"
+							"src": "/Users/benjaminhummel/Documents/Github/alpdesk-automationclient/concatenate.js"
 						},
 						{
 							"key": "target",
@@ -334,7 +371,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzMTA3MiwibmJmIjoxNjE1MTMxMDcyLCJleHAiOjE2MTUxMzQ2NzIsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.sKxDJgirIVSHDPNFuzehvvVS1-Mv6jtWBvtJHsPyuB8",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzNzc3MywibmJmIjoxNjE1MTM3NzczLCJleHAiOjE2MTUxNDEzNzMsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.rRfycUqkjtKcTnz7vBnF__K-LgCYDOF2CnsyNFP4UvU",
 							"type": "string"
 						}
 					]
@@ -343,7 +380,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"\"\n}",
+					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"f51ef76b-7f5e-11eb-bd15-bf9bca265e63\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -379,7 +416,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzMTA3MiwibmJmIjoxNjE1MTMxMDcyLCJleHAiOjE2MTUxMzQ2NzIsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.sKxDJgirIVSHDPNFuzehvvVS1-Mv6jtWBvtJHsPyuB8",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzNzc3MywibmJmIjoxNjE1MTM3NzczLCJleHAiOjE2MTUxNDEzNzMsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.rRfycUqkjtKcTnz7vBnF__K-LgCYDOF2CnsyNFP4UvU",
 							"type": "string"
 						}
 					]
@@ -388,7 +425,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/alpdesk/alpdesk4\", \n    \"target\": \"dir\"\n}",
+					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/alpdesk/alpdesk5\", \n    \"target\": \"dir\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

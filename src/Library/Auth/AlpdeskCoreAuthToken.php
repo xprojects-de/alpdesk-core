@@ -56,14 +56,14 @@ class AlpdeskCoreAuthToken {
     $response->setInvalid(false);
     $response->setVerify(false);
 
+    $memberObject = MemberModel::findByPk($user->getMemberId());
+    $memberObject->alpdeskcore_tmpmandant = $user->getMandantPid();
+    $memberObject->save();
+
     if ($user->getMandantPid() !== AlpdeskcoreUser::$ADMIN_MANDANT_ID) {
-
-      $memberObject = MemberModel::findByPk($user->getMemberId());
-      $memberObject->alpdeskcore_tmpmandant = $user->getMandantPid();
-      $memberObject->save();
-
       $tokenData = $this->setAuthSession($user->getUsername(), $ttlToken);
       $response->setAlpdesk_token($tokenData->token);
+       $response->setVerify(true);
     } else {
       $response->setAlpdesk_token('');
     }
@@ -92,6 +92,7 @@ class AlpdeskCoreAuthToken {
         throw new AlpdeskCoreAuthException('invalid key-parameters mandant for Adminlogin');
       }
 
+      $alpdeskUser->setMandantPid(AlpdeskcoreUser::$ADMIN_MANDANT_ID);
       $mandantId = (string) AlpdeskcoreInputSecurity::secureValue($authdata['mandant']);
       if ($mandantId != '' && $mandantId != '0') {
         $alpdeskUser->setMandantPid(\intval($mandantId));
