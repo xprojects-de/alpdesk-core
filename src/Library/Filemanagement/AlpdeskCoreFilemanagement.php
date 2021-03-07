@@ -522,7 +522,7 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public static function meta(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array {
+  public static function meta(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array {
 
     try {
 
@@ -570,6 +570,10 @@ class AlpdeskCoreFilemanagement {
 
       if (\array_key_exists('meta', $finderData)) {
 
+        if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
+          throw new AlpdeskCoreFilemanagementException("access denied");
+        }
+
         $metaSet = ((array) $finderData['meta']);
 
         foreach ($metaSet as $key => $value) {
@@ -599,7 +603,7 @@ class AlpdeskCoreFilemanagement {
           'meta' => $metaData
       ];
     } catch (\Exception $ex) {
-      throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
+      throw new AlpdeskCoreFilemanagementException("error at meta - " . $ex->getMessage());
     }
   }
 
