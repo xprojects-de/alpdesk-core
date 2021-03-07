@@ -74,8 +74,10 @@ class AlpdeskCoreFilemanagement {
     return (\preg_match('#' . $haystack . '$#', $needle) == 1);
   }
 
-  private static function startsWith(string $haystack, string $needle): bool {
-    return ($needle[0] == $haystack);
+  private static function startsWith($startString, $string) {
+    $len = \strlen($startString);
+    $sub = \substr($string, 0, $len);
+    return ($sub === $startString);
   }
 
   private static function preparePath(string $src): string {
@@ -122,6 +124,23 @@ class AlpdeskCoreFilemanagement {
     return $arrReturn;
   }
 
+  private static function checkFilemountPermission($basePath, $srcPath, AlpdescCoreBaseMandantInfo $mandantInfo): void {
+
+    if ($basePath === null) {
+
+      $baseObject = FilesModel::findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+      if ($baseObject === null) {
+        throw new AlpdeskCoreFilemanagementException("invalid mandant filemount");
+      }
+
+      $basePath = $baseObject->path;
+    }
+
+    if (!self::startsWith($basePath, $srcPath)) {
+      throw new AlpdeskCoreFilemanagementException("invalid mandant filemount - access denied");
+    }
+  }
+
   private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void {
 
     if ($mandantInfo->getAccessUpload() == false) {
@@ -138,6 +157,8 @@ class AlpdeskCoreFilemanagement {
     if ($objTarget === null) {
       throw new AlpdeskCoreFilemanagementException("invalid target filemount");
     }
+
+    self::checkFilemountPermission(null, $objTarget->path, $mandantInfo);
 
     if (\file_exists($uploadFile->getPathName())) {
 
@@ -183,17 +204,13 @@ class AlpdeskCoreFilemanagement {
       throw new AlpdeskCoreFilemanagementException("invalid target filemount");
     }
 
+    self::checkFilemountPermission(null, $objTarget->path, $mandantInfo);
+
     if ($objTarget->type === 'folder') {
       throw new AlpdeskCoreFilemanagementException("invalid src file - must be file");
     }
 
-    // @TODO add AccessCheck for Mandant
-    $objFileModel = FilesModel::findByUuid($target);
-    if ($objFileModel === null) {
-      throw new AlpdeskCoreFilemanagementException("src file not found");
-    }
-
-    $target = $objFileModel->path;
+    $target = $objTarget->path;
     $pDest = $mandantInfo->getRootDir() . '/' . $target;
 
     if (\file_exists($pDest) && \is_file($pDest)) {
@@ -226,11 +243,16 @@ class AlpdeskCoreFilemanagement {
       $path = $objTargetBase->path;
 
       if ($src !== '' && $src !== '/') {
+
         $objTargetSrc = FilesModel::findByUuid($src);
         if ($objTargetSrc === null) {
           throw new AlpdeskCoreFilemanagementException("invalid src filemount");
         }
+
+        self::checkFilemountPermission($objTargetBase->path, $objTargetSrc->path, $mandantInfo);
+
         $path = $objTargetSrc->path;
+
         if ($objTargetSrc->type !== 'folder') {
           throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
         }
@@ -313,6 +335,9 @@ class AlpdeskCoreFilemanagement {
         throw new AlpdeskCoreFilemanagementException("invalid Mandant Filemount");
       }
 
+      // No Check neccessarry
+      // self::checkFilemountPermission($objTarget->path, $objTargetBase->path . '/' . $src, $mandantInfo);
+
       if ($target === 'file') {
         $cFile = new File($objTargetBase->path . '/' . $src);
         $cFile->write('init');
@@ -348,11 +373,12 @@ class AlpdeskCoreFilemanagement {
 
       $src = self::preparePath(((string) $finderData['src']));
 
-      // @TODO add AccessCheck for Mandant
       $objFileModelSrc = FilesModel::findByUuid($src);
       if ($objFileModelSrc === null) {
         throw new AlpdeskCoreFilemanagementException("src not found");
       }
+
+      self::checkFilemountPermission(null, $objFileModelSrc->path, $mandantInfo);
 
       if ($objFileModelSrc->type === 'folder') {
         $srcObject = new Folder($objFileModelSrc->path);
@@ -396,11 +422,12 @@ class AlpdeskCoreFilemanagement {
         throw new AlpdeskCoreFilemanagementException("invalid target");
       }
 
-      // @TODO add AccessCheck for Mandant
       $objFileModelSrc = FilesModel::findByUuid($src);
       if ($objFileModelSrc === null) {
         throw new AlpdeskCoreFilemanagementException("src-File by uuid not found on server");
       }
+
+      self::checkFilemountPermission(null, $objFileModelSrc->path, $mandantInfo);
 
       if ($objFileModelSrc->type === 'folder') {
 
@@ -469,16 +496,19 @@ class AlpdeskCoreFilemanagement {
         $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
       }
 
-      // @TODO add AccessCheck for Mandant
-      $objFileModelSrc = FilesModel::findByUuid(self::preparePath($src));
+      $objFileModelSrc = FilesModel::findByUuid($src);
       if ($objFileModelSrc === null) {
         throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
       }
 
-      $objFileModelTarget = FilesModel::findByUuid(self::preparePath($target));
+      self::checkFilemountPermission(null, $objFileModelSrc->path, $mandantInfo);
+
+      $objFileModelTarget = FilesModel::findByUuid($target);
       if ($objFileModelTarget === null) {
         throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
       }
+
+      self::checkFilemountPermission(null, $objFileModelTarget->path, $mandantInfo);
 
       if ($objFileModelTarget->type !== 'folder') {
         throw new AlpdeskCoreFilemanagementException("error - target must be folder");
@@ -536,11 +566,12 @@ class AlpdeskCoreFilemanagement {
         throw new AlpdeskCoreFilemanagementException("invalid src");
       }
 
-      // @TODO add AccessCheck for Mandant
       $objFileModelSrc = FilesModel::findByUuid($src);
       if ($objFileModelSrc === null) {
         throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
       }
+
+      self::checkFilemountPermission(null, $objFileModelSrc->path, $mandantInfo);
 
       if ($objFileModelSrc->type !== 'file') {
         throw new AlpdeskCoreFilemanagementException("error - src must be file");
