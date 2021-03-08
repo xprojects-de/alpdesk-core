@@ -98,9 +98,11 @@ class AlpdeskCoreAuthController extends AbstractController {
             if ($mandantId == "0") {
 
               $memberObject = MemberModel::findByPk($user->getMemberId());
-              $memberObject->alpdeskcore_mandant = 0;
-              $memberObject->save();
-              $user->setMandantPid(0);
+              if ($memberObject !== null) {
+                $memberObject->alpdeskcore_mandant = 0;
+                $memberObject->save();
+                $user->setMandantPid(0);
+              }
             } else {
 
               if (!\array_key_exists($mandantId, $user->getMandantWhitelist())) {
@@ -108,9 +110,11 @@ class AlpdeskCoreAuthController extends AbstractController {
               }
 
               $memberObject = MemberModel::findByPk($user->getMemberId());
-              $memberObject->alpdeskcore_mandant = \intval($mandantId);
-              $memberObject->save();
-              $user->setMandantPid(\intval($mandantId));
+              if ($memberObject !== null) {
+                $memberObject->alpdeskcore_mandant = \intval($mandantId);
+                $memberObject->save();
+                $user->setMandantPid(\intval($mandantId));
+              }
             }
           }
         }
@@ -120,6 +124,7 @@ class AlpdeskCoreAuthController extends AbstractController {
           'username' => $user->getUsername(),
           'alpdesk_token' => $user->getUsedToken(),
           'isadmin' => $user->getIsAdmin(),
+          'memberid' => $user->getMemberId(),
           'mandantid' => $user->getMandantPid(),
           'mandantvalid' => ($user->getMandantPid() > 0),
           'mandantwhitelist' => $user->getMandantWhitelist()
@@ -127,7 +132,7 @@ class AlpdeskCoreAuthController extends AbstractController {
 
       $responseObject = new AlpdeskCoreMemberResponse();
       $responseObject->setData($response);
-      
+
       $event = new AlpdeskCoreAuthMemberEvent($responseObject);
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthMemberEvent::NAME);
 
