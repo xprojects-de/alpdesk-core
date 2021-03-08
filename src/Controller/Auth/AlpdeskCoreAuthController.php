@@ -87,22 +87,30 @@ class AlpdeskCoreAuthController extends AbstractController {
 
       if ($user->getIsAdmin() === true) {
 
-        if (!\array_key_exists('mandantid', $memberdata)) {
-          throw new AlpdeskCoreAuthException('invalid key-parameters for mandantid');
-        }
+        if (\array_key_exists('mandantid', $memberdata)) {
 
-        $mandantId = (string) AlpdeskcoreInputSecurity::secureValue($memberdata['mandantid']);
+          $mandantId = (string) AlpdeskcoreInputSecurity::secureValue($memberdata['mandantid']);
 
-        if ($mandantId !== "" && $mandantId !== "0") {
-          
-          if(!\array_key_exists($mandantId, $user->getMandantWhitelist())) {
-            throw new AlpdeskCoreAuthException('mandantid not in whitelistarray');
+          if ($mandantId !== "") {
+
+            if ($mandantId == "0") {
+
+              $memberObject = MemberModel::findByPk($user->getMemberId());
+              $memberObject->alpdeskcore_mandant = 0;
+              $memberObject->save();
+              $user->setMandantPid(0);
+            } else {
+
+              if (!\array_key_exists($mandantId, $user->getMandantWhitelist())) {
+                throw new AlpdeskCoreAuthException('mandantid not in whitelistarray');
+              }
+
+              $memberObject = MemberModel::findByPk($user->getMemberId());
+              $memberObject->alpdeskcore_mandant = \intval($mandantId);
+              $memberObject->save();
+              $user->setMandantPid(\intval($mandantId));
+            }
           }
-          
-          $memberObject = MemberModel::findByPk($user->getMemberId());
-          $memberObject->alpdeskcore_mandant = \intval($mandantId);
-          $memberObject->save();
-          $user->setMandantPid(\intval($mandantId));
         }
       }
 
@@ -111,6 +119,7 @@ class AlpdeskCoreAuthController extends AbstractController {
           'alpdesk_token' => $user->getUsedToken(),
           'isadmin' => $user->getIsAdmin(),
           'mandantid' => $user->getMandantPid(),
+          'mandantvalid' => ($user->getMandantPid() > 0),
           'mandantwhitelist' => $user->getMandantWhitelist()
       ];
 
