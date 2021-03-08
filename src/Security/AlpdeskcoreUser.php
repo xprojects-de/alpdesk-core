@@ -8,11 +8,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskcoreUser implements UserInterface {
 
-  public static int $ADMIN_MANDANT_ID = 0;
-  
   private int $memberId = 0;
   private int $mandantPid = 0;
-  private bool $isAdmin = false;  
+  private bool $isAdmin = false;
   private $username = '';
   private $password = '';
   private $firstname = '';
@@ -146,7 +144,7 @@ class AlpdeskcoreUser implements UserInterface {
   public function setHomeDir($homeDir): void {
     $this->homeDir = $homeDir;
   }
-  
+
   public function getMandantWhitelist(): array {
     return $this->mandantWhitelist;
   }
@@ -155,7 +153,6 @@ class AlpdeskcoreUser implements UserInterface {
     $this->mandantWhitelist = $mandantWhitelist;
   }
 
-  
   public function getAccessDownload(): bool {
     return $this->accessDownload;
   }

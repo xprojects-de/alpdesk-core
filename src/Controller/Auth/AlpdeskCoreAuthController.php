@@ -123,8 +123,7 @@ class AlpdeskCoreAuthController extends AbstractController {
           'mandantwhitelist' => $user->getMandantWhitelist()
       ];
 
-      return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK
-      ));
+      return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
     } catch (AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
       return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
