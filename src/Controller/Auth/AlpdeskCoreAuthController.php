@@ -120,6 +120,7 @@ class AlpdeskCoreAuthController extends AbstractController {
           'username' => $user->getUsername(),
           'alpdesk_token' => $user->getUsedToken(),
           'isadmin' => $user->getIsAdmin(),
+          'memberid' => $user->getMemberId(),
           'mandantid' => $user->getMandantPid(),
           'mandantvalid' => ($user->getMandantPid() > 0),
           'mandantwhitelist' => $user->getMandantWhitelist()
