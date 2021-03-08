@@ -18,44 +18,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\",\n    \"ttltoken\": 3600\n}"
-				},
-				"url": {
-					"raw": "http://contao.local:8888/auth?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
-					"host": [
-						"contao",
-						"local"
-					],
-					"port": "8888",
-					"path": [
-						"auth"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
-					]
-				},
-				"description": "```json \n{\"Test\":\"Test\"}\n```"
-			},
-			"response": []
-		},
-		{
-			"name": "Auth-Login Admin",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\",\n    \"mandant\": \"\",\n    \"ttltoken\": 3600\n}"
+					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\",\n    \"ttltoken\": 20000\n}"
 				},
 				"url": {
 					"raw": "http://contao.local:8888/auth?XDEBUG_SESSION_START=netbeans-xdebug",
@@ -87,7 +50,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzE2MjMzNywibmJmIjoxNjEzMTYyMzM3LCJleHAiOjE2MTMxNjU5MzcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ieIN0xz_bo6iWD2NdyLPmfr2A7qQ65-BYBiyVi6sCbE",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE4OTgwNSwibmJmIjoxNjE1MTg5ODA1LCJleHAiOjE2MTUyMDk4MDUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.EkshAr2AjQYjC9hmuKu8U0wnc6_hW5IugJ_HOyNgDY0",
 							"type": "string"
 						}
 					]
@@ -114,6 +77,52 @@
 					"path": [
 						"auth",
 						"verify"
+					],
+					"query": [
+						{
+							"key": "XDEBUG_SESSION_START",
+							"value": "netbeans-xdebug"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth-Member",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE5MTU4NSwibmJmIjoxNjE1MTkxNTg1LCJleHAiOjE2MTUyMTE1ODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.AUAha3I4a5JsPC-02xMmVwOarACCGHm8pNSplPDz9W0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mandantid\":\"2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://contao.local:8888/auth/member?XDEBUG_SESSION_START=netbeans-xdebug",
+					"protocol": "http",
+					"host": [
+						"contao",
+						"local"
+					],
+					"port": "8888",
+					"path": [
+						"auth",
+						"member"
 					],
 					"query": [
 						{
@@ -179,7 +188,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE1Nzk1MSwibmJmIjoxNjE1MTU3OTUxLCJleHAiOjE2MTUxNjE1NTEsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.tfntfBl0cPDvMfwmdOK4KFZu6MJ01wZBZ0IU5_8jL00",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE4OTgwNSwibmJmIjoxNjE1MTg5ODA1LCJleHAiOjE2MTUyMDk4MDUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.EkshAr2AjQYjC9hmuKu8U0wnc6_hW5IugJ_HOyNgDY0",
 							"type": "string"
 						}
 					]
@@ -224,7 +233,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTlvYjIxbFlYVjBiMjFoZEdsdmJnPT0iLCJpYXQiOjE2MTMzMzUyMDAsIm5iZiI6MTYxMzMzNTIwMCwiZXhwIjoxNjEzMzM4ODAwLCJ1c2VybmFtZSI6ImhvbWVhdXRvbWF0aW9uIn0.n9TCGwMA3dV3Qc-BLKph7VcPsZUifIFSRLNCBO5kE_E",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE4OTgwNSwibmJmIjoxNjE1MTg5ODA1LCJleHAiOjE2MTUyMDk4MDUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.EkshAr2AjQYjC9hmuKu8U0wnc6_hW5IugJ_HOyNgDY0",
 							"type": "string"
 						}
 					]
@@ -233,7 +242,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plugin\":\"automationhistory\",\n\"data\":{\n        \"method\":\"list\",\n        \"params\": \"\"\n    }\n}",
+					"raw": "{\n    \"plugin\":\"hello\",\n\"data\":{\n        \"method\":\"list\",\n        \"params\": \"\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
