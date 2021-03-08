@@ -69,7 +69,9 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
     }
 
     try {
+      
       $tables = self::$connectionsTable[$id]->getSchemaManager()->createSchema()->getTables();
+      
       $structure = array();
       foreach ($tables as $table) {
         if ($table instanceof Table) {
@@ -89,9 +91,13 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
           }
 
           $primaryKey = array();
-          foreach ($table->getPrimaryKey()->getColumns() as $column) {
-            array_push($primaryKey, $column);
+          $pKey = $table->getPrimaryKey();
+          if ($pKey !== null) {
+            foreach ($pKey->getColumns() as $column) {
+              array_push($primaryKey, $column);
+            }
           }
+
           $indexes = array();
           foreach ($table->getIndexes() as $indexEntry) {
             if ('PRIMARY' !== $indexEntry->getName()) {
