@@ -51,6 +51,13 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                         'guard' => $guard,
                         'provider' => 'alpdeskcore.security.user_provider',
                     ],
+                    'alpdeskcore_auth_member' => [
+                        'pattern' => '/auth/member',
+                        'anonymous' => true,
+                        'stateless' => true,
+                        'guard' => $guard,
+                        'provider' => 'alpdeskcore.security.user_provider',
+                    ],
                     'alpdeskcore_auth_logout' => [
                         'pattern' => '/auth/logout',
                         'anonymous' => true,

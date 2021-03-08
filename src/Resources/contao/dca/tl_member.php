@@ -4,10 +4,10 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
         ->addField('alpdeskcore_mandant', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_tmpmandant', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_admin', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->addField('alpdeskcore_fixtoken', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->addField('alpdeskcore_elements', 'login_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_admin', 'login_legend', PaletteManipulator::POSITION_APPEND)
+        ->addField('alpdeskcore_mandantwhitelist', 'login_legend', PaletteManipulator::POSITION_APPEND)
         ->applyToSubpalette('login', 'tl_member');
 
 PaletteManipulator::create()
@@ -32,25 +32,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandant'] = [
     'sql' => "int(10) unsigned NOT NULL default '0'"
 ];
 
-$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_tmpmandant'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_tmpmandant'],
-    'exclude' => true,
-    'search' => true,
-    'inputType' => 'select',
-    'foreignKey' => 'tl_alpdeskcore_mandant.mandant',
-    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false, 'includeBlankOption' => true],
-    'sql' => "int(10) unsigned NOT NULL default '0'"
-];
-
-$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_admin'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_admin'],
-    'exclude' => true,
-    'search' => true,
-    'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false, 'includeBlankOption' => true],
-    'sql' => "int(10) unsigned NOT NULL default '0'"
-];
-
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_fixtoken'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_fixtoken'],
     'exclude' => true,
@@ -71,6 +52,24 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
     //'options_callback' => Done using contao.callback event
     'reference' => &$GLOBALS['TL_LANG']['ADME'],
     'eval' => ['tl_class' => 'clr', 'multiple' => true],
+    'sql' => "blob NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_admin'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_admin'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'clr', 'mandantory' => false, 'multiple' => false, 'includeBlankOption' => true],
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandantwhitelist'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_mandantwhitelist'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'foreignKey' => 'tl_alpdeskcore_mandant.mandant',
+    'eval' => ['tl_class' => 'clr', 'mandantory' => false, 'multiple' => true],
     'sql' => "blob NULL"
 ];
 

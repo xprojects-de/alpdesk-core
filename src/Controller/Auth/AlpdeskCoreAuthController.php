@@ -18,6 +18,8 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthInvalidEvent;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Contao\MemberModel;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 
 class AlpdeskCoreAuthController extends AbstractController {
 
@@ -38,8 +40,7 @@ class AlpdeskCoreAuthController extends AbstractController {
                 'alpdesk_token' => $data->getAlpdesk_token(),
                 'verify' => $data->getVerify(),
                 'invalid' => $data->getInvalid(),
-                'expires' => ($data->getInvalid() == true ? 0 : $data->getExp()),
-                'data' => $data->getAdditionalData()
+                'expires' => ($data->getInvalid() == true ? 0 : $data->getExp())
                     ), $statusCode
             ) );
   }
@@ -74,6 +75,48 @@ class AlpdeskCoreAuthController extends AbstractController {
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Verify successfully', __METHOD__);
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
     } catch (\Exception | AlpdeskCoreAuthException $exception) {
+      $this->logger->error($exception->getMessage(), __METHOD__);
+      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+    }
+  }
+
+  public function member(Request $request, UserInterface $user): JsonResponse {
+    try {
+
+      $memberdata = (array) json_decode($request->getContent(), true);
+
+      if ($user->getIsAdmin() === true) {
+
+        if (!\array_key_exists('mandantid', $memberdata)) {
+          throw new AlpdeskCoreAuthException('invalid key-parameters for mandantid');
+        }
+
+        $mandantId = (string) AlpdeskcoreInputSecurity::secureValue($memberdata['mandantid']);
+
+        if ($mandantId !== "" && $mandantId !== "0") {
+          
+          if(!\array_key_exists($mandantId, $user->getMandantWhitelist())) {
+            throw new AlpdeskCoreAuthException('mandantid not in whitelistarray');
+          }
+          
+          $memberObject = MemberModel::findByPk($user->getMemberId());
+          $memberObject->alpdeskcore_mandant = \intval($mandantId);
+          $memberObject->save();
+          $user->setMandantPid(\intval($mandantId));
+        }
+      }
+
+      $response = [
+          'username' => $user->getUsername(),
+          'alpdesk_token' => $user->getUsedToken(),
+          'isadmin' => $user->getIsAdmin(),
+          'mandantid' => $user->getMandantPid(),
+          'mandantwhitelist' => $user->getMandantWhitelist()
+      ];
+
+      return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK
+      ));
+    } catch (AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
       return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
