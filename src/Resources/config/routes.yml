@@ -13,6 +13,14 @@ alpdesk_auth_verify:
         _scope: alpdeskapi
         _token_check: false
     methods: [POST]
+    
+alpdesk_auth_member:
+    path: /auth/member
+    defaults:
+        _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:member
+        _scope: alpdeskapi
+        _token_check: false
+    methods: [POST]
 
 alpdesk_auth_logout:
     path: /auth/logout

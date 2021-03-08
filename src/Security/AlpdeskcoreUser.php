@@ -10,6 +10,7 @@ class AlpdeskcoreUser implements UserInterface {
 
   private int $memberId = 0;
   private int $mandantPid = 0;
+  private bool $isAdmin = false;
   private $username = '';
   private $password = '';
   private $firstname = '';
@@ -20,6 +21,7 @@ class AlpdeskcoreUser implements UserInterface {
   private $fixTokenAuth = false;
   private $invalidElements = [];
   private $homeDir = null;
+  private array $mandantWhitelist = [];
   private bool $accessDownload = true;
   private bool $accessUpload = true;
   private bool $accessCreate = true;
@@ -42,6 +44,14 @@ class AlpdeskcoreUser implements UserInterface {
 
   public function setMandantPid(int $mandantPid): void {
     $this->mandantPid = $mandantPid;
+  }
+
+  public function getIsAdmin(): bool {
+    return $this->isAdmin;
+  }
+
+  public function setIsAdmin(bool $isAdmin): void {
+    $this->isAdmin = $isAdmin;
   }
 
   public function getToken() {
@@ -133,6 +143,14 @@ class AlpdeskcoreUser implements UserInterface {
 
   public function setHomeDir($homeDir): void {
     $this->homeDir = $homeDir;
+  }
+
+  public function getMandantWhitelist(): array {
+    return $this->mandantWhitelist;
+  }
+
+  public function setMandantWhitelist(array $mandantWhitelist): void {
+    $this->mandantWhitelist = $mandantWhitelist;
   }
 
   public function getAccessDownload(): bool {

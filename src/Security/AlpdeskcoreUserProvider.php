@@ -82,6 +82,8 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
       $alpdeskUser->setLastname($alpdeskUserInstance->getLastname());
       $alpdeskUser->setEmail($alpdeskUserInstance->getEmail());
       $alpdeskUser->setMandantPid($alpdeskUserInstance->getMandantPid());
+      $alpdeskUser->setIsAdmin($alpdeskUserInstance->getIsAdmin());
+      $alpdeskUser->setMandantWhitelist($alpdeskUserInstance->getMandantWhitelist());
       $alpdeskUser->setFixToken($alpdeskUserInstance->getFixToken());
       $alpdeskUser->setInvalidElements($alpdeskUserInstance->getInvalidElements());
       $alpdeskUser->setHomeDir($alpdeskUserInstance->getHomeDir());

@@ -16,17 +16,53 @@ class AlpdeskcoreMandantModel extends Model {
 
   public static function findByUsername($username): AlpdeskcoreUser {
 
-    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?', 'tl_member.alpdeskcore_mandant!=?'], [1, 1, $username, 0]);
+    $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?'], [1, 1, $username]);
+
     if ($memberObject !== null) {
+
+      $mandantId = \intval($memberObject->alpdeskcore_mandant);
+      $isAdmin = (\intval($memberObject->alpdeskcore_admin) == 1);
+
+      if ($mandantId <= 0 && $isAdmin === false) {
+        throw new AlpdeskCoreModelException("error auth - member has no mandant");
+      }
+
       $alpdeskUser = new AlpdeskcoreUser();
+
       $alpdeskUser->setMemberId(\intval($memberObject->id));
       $alpdeskUser->setUsername($memberObject->username);
       $alpdeskUser->setPassword($memberObject->password);
       $alpdeskUser->setFirstname($memberObject->firstname);
       $alpdeskUser->setLastname($memberObject->lastname);
       $alpdeskUser->setEmail($memberObject->email);
-      $alpdeskUser->setMandantPid(\intval($memberObject->alpdeskcore_mandant));
+      $alpdeskUser->setMandantPid($mandantId);
       $alpdeskUser->setFixToken($memberObject->alpdeskcore_fixtoken);
+
+      $alpdeskUser->setIsAdmin($isAdmin);
+
+      if ($alpdeskUser->getIsAdmin()) {
+
+        $mandantWhitelist = $memberObject->alpdeskcore_mandantwhitelist;
+        if ($mandantWhitelist !== null && $mandantWhitelist != '') {
+
+          $mandantWhitelistArray = StringUtil::deserialize($mandantWhitelist);
+          if (\is_array($mandantWhitelistArray) && \count($mandantWhitelistArray) > 0) {
+
+            $finalMandantWhitelistArray = [];
+
+            $mandantenObject = self::findAll();
+            if ($mandantenObject !== null) {
+              foreach ($mandantenObject as $mandant) {
+                if (\in_array($mandant->id, $mandantWhitelistArray)) {
+                  $finalMandantWhitelistArray[$mandant->id] = $mandant->mandant;
+                }
+              }
+            }
+
+            $alpdeskUser->setMandantWhitelist($finalMandantWhitelistArray);
+          }
+        }
+      }
 
       $invalidElements = $memberObject->alpdeskcore_elements;
       if ($invalidElements !== null && $invalidElements != '') {
