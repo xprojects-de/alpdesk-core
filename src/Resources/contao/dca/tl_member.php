@@ -60,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_admin'] = [
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'clr', 'mandantory' => false, 'multiple' => false, 'includeBlankOption' => true],
+    'eval' => ['tl_class' => 'clr', 'mandantory' => false, 'multiple' => false],
     'sql' => "int(10) unsigned NOT NULL default '0'"
 ];
 
