@@ -15,7 +15,9 @@ use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthSuccessEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthVerifyEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthInvalidEvent;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthMemberEvent;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
+use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMemberResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Contao\MemberModel;
@@ -123,7 +125,13 @@ class AlpdeskCoreAuthController extends AbstractController {
           'mandantwhitelist' => $user->getMandantWhitelist()
       ];
 
-      return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
+      $responseObject = new AlpdeskCoreMemberResponse();
+      $responseObject->setData($response);
+      
+      $event = new AlpdeskCoreAuthMemberEvent($responseObject);
+      $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthMemberEvent::NAME);
+
+      return (new JsonResponse($event->getResultData()->getData(), AlpdeskCoreConstants::$STATUSCODE_OK));
     } catch (AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
       return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
