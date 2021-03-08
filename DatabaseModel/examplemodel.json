@@ -1,0 +1,93 @@
+[
+  {
+    "table": "testtable",
+    "primary": "id",
+    "index": {
+      "id_tstamp": [
+        "id",
+        "tstamp"
+      ]
+    },
+    "fields": {
+      "id": {
+        "type": "integer",
+        "autoincrement": true,
+        "unsigned": true,
+        "notnull": true,
+        "default": "NOT NULL"
+      },
+      "tstamp": {
+        "type": "integer",
+        "unsigned": true,
+        "notnull": true,
+        "default": 0
+      },
+      "myint": {
+        "type": "int",        
+        "length": 10,
+        "unsigned": true,
+        "default": 10
+      },
+      "title": {
+        "type": "string",
+        "notnull": true,
+        "default": "",
+        "length": 255,
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_unicode_ci"
+      },
+      "longtitle": {
+        "type": "text",
+        "notnull": true,
+        "default": "",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_unicode_ci"
+      },
+      "mediumtitle": {
+        "type": "mediumtext",
+        "notnull": false,
+        "default": "",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_unicode_ci"
+      },
+      "blobfield1": {
+        "type": "blob",
+        "notnull": true,
+        "default": "",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_unicode_ci"
+      }
+    }
+  },
+  {
+    "table": "testtable2",
+    "primary": "id",
+    "index": {
+      "id_myint": [
+        "id",
+        "myint"
+      ]
+    },
+    "fields": {
+      "id": {
+        "type": "integer",
+        "autoincrement": true,
+        "unsigned": true,
+        "notnull": true,
+        "default": "NOT NULL"
+      },
+      "tstamp": {
+        "type": "integer",
+        "unsigned": true,
+        "notnull": true,
+        "default": 0
+      },
+      "myint": {
+        "type": "int",        
+        "length": 10,
+        "unsigned": true,
+        "default": 10
+      }
+    }
+  }
+]
