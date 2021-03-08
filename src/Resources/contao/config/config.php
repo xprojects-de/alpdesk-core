@@ -8,8 +8,10 @@ use Alpdesk\AlpdeskCore\Widget\AlpdeskcoreDatabasemanagerWidget;
 use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
 
 $GLOBALS['BE_FFL']['alpdeskcore_widget_databasemanager'] = AlpdeskcoreDatabasemanagerWidget::class;
+
 if (TL_MODE == 'BE') {
   $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_widget_databasemanager.css';
+  $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_widget_databasemanager.js';
 }
 
 $GLOBALS['TL_MODELS']['tl_alpdeskcore_sessions'] = AlpdeskcoreSessionsModel::class;

@@ -99,7 +99,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
               $migrationItems = $dbmigfation->showMigrations();
               if (\count($migrationItems) > 0) {
 
-                $hasToMigrate = Input::post('alpdeskcore_dbmigration');
+                $hasToMigrate = Input::get('alpdeskcore_dbmigration');
                 if ($hasToMigrate !== null && $hasToMigrate == 1) {
                   $dbmigfation->executeMigrations($migrationItems);
                   return $this->checkMigrations($connection, $modelUuid);
@@ -110,9 +110,8 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
                   $migrations .= '<p>' . $mig . '</p>';
                 }
                 $migrations .= '<hr>';
-                $migrationHidden = '<input type="hidden" name="alpdeskcore_dbmigration" value="1">';
-                $migrationButton = '<button type="submit" name="alpdeskcore_dbmigration_button" id="alpdeskcore_dbmigration_button" class="tl_submit">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</button>';
-                $migrations .= $migrationHidden . $migrationButton;
+                $migrationButton = '<button data-do="' . Input::get('do') . '" data-id="' . Input::get('id') . '" data-act="' . Input::get('act') . '" data-rt="' . Input::get('rt') . '" type="submit" name="alpdeskcore_dbmigration_button" id="alpdeskcore_dbmigration_button" class="tl_submit">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</button>';
+                $migrations .= $migrationButton;
               } else {
                 $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['nomigrations'] . '</h3>';
               }
