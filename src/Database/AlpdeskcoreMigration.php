@@ -41,7 +41,7 @@ class AlpdeskcoreMigration {
 
       foreach ($this->model as $currentTable) {
 
-        $table = $schema->createTable($currentTable['table']);        
+        $table = $schema->createTable($currentTable['table']);
 
         if (\array_key_exists('fields', $currentTable)) {
           foreach ($currentTable['fields'] as $field => $fieldattributes) {
@@ -218,11 +218,10 @@ class AlpdeskcoreMigration {
     return $table->getOption('charset') . '_bin';
   }
 
-  public function hasConfigurationError() {
+  public function hasConfigurationError(&$dbversion) {
 
-    $row = $this->connection->query('SELECT @@version as Version')->fetch(\PDO::FETCH_OBJ);
-
-    [$version] = \explode('-', $row->Version);
+    [$version] = explode('-', $this->connection->fetchOne('SELECT @@version'));
+    $dbversion = $version;
 
     // The database version is too old
     if (\version_compare($version, '5.1.0', '<')) {
@@ -233,9 +232,9 @@ class AlpdeskcoreMigration {
 
     // Check the collation if the user has configured it
     if (isset($options['collate'])) {
-      $statement = $this->connection->query("SHOW COLLATION LIKE '" . $options['collate'] . "'");
+      $row = $this->connection->fetchAssociative("SHOW COLLATION LIKE '" . $options['collate'] . "'");
       // The configured collation is not installed
-      if (false === ($row = $statement->fetch(\PDO::FETCH_OBJ))) {
+      if (false === $row) {
         throw new \Exception('Error: configured collation is not installed');
       }
     }
@@ -243,13 +242,15 @@ class AlpdeskcoreMigration {
     // Check the engine if the user has configured it
     if (isset($options['engine'])) {
       $engineFound = false;
-      $statement = $this->connection->query('SHOW ENGINES');
-      while (false !== ($row = $statement->fetch(\PDO::FETCH_OBJ))) {
-        if ($options['engine'] === $row->Engine) {
+      $rows = $this->connection->fetchAllAssociative('SHOW ENGINES');
+
+      foreach ($rows as $row) {
+        if ($options['engine'] === $row['Engine']) {
           $engineFound = true;
           break;
         }
       }
+
       // The configured engine is not available
       if (!$engineFound) {
         throw new \Exception('Error: configured engine is not available');
@@ -263,9 +264,10 @@ class AlpdeskcoreMigration {
         throw new \Exception('Error: utf8mb4 can be used');
       }
 
-      $row = $this->connection->query("SHOW VARIABLES LIKE 'innodb_large_prefix'")->fetch(\PDO::FETCH_OBJ);
+      $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_large_prefix'");
+
       // The variable no longer exists as of MySQL 8 and MariaDB 10.3
-      if (false === $row || '' === $row->Value) {
+      if (false === $row || '' === $row['Value']) {
         throw new \Exception('Error: innodb_large_prefix not supported');
       }
 
@@ -280,19 +282,21 @@ class AlpdeskcoreMigration {
       }
 
       // The innodb_large_prefix option is disabled
-      if (!\in_array(\strtolower((string) $row->Value), ['1', 'on'], true)) {
+      if (!\in_array(\strtolower((string) $row['Value']), ['1', 'on'], true)) {
         throw new \Exception('Error: innodb_large_prefix option is disabled');
       }
 
-      $row = $this->connection->query("SHOW VARIABLES LIKE 'innodb_file_per_table'")->fetch(\PDO::FETCH_OBJ);
+      $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_file_per_table'");
+
       // The innodb_file_per_table option is disabled
-      if (!\in_array(\strtolower((string) $row->Value), ['1', 'on'], true)) {
+      if (!\in_array(\strtolower((string) $row['Value']), ['1', 'on'], true)) {
         throw new \Exception('Error: innodb_file_per_table option is disabled');
       }
 
-      $row = $this->connection->query("SHOW VARIABLES LIKE 'innodb_file_format'")->fetch(\PDO::FETCH_OBJ);
+      $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_file_format'");
+
       // The InnoDB file format is not Barracuda
-      if ('' !== $row->Value && 'barracuda' !== \strtolower((string) $row->Value)) {
+      if ('' !== $row['Value'] && 'barracuda' !== \strtolower((string) $row['Value'])) {
         throw new \Exception('Error: InnoDB file format is not Barracuda');
       }
     }

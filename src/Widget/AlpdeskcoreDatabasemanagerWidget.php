@@ -93,8 +93,9 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
 
               $dbmigfation = new AlpdeskcoreMigration($connection, $jsonModel);
 
-              $dbmigfation->hasConfigurationError();
-              $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['configurationcheck_valid'] . '</h3>';
+              $version = '-';
+              $dbmigfation->hasConfigurationError($version);
+              $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['configurationcheck_valid'] . '</h3><br>Version: ' . $version;
 
               $migrationItems = $dbmigfation->showMigrations();
               if (\count($migrationItems) > 0) {
