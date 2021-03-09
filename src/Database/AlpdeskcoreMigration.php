@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskCore\Database;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 
@@ -35,43 +36,59 @@ class AlpdeskcoreMigration {
 
   private function parseSql(): Schema {
 
-    $schema = new Schema();
-
     if (\count($this->model) > 0) {
 
-      foreach ($this->model as $currentTable) {
+      $schemaConfig = new SchemaConfig();
+      $defaultOptions = $schemaConfig->getDefaultTableOptions();
 
-        $table = $schema->createTable($currentTable['table']);
+      if (\array_key_exists('charset', $this->model)) {
+        $defaultOptions['charset'] = $this->model['charset'];
+      }
+      if (\array_key_exists('collation', $this->model)) {
+        $defaultOptions['collate'] = $this->model['collation'];
+      }
+      if (\array_key_exists('engine', $this->model)) {
+        $defaultOptions['engine'] = $this->model['engine'];
+      }
+      $schemaConfig->setDefaultTableOptions($defaultOptions);
+      $schema = new Schema([], [], $schemaConfig);
 
-        if (\array_key_exists('fields', $currentTable)) {
-          foreach ($currentTable['fields'] as $field => $fieldattributes) {
+      if (\array_key_exists('tables', $this->model)) {
 
-            if (\is_array($fieldattributes)) {
-              $this->parseField($table, $field, $fieldattributes);
-            }
-          }
-        }
+        foreach ($this->model['tables'] as $currentTable) {
 
-        if (\array_key_exists('primary', $currentTable)) {
-          if (\is_array($currentTable['primary'])) {
-            $table->setPrimaryKey($currentTable['primary']);
-          }
-        }
+          $table = $schema->createTable($currentTable['table']);
 
-        if (\array_key_exists('index', $currentTable)) {
-          if (\is_array($currentTable['index'])) {
-            foreach ($currentTable['index'] as $indexname => $indexfields) {
+          if (\array_key_exists('fields', $currentTable)) {
+            foreach ($currentTable['fields'] as $field => $fieldattributes) {
 
-              if (\is_array($indexfields)) {
-                $table->addIndex($indexfields, $indexname);
+              if (\is_array($fieldattributes)) {
+                $this->parseField($table, $field, $fieldattributes);
               }
             }
           }
-        }
 
-        if (\array_key_exists('unique', $currentTable)) {
-          if (\is_array($currentTable['unique'])) {
-            $table->addUniqueIndex($currentTable['unique']);
+          if (\array_key_exists('primary', $currentTable)) {
+            if (\is_array($currentTable['primary'])) {
+              $table->setPrimaryKey($currentTable['primary']);
+            }
+          }
+
+          if (\array_key_exists('index', $currentTable)) {
+            if (\is_array($currentTable['index'])) {
+              foreach ($currentTable['index'] as $indexname => $indexfields) {
+
+                if (\is_array($indexfields)) {
+                  $table->addIndex($indexfields, $indexname);
+                }
+              }
+            }
+          }
+
+          if (\array_key_exists('unique', $currentTable)) {
+            if (\is_array($currentTable['unique'])) {
+              $table->addUniqueIndex($currentTable['unique']);
+            }
           }
         }
       }
@@ -124,9 +141,9 @@ class AlpdeskcoreMigration {
       $length = null;
     }
 
-    if (\strtolower($type) == 'binary') {
+    /*if (\strtolower($type) == 'binary') {
       $collation = $this->getBinaryCollation($table);
-    }
+    }*/
 
     $notNull = false;
     if (\array_key_exists('notnull', $fieldattributes)) {
