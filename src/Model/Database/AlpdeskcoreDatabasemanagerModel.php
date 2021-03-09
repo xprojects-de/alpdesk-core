@@ -69,7 +69,9 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
     }
 
     try {
+
       $tables = self::$connectionsTable[$id]->getSchemaManager()->createSchema()->getTables();
+
       $structure = array();
       foreach ($tables as $table) {
         if ($table instanceof Table) {
@@ -81,22 +83,26 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
               $options .= 'engine: ' . $tableOptions['engine'];
             }
             if (\array_key_exists('collation', $tableOptions)) {
-              $options .= ' | collation: ' . $tableOptions['collation'];
+              $options .= '<br>collation: ' . $tableOptions['collation'];
             }
             if (\array_key_exists('autoincrement', $tableOptions)) {
-              $options .= ' | autoincrement: ' . $tableOptions['autoincrement'];
+              $options .= '<br>autoincrement: ' . $tableOptions['autoincrement'];
             }
           }
 
           $primaryKey = array();
-          foreach ($table->getPrimaryKey()->getColumns() as $column) {
-            array_push($primaryKey, $column);
+          $pKey = $table->getPrimaryKey();
+          if ($pKey !== null) {
+            foreach ($pKey->getColumns() as $column) {
+              array_push($primaryKey, $column);
+            }
           }
+
           $indexes = array();
           foreach ($table->getIndexes() as $indexEntry) {
             if ('PRIMARY' !== $indexEntry->getName()) {
               $indexInfo = array(
-                  'indextype' => ($indexEntry->isUnique() ? 1 : 0),
+                  'indexunique' => $indexEntry->isUnique(),
                   'indexfields' => '',
                   'indexname' => $indexEntry->getName()
               );
@@ -112,13 +118,13 @@ class AlpdeskcoreDatabasemanagerModel extends Model {
           $indiciesStringArray = array();
           if (\is_array($indexes) && \count($indexes) > 0) {
             foreach ($indexes as $ind) {
-              \array_push($indiciesStringArray, 'Type: ' . $ind['indextype'] . ', Fields: ' . $ind['indexfields'] . ', name: ' . $ind['indexname']);
+              \array_push($indiciesStringArray, 'Name: ' . $ind['indexname'] . ', Unique: ' . ($ind['indexunique'] === true ? 'true' : 'false' ) . ', Fields: ' . $ind['indexfields']);
             }
           }
           $structure[$table->getName()] = array(
               'options' => $options,
-              'primary' => \implode(', ', $primaryKey),
-              'indexes' => \implode(' | ', $indiciesStringArray)
+              'primary' => \implode('<br>', $primaryKey),
+              'indexes' => \implode('<br>', $indiciesStringArray)
           );
 
           $columns = $table->getColumns();

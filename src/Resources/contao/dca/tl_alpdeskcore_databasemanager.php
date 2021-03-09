@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
     ),
     'palettes' => array
         (
-        'default' => 'title;host,port;database,username,password;dbmigration'
+        'default' => 'title;host,port;database,username,password;databasemodel;dbmigration'
     ),
     'fields' => array
         (
@@ -122,6 +122,19 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
                 array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'regenerateEncryptPassword')
             ),
             'sql' => "varchar(250) NOT NULL default ''"
+        ),
+        'databasemodel' => array
+            (
+            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['databasemodel'],
+            'exclude' => true,
+            'inputType' => 'fileTree',
+            'eval' => [
+                'filesOnly' => true,
+                'fieldType' => 'radio',
+                'tl_class' => 'clr',
+                'extensions' => 'json'
+            ],
+            'sql' => "binary(16) NULL"
         ),
         'dbmigration' => array
             (

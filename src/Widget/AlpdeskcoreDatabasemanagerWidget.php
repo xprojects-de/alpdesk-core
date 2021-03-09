@@ -6,6 +6,11 @@ namespace Alpdesk\AlpdeskCore\Widget;
 
 use Contao\Widget;
 use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
+use Contao\FilesModel;
+use Contao\File;
+use Contao\Input;
+use Doctrine\DBAL\Connection;
+use Alpdesk\AlpdeskCore\Database\AlpdeskcoreMigration;
 
 class AlpdeskcoreDatabasemanagerWidget extends Widget {
 
@@ -14,8 +19,11 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
   protected $strTemplate = 'be_widget';
 
   public function generate(): string {
+
     $outputValue = '';
+
     if ($this->activeRecord !== null) {
+
       $id = intval($this->activeRecord->id);
       $host = $this->activeRecord->host;
       $port = intval($this->activeRecord->port);
@@ -27,6 +35,12 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
         $connection = AlpdeskcoreDatabasemanagerModel::connectionById($id);
         try {
           if ($connection !== null) {
+
+            $migrations = $this->checkMigrations($connection, $this->activeRecord->databasemodel);
+            if ($migrations !== "") {
+              $migrationOutput = '<div class="alpdeskcore_widget_databasemanager_container">' . $migrations . '</div>';
+            }
+
             $structure = AlpdeskcoreDatabasemanagerModel::listTables($id, $database);
             AlpdeskcoreDatabasemanagerModel::destroy($id);
             $outputValue .= $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_connection'] . '<br>';
@@ -56,7 +70,61 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget {
         $outputValue .= $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_parameters'] . '<br>';
       }
     }
-    return '<div class="alpdeskcore_widget_databasemanager_container">' . $outputValue . '</div>';
+    return $migrationOutput . '<div class="alpdeskcore_widget_databasemanager_container">' . $outputValue . '</div>';
+  }
+
+  private function checkMigrations(Connection $connection, $modelUuid): string {
+
+    $migrations = '';
+
+    try {
+
+      if ($modelUuid !== null && $modelUuid !== '') {
+
+        $jsonModelFile = FilesModel::findByUuid($modelUuid);
+        if ($jsonModelFile !== null) {
+
+          $jsonFile = new File($jsonModelFile->path);
+          if ($jsonFile->exists()) {
+
+            $jsonModel = \json_decode($jsonFile->getContent(), true);
+
+            if (\count($jsonModel) > 0) {
+
+              $dbmigfation = new AlpdeskcoreMigration($connection, $jsonModel);
+
+              $version = '-';
+              $dbmigfation->hasConfigurationError($version);
+              $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['configurationcheck_valid'] . '</h3><br>Version: ' . $version;
+
+              $migrationItems = $dbmigfation->showMigrations();
+              if (\count($migrationItems) > 0) {
+
+                $hasToMigrate = Input::get('alpdeskcore_dbmigration');
+                if ($hasToMigrate !== null && $hasToMigrate == 1) {
+                  $dbmigfation->executeMigrations($migrationItems);
+                  return $this->checkMigrations($connection, $modelUuid);
+                }
+
+                $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migrations'] . '</h3><hr>';
+                foreach ($migrationItems as $mig) {
+                  $migrations .= '<p>' . $mig . '</p>';
+                }
+                $migrations .= '<hr>';
+                $migrationButton = '<button data-do="' . Input::get('do') . '" data-id="' . Input::get('id') . '" data-act="' . Input::get('act') . '" data-rt="' . Input::get('rt') . '" type="submit" name="alpdeskcore_dbmigration_button" id="alpdeskcore_dbmigration_button" class="tl_submit">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</button>';
+                $migrations .= $migrationButton;
+              } else {
+                $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['nomigrations'] . '</h3>';
+              }
+            }
+          }
+        }
+      }
+    } catch (\Exception $ex) {
+      $migrations = $ex->getMessage();
+    }
+
+    return $migrations;
   }
 
 }
