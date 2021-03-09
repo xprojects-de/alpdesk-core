@@ -41,7 +41,7 @@ class AlpdeskcoreMigration {
 
       foreach ($this->model as $currentTable) {
 
-        $table = $schema->createTable($currentTable['table']);
+        $table = $schema->createTable($currentTable['table']);        
 
         if (\array_key_exists('fields', $currentTable)) {
           foreach ($currentTable['fields'] as $field => $fieldattributes) {
@@ -53,16 +53,25 @@ class AlpdeskcoreMigration {
         }
 
         if (\array_key_exists('primary', $currentTable)) {
-          $table->setPrimaryKey([$currentTable['primary']]);
+          if (\is_array($currentTable['primary'])) {
+            $table->setPrimaryKey($currentTable['primary']);
+          }
         }
 
         if (\array_key_exists('index', $currentTable)) {
-          foreach ($currentTable['index'] as $indexname => $indexfields) {
+          if (\is_array($currentTable['index'])) {
+            foreach ($currentTable['index'] as $indexname => $indexfields) {
 
-            if (\is_array($indexfields)) {
-              // For unique use >= $table->addUniqueIndex($indexFields, $indexName);
-              $table->addIndex($indexfields, $indexname);
+              if (\is_array($indexfields)) {
+                $table->addIndex($indexfields, $indexname);
+              }
             }
+          }
+        }
+
+        if (\array_key_exists('unique', $currentTable)) {
+          if (\is_array($currentTable['unique'])) {
+            $table->addUniqueIndex($currentTable['unique']);
           }
         }
       }
