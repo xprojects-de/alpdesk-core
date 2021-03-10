@@ -70,12 +70,14 @@
     },
     {
       "table": "testtable2",
+      "comment": "Testcomment",
       "primary": [
         "id"
       ],
       "fields": {
         "id": {
           "type": "int",
+          "comment": "Testcomment id",
           "autoincrement": true,
           "unsigned": true,
           "notnull": true
@@ -88,7 +90,6 @@
         },
         "myint": {
           "type": "int",        
-          "length": "10",
           "unsigned": true,
           "default": "10"
         },
@@ -119,6 +120,11 @@
           "type": "double",
           "notnull": true,
           "default": "0"
+        },
+        "mydate": {
+          "type": "date",
+          "notnull": true,
+          "default": "NULL"
         }
       }
     }
