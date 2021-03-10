@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
 class AlpdeskCoreFilemanagement {
 
@@ -67,7 +68,7 @@ class AlpdeskCoreFilemanagement {
 
       return $mInfo;
     } else {
-      throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations");
+      throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
     }
   }
 
@@ -90,11 +91,11 @@ class AlpdeskCoreFilemanagement {
     $src = \str_replace(array('\\', ':', '*', '?', '"', '<', '>', '|'), '-', $src);
 
     if (\str_contains($src, '..')) {
-      throw new AlpdeskCoreFilemanagementException("invalid levelup sequence ..");
+      throw new AlpdeskCoreFilemanagementException("invalid levelup sequence ..", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
     }
 
     if (\str_contains($src, '~')) {
-      throw new AlpdeskCoreFilemanagementException("invalid tilde sequence");
+      throw new AlpdeskCoreFilemanagementException("invalid tilde sequence", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
     }
 
     if (self::startsWith('/', $src)) {
@@ -106,7 +107,7 @@ class AlpdeskCoreFilemanagement {
     }
 
     if ($src === null) {
-      throw new AlpdeskCoreFilemanagementException("No valid src file");
+      throw new AlpdeskCoreFilemanagementException("No valid src file", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
     }
 
     return $src;
@@ -137,21 +138,21 @@ class AlpdeskCoreFilemanagement {
 
       $baseObject = FilesModel::findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
       if ($baseObject === null) {
-        throw new AlpdeskCoreFilemanagementException("invalid mandant filemount");
+        throw new AlpdeskCoreFilemanagementException("invalid mandant filemount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
       }
 
       $basePath = $baseObject->path;
     }
 
     if (!self::startsWith($basePath, $srcPath)) {
-      throw new AlpdeskCoreFilemanagementException("invalid mandant filemount - access denied");
+      throw new AlpdeskCoreFilemanagementException("invalid mandant filemount - access denied", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
     }
   }
 
   private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void {
 
     if ($mandantInfo->getAccessUpload() == false) {
-      throw new AlpdeskCoreFilemanagementException("access denied");
+      throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
     }
 
     $target = self::preparePath($target);
@@ -162,7 +163,7 @@ class AlpdeskCoreFilemanagement {
 
     $objTarget = FilesModel::findByUuid($target);
     if ($objTarget === null) {
-      throw new AlpdeskCoreFilemanagementException("invalid target filemount");
+      throw new AlpdeskCoreFilemanagementException("invalid target filemount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
     }
 
     self::checkFilemountPermission(null, $objTarget->path, $mandantInfo);
@@ -179,13 +180,13 @@ class AlpdeskCoreFilemanagement {
       $maxlength_kb = \min(UploadedFile::getMaxFilesize(), Config::get('maxFileSize'));
       $fileSize = $uploadFile->getSize();
       if ($fileSize > $maxlength_kb) {
-        throw new AlpdeskCoreFilemanagementException('file is to large. max. ' . $maxlength_kb);
+        throw new AlpdeskCoreFilemanagementException('file is to large. max. ' . $maxlength_kb, AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
       }
 
       $fileExt = \strtolower(\substr($fileName, \strrpos($fileName, '.') + 1));
       $allowedFileTypes = StringUtil::trimsplit(',', \strtolower(Config::get('uploadTypes')));
       if (!\in_array($fileExt, $allowedFileTypes)) {
-        throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.');
+        throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.', AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
       }
 
       $tmpFileName = time() . '_' . $fileName;
@@ -223,7 +224,7 @@ class AlpdeskCoreFilemanagement {
   private function downloadFile(string $target, AlpdescCoreBaseMandantInfo $mandantInfo): BinaryFileResponse {
 
     if ($mandantInfo->getAccessDownload() == false) {
-      throw new AlpdeskCoreFilemanagementException("access denied");
+      throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
     }
 
     $target = self::preparePath($target);
@@ -339,7 +340,7 @@ class AlpdeskCoreFilemanagement {
   public static function create(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array {
 
     if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
-      throw new AlpdeskCoreFilemanagementException("access denied");
+      throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
     }
 
     try {
@@ -399,7 +400,7 @@ class AlpdeskCoreFilemanagement {
   public static function delete(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void {
 
     if ($accessCheck == true && $mandantInfo->getAccessDelete() == false) {
-      throw new AlpdeskCoreFilemanagementException("access denied");
+      throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
     }
 
     try {
@@ -434,7 +435,7 @@ class AlpdeskCoreFilemanagement {
   public static function rename(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array {
 
     if ($accessCheck == true && $mandantInfo->getAccessRename() == false) {
-      throw new AlpdeskCoreFilemanagementException("access denied");
+      throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
     }
 
     try {
@@ -519,11 +520,11 @@ class AlpdeskCoreFilemanagement {
     if ($copy == true) {
 
       if ($accessCheck == true && $mandantInfo->getAccessCopy() == false) {
-        throw new AlpdeskCoreFilemanagementException("access denied");
+        throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
       }
     } else {
       if ($accessCheck == true && $mandantInfo->getAccessMove() == false) {
-        throw new AlpdeskCoreFilemanagementException("access denied");
+        throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
       }
     }
 
@@ -675,7 +676,7 @@ class AlpdeskCoreFilemanagement {
       if (\array_key_exists('meta', $finderData)) {
 
         if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
-          throw new AlpdeskCoreFilemanagementException("access denied");
+          throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
         $metaSet = ((array) $finderData['meta']);
@@ -768,7 +769,7 @@ class AlpdeskCoreFilemanagement {
           return self::meta($finderData, $mandantInfo);
         }
       default:
-        throw new AlpdeskCoreFilemanagementException("invalid mode for finder");
+        throw new AlpdeskCoreFilemanagementException("invalid mode for finder", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
     }
   }
 

@@ -15,6 +15,7 @@ use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
 class AlpdeskCoreMandant {
 
@@ -65,7 +66,7 @@ class AlpdeskCoreMandant {
         }
       }
     } else {
-      throw new AlpdeskCoreMandantException("error loading plugins for Mandant");
+      throw new AlpdeskCoreMandantException("error loading plugins for Mandant", AlpdeskCoreConstants::$ERROR_INVALID_PLUGIN);
     }
     return $data;
   }
@@ -90,7 +91,7 @@ class AlpdeskCoreMandant {
       }
       return $returnData;
     } else {
-      throw new AlpdeskCoreMandantException("error loading plugins for Mandant");
+      throw new AlpdeskCoreMandantException("error loading data for Mandant", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
     }
   }
 

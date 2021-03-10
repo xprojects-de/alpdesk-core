@@ -14,6 +14,7 @@ use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
 class AlpdeskCorePlugin {
 
@@ -37,11 +38,11 @@ class AlpdeskCorePlugin {
       }
       if ($validPlugin == false) {
         $msg = 'error loading plugin for username:' . $username;
-        throw new AlpdeskCorePluginException($msg);
+        throw new AlpdeskCorePluginException($msg, AlpdeskCoreConstants::$ERROR_INVALID_PLUGIN);
       }
     } else {
       $msg = 'error loading plugin because null for username:' . $username;
-      throw new AlpdeskCorePluginException($msg);
+      throw new AlpdeskCorePluginException($msg, AlpdeskCoreConstants::$ERROR_INVALID_PLUGIN);
     }
   }
 
@@ -82,14 +83,14 @@ class AlpdeskCorePlugin {
 
       return $mInfo;
     } else {
-      throw new AlpdeskCorePluginException('cannot get Mandantinformations');
+      throw new AlpdeskCorePluginException('cannot get Mandantinformations', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
     }
   }
 
   public function call(AlpdeskcoreUser $user, array $plugindata): AlpdeskCorePlugincallResponse {
     if (!\array_key_exists('plugin', $plugindata) || !\array_key_exists('data', $plugindata)) {
       $msg = 'invalid key-parameters for plugin';
-      throw new AlpdeskCorePluginException($msg);
+      throw new AlpdeskCorePluginException($msg, AlpdeskCoreConstants::$ERROR_INVALID_KEYPARAMETERS);
     }
     $plugin = (string) AlpdeskcoreInputSecurity::secureValue($plugindata['plugin']);
     $data = (array) $plugindata['data'];

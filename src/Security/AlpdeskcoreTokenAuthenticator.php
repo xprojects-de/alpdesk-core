@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
 class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator {
 
@@ -29,13 +30,13 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator {
   }
 
   public function start(Request $request, AuthenticationException $authException = null) {
-    $data = ['message' => 'Auth required'];
+    $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'message' => 'Auth required'];
     $this->logger->info('Auth required', __METHOD__);
     return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
   }
 
   public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
-    $data = ['message' => strtr($exception->getMessage(), $exception->getMessageData())];
+    $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'message' => strtr($exception->getMessage(), $exception->getMessageData())];
     $this->logger->error(strtr($exception->getMessage(), $exception->getMessageData()), __METHOD__);
     return new JsonResponse($data, Response::HTTP_FORBIDDEN);
   }
@@ -71,7 +72,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator {
       $username = $userProvider->getValidatedUsernameFromToken($credentials['token']);
     } catch (\Exception $e) {
       $this->logger->error($e->getMessage(), __METHOD__);
-      throw new AuthenticationException($e->getMessage());
+      throw new AuthenticationException($e->getMessage(), $e->getCode());
     }
     return $userProvider->loadUserByUsername($username);
   }

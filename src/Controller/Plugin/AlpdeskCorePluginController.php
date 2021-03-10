@@ -42,8 +42,13 @@ class AlpdeskCorePluginController extends AbstractController {
             ) );
   }
 
-  private function outputError(string $data, int $statusCode): JsonResponse {
-    return (new JsonResponse($data, $statusCode));
+  private function outputError(string $data, $code, int $statusCode): JsonResponse {
+
+    if ($code === null || $code === 0) {
+      $code = AlpdeskCoreConstants::$ERROR_COMMON;
+    }
+
+    return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
   }
 
   public function call(Request $request, UserInterface $user): JsonResponse {
@@ -56,7 +61,7 @@ class AlpdeskCorePluginController extends AbstractController {
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
     } catch (\Exception | AlpdeskCorePluginException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
