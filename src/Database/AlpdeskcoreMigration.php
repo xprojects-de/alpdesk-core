@@ -141,13 +141,18 @@ class AlpdeskcoreMigration {
       $length = null;
     }
 
-    /*if (\strtolower($type) == 'binary') {
+    /* if (\strtolower($type) == 'binary') {
       $collation = $this->getBinaryCollation($table);
-    }*/
+      } */
 
     $notNull = false;
     if (\array_key_exists('notnull', $fieldattributes)) {
       $notNull = $fieldattributes['notnull'];
+    }
+
+    $comment = null;
+    if (\array_key_exists('comment', $fieldattributes)) {
+      $comment = $fieldattributes['comment'];
     }
 
     $options = [
@@ -159,7 +164,7 @@ class AlpdeskcoreMigration {
         'scale' => null,
         'precision' => null,
         'autoincrement' => $autoincrement,
-        'comment' => null,
+        'comment' => $comment,
     ];
 
     if (null !== $scale && null !== $precision) {
