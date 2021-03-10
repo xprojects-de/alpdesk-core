@@ -42,8 +42,13 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
             ) );
   }
 
-  private function outputError(string $data, int $statusCode): JsonResponse {
-    return (new JsonResponse($data, $statusCode));
+  private function outputError(string $data, $code, int $statusCode): JsonResponse {
+
+    if ($code === null || $code === 0) {
+      $code = AlpdeskCoreConstants::$ERROR_COMMON;
+    }
+
+    return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
   }
 
   public function upload(Request $request, UserInterface $user): JsonResponse {
@@ -58,10 +63,10 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
         return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
       }
       $this->logger->error('invalid parameters (=null) for upload', __METHOD__);
-      return $this->outputError('invalid parameters (=null) for upload', AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError('invalid parameters (=null) for upload', AlpdeskCoreConstants::$ERROR_FILEMANAGEMENT_INVALIDFILES, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
@@ -73,7 +78,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
       return $file;
     } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
@@ -85,7 +90,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController {
       return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
     } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 

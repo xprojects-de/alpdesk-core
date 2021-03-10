@@ -51,8 +51,13 @@ class AlpdeskCoreMandantController extends AbstractController {
             ) );
   }
 
-  private function outputError(string $data, int $statusCode): JsonResponse {
-    return (new JsonResponse($data, $statusCode));
+  private function outputError(string $data, $code, int $statusCode): JsonResponse {
+
+    if ($code === null || $code === 0) {
+      $code = AlpdeskCoreConstants::$ERROR_COMMON;
+    }
+
+    return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
   }
 
   public function list(Request $request, UserInterface $user): JsonResponse {
@@ -64,12 +69,12 @@ class AlpdeskCoreMandantController extends AbstractController {
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
     } catch (\Exception |  AlpdeskCoreMandantException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
   public function edit(Request $request, UserInterface $user): JsonResponse {
-    return $this->outputError('Not Supported', AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+    return $this->outputError('Not Supported', AlpdeskCoreConstants::$ERROR_COMMON, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
   }
 
 }

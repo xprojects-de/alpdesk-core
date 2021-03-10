@@ -9,6 +9,7 @@ use Contao\MemberModel;
 use Contao\StringUtil;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
 class AlpdeskcoreMandantModel extends Model {
 
@@ -24,7 +25,7 @@ class AlpdeskcoreMandantModel extends Model {
       $isAdmin = (\intval($memberObject->alpdeskcore_admin) == 1);
 
       if ($mandantId <= 0 && $isAdmin === false) {
-        throw new AlpdeskCoreModelException("error auth - member has no mandant");
+        throw new AlpdeskCoreModelException("error auth - member has no mandant", AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
       }
 
       $alpdeskUser = new AlpdeskcoreUser();
@@ -106,7 +107,7 @@ class AlpdeskcoreMandantModel extends Model {
 
       return $alpdeskUser;
     } else {
-      throw new AlpdeskCoreModelException("error auth - invalid member");
+      throw new AlpdeskCoreModelException("error auth - invalid member", AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
     }
   }
 

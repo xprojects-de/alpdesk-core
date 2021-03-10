@@ -34,13 +34,13 @@ class AlpdeskCoreAuthToken {
       $sessionModel->save();
     } else {
       $msg = 'Auth-Session not found for username:' . $username;
-      throw new AlpdeskCoreAuthException($msg);
+      throw new AlpdeskCoreAuthException($msg, AlpdeskCoreConstants::$ERROR_COMMON);
     }
   }
 
   public function generateToken(array $authdata): AlpdeskCoreAuthResponse {
     if (!\array_key_exists('username', $authdata) || !\array_key_exists('password', $authdata)) {
-      throw new AlpdeskCoreAuthException('invalid key-parameters for auth');
+      throw new AlpdeskCoreAuthException('invalid key-parameters for auth', AlpdeskCoreConstants::$ERROR_INVALID_KEYPARAMETERS);
     }
     $ttlToken = AlpdeskCoreConstants::$TOKENTTL;
     if (\array_key_exists('ttltoken', $authdata)) {
@@ -51,7 +51,7 @@ class AlpdeskCoreAuthToken {
     try {
       (new AlpdeskCoreMandantAuth())->login($username, $password);
     } catch (AlpdeskCoreAuthException $ex) {
-      throw new AlpdeskCoreAuthException($ex->getMessage());
+      throw new AlpdeskCoreAuthException($ex->getMessage(), $ex->getCode());
     }
     $response = new AlpdeskCoreAuthResponse();
     $response->setUsername($username);

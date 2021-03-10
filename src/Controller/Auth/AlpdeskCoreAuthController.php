@@ -47,8 +47,13 @@ class AlpdeskCoreAuthController extends AbstractController {
             ) );
   }
 
-  private function outputError(string $data, int $statusCode): JsonResponse {
-    return (new JsonResponse($data, $statusCode));
+  private function outputError(string $data, $code, int $statusCode): JsonResponse {
+
+    if ($code === null || $code === 0) {
+      $code = AlpdeskCoreConstants::$ERROR_COMMON;
+    }
+
+    return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
   }
 
   public function auth(Request $request): JsonResponse {
@@ -61,7 +66,7 @@ class AlpdeskCoreAuthController extends AbstractController {
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
     } catch (AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
@@ -78,7 +83,7 @@ class AlpdeskCoreAuthController extends AbstractController {
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
     } catch (\Exception | AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
@@ -106,7 +111,7 @@ class AlpdeskCoreAuthController extends AbstractController {
             } else {
 
               if (!\array_key_exists($mandantId, $user->getMandantWhitelist())) {
-                throw new AlpdeskCoreAuthException('mandantid not in whitelistarray');
+                throw new AlpdeskCoreAuthException('mandantid not in whitelistarray', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
               }
 
               $memberObject = MemberModel::findByPk($user->getMemberId());
@@ -139,7 +144,7 @@ class AlpdeskCoreAuthController extends AbstractController {
       return (new JsonResponse($event->getResultData()->getData(), AlpdeskCoreConstants::$STATUSCODE_OK));
     } catch (AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 
@@ -152,7 +157,7 @@ class AlpdeskCoreAuthController extends AbstractController {
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
     } catch (\Exception | AlpdeskCoreAuthException $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+      return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
   }
 

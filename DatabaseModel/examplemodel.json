@@ -33,6 +33,7 @@
         "myint": {
           "type": "int",
           "unsigned": true,
+          "notnull": true,
           "default": "10"
         },
         "title": {
@@ -49,6 +50,7 @@
         "mediumtitle": {
           "type": "mediumtext",
           "notnull": false,
+          "notnull": true,
           "default": ""
         },
         "blobfield1": {
@@ -91,6 +93,7 @@
         "myint": {
           "type": "int",        
           "unsigned": true,
+          "notnull": true,
           "default": "10"
         },
         "binarytest": {
@@ -114,16 +117,18 @@
         "mysmallint": {
           "type": "smallint",
           "unsigned": true,
+          "notnull": true,
           "default": "3"
         },
         "mydouble": {
           "type": "double",
           "notnull": true,
+          "notnull": true,
           "default": "0"
         },
         "mydate": {
           "type": "date",
-          "notnull": true,
+          "notnull": false,
           "default": "NULL"
         }
       }
