@@ -91,25 +91,25 @@
           "default": "0"
         },
         "myint": {
-          "type": "int",        
+          "type": "int",
           "unsigned": true,
           "notnull": true,
           "default": "10"
         },
         "binarytest": {
-          "type": "binary",        
+          "type": "binary",
           "length": "16",
           "notnull": false,
           "default": "NULL"
         },
         "chartest": {
-          "type": "char",        
+          "type": "char",
           "length": "1",
           "notnull": true,
           "default": "0"
         },
         "varchar64": {
-          "type": "string",        
+          "type": "string",
           "length": "64",
           "notnull": true,
           "default": "my default"
