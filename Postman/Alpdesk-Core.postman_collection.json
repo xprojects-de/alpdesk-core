@@ -21,21 +21,12 @@
 					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\",\n    \"ttltoken\": 20000\n}"
 				},
 				"url": {
-					"raw": "http://contao.local:8888/auth?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/auth",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"auth"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				},
 				"description": "```json \n{\"Test\":\"Test\"}\n```"
@@ -50,7 +41,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE4OTgwNSwibmJmIjoxNjE1MTg5ODA1LCJleHAiOjE2MTUyMDk4MDUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.EkshAr2AjQYjC9hmuKu8U0wnc6_hW5IugJ_HOyNgDY0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -67,22 +58,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/auth/verify?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/auth/verify",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"auth",
 						"verify"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -96,7 +78,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE5MTU4NSwibmJmIjoxNjE1MTkxNTg1LCJleHAiOjE2MTUyMTE1ODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.AUAha3I4a5JsPC-02xMmVwOarACCGHm8pNSplPDz9W0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -113,22 +95,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/auth/member?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/auth/member",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"auth",
 						"member"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -142,7 +115,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxMzE2MjMzNywibmJmIjoxNjEzMTYyMzM3LCJleHAiOjE2MTMxNjU5MzcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.ieIN0xz_bo6iWD2NdyLPmfr2A7qQ65-BYBiyVi6sCbE",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -159,22 +132,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/auth/logout?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/auth/logout",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"auth",
 						"logout"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -188,7 +152,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE4OTgwNSwibmJmIjoxNjE1MTg5ODA1LCJleHAiOjE2MTUyMDk4MDUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.EkshAr2AjQYjC9hmuKu8U0wnc6_hW5IugJ_HOyNgDY0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -205,21 +169,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/mandant?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/mandant",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"mandant"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -233,7 +188,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTE4OTgwNSwibmJmIjoxNjE1MTg5ODA1LCJleHAiOjE2MTUyMDk4MDUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.EkshAr2AjQYjC9hmuKu8U0wnc6_hW5IugJ_HOyNgDY0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -250,21 +205,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/plugin?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/plugin",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"plugin"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -278,7 +224,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzNzc3MywibmJmIjoxNjE1MTM3NzczLCJleHAiOjE2MTUxNDEzNzMsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.rRfycUqkjtKcTnz7vBnF__K-LgCYDOF2CnsyNFP4UvU",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -307,13 +253,10 @@
 					]
 				},
 				"url": {
-					"raw": "http://contao.local:8888/upload",
-					"protocol": "http",
+					"raw": "{{host}}/upload",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"upload"
 					]
@@ -329,7 +272,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTA1ODk4NywibmJmIjoxNjE1MDU4OTg3LCJleHAiOjE2MTUwNjI1ODcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.hEsu6zCQ261YpV-aahWscIWdG2fC5syqCqMdHrahYt0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -352,21 +295,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/download?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/download",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"download"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -380,7 +314,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzNzc3MywibmJmIjoxNjE1MTM3NzczLCJleHAiOjE2MTUxNDEzNzMsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.rRfycUqkjtKcTnz7vBnF__K-LgCYDOF2CnsyNFP4UvU",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -397,21 +331,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -425,7 +350,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzNzc3MywibmJmIjoxNjE1MTM3NzczLCJleHAiOjE2MTUxNDEzNzMsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.rRfycUqkjtKcTnz7vBnF__K-LgCYDOF2CnsyNFP4UvU",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -442,21 +367,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -470,7 +386,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTA1ODk4NywibmJmIjoxNjE1MDU4OTg3LCJleHAiOjE2MTUwNjI1ODcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.hEsu6zCQ261YpV-aahWscIWdG2fC5syqCqMdHrahYt0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -487,21 +403,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -515,7 +422,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEwOTI4NSwibmJmIjoxNjE1MTA5Mjg1LCJleHAiOjE2MTUxMTI4ODUsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.L2njGFXLTPTKEDVdgwoH3MmZnfFXL4Bc_C039yqtn64",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -532,21 +439,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -560,7 +458,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzMTA3MiwibmJmIjoxNjE1MTMxMDcyLCJleHAiOjE2MTUxMzQ2NzIsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.sKxDJgirIVSHDPNFuzehvvVS1-Mv6jtWBvtJHsPyuB8",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -577,21 +475,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -605,7 +494,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTA1ODk4NywibmJmIjoxNjE1MDU4OTg3LCJleHAiOjE2MTUwNjI1ODcsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.hEsu6zCQ261YpV-aahWscIWdG2fC5syqCqMdHrahYt0",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -622,21 +511,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
@@ -650,7 +530,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTYxNTEzMTA3MiwibmJmIjoxNjE1MTMxMDcyLCJleHAiOjE2MTUxMzQ2NzIsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.sKxDJgirIVSHDPNFuzehvvVS1-Mv6jtWBvtJHsPyuB8",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -667,21 +547,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://contao.local:8888/finder?XDEBUG_SESSION_START=netbeans-xdebug",
-					"protocol": "http",
+					"raw": "{{host}}/finder",
 					"host": [
-						"contao",
-						"local"
+						"{{host}}"
 					],
-					"port": "8888",
 					"path": [
 						"finder"
-					],
-					"query": [
-						{
-							"key": "XDEBUG_SESSION_START",
-							"value": "netbeans-xdebug"
-						}
 					]
 				}
 			},
