@@ -3,9 +3,9 @@ services:
   alpdeskcore.listener.registerplugin:
     class: Alpdesk\AlpdeskCore\Events\Listener\AlpdeskCoreRegisterPluginListener
     tags:
-      - { name: kernel.event_listener, event: alpdesk.registerplugin}
-      
+      - { name: kernel.event_listener, event: alpdesk.registerplugin }
+
   alpdeskcore.listener.helloplugin:
     class: Alpdesk\AlpdeskCore\Elements\Hello\AlpdeskCoreElementHello
     tags:
-      - { name: kernel.event_listener, event: alpdesk.plugincall}    
+      - { name: kernel.event_listener, event: alpdesk.plugincall }
