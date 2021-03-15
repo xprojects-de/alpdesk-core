@@ -67,7 +67,7 @@ class AlpdeskCoreMandantController extends AbstractController {
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreMandantListEvent::NAME);
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | MandantList successfully', __METHOD__);
       return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
-    } catch (\Exception |  AlpdeskCoreMandantException $exception) {
+    } catch (\Exception $exception) {
       $this->logger->error($exception->getMessage(), __METHOD__);
       return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }

@@ -163,7 +163,7 @@ class AlpdeskCoreAuthController extends AbstractController
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthInvalidEvent::NAME);
             $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Logout successfully', __METHOD__);
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
-        } catch (\Exception | AlpdeskCoreAuthException $exception) {
+        } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
         }
