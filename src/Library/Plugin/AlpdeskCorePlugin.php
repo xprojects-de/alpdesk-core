@@ -115,7 +115,7 @@ class AlpdeskCorePlugin {
           if (!\array_key_exists('ngContent', $tmp) ||
                   !\array_key_exists('ngStylesheetUrl', $tmp) ||
                   !\array_key_exists('ngScriptUrl', $tmp)) {
-            $msg = 'plugin use customTemplate but keys not defined in resultArray for plugin:' . $plugin . ' and username:' . $username;
+            $msg = 'plugin use customTemplate but keys not defined in resultArray for plugin:' . $plugin;
             throw new AlpdeskCorePluginException($msg);
           }
           $tmp['ngContent'] = StringUtil::convertEncoding($tmp['ngContent'], 'UTF-8');

@@ -1,79 +1,79 @@
 alpdesk_auth:
-    path: /auth
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:auth
-        _scope: frontend
-        _token_check: false
-    methods: [POST]
+  path: /auth
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:auth
+    _scope: frontend
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_auth_verify:
-    path: /auth/verify
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:verify
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
-    
+  path: /auth/verify
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:verify
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
+
 alpdesk_auth_member:
-    path: /auth/member
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:member
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /auth/member
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:member
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_auth_logout:
-    path: /auth/logout
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:logout
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /auth/logout
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:logout
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_plugin_call:
-    path: /plugin
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Plugin\AlpdeskCorePluginController:call
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /plugin
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Plugin\AlpdeskCorePluginController:call
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_mandant_list:
-    path: /mandant
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:list
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /mandant
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:list
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_mandant_edit:
-    path: /mandant/edit
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:edit
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /mandant/edit
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:edit
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_filemanagement_upload:
-    path: /upload
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:upload
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /upload
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:upload
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
 
 alpdesk_filemanagement_download:
-    path: /download
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:download
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
-    
+  path: /download
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:download
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
+
 alpdesk_filemanagement_finder:
-    path: /finder
-    defaults:
-        _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:finder
-        _scope: alpdeskapi
-        _token_check: false
-    methods: [POST]
+  path: /finder
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:finder
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
