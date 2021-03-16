@@ -85,6 +85,42 @@ class AlpdeskcoreMigration
                         }
                     }
 
+                    if (\array_key_exists('foreignKeys', $currentTable)) {
+                        if (\is_array($currentTable['foreignKeys'])) {
+
+                            foreach ($currentTable['foreignKeys'] as $foreignTable => $columnMatching) {
+
+                                if (\is_array($columnMatching) && \count($columnMatching) > 0) {
+
+                                    // avalible RESTRICT, CASCADE, NO ACTION
+                                    $options = [
+                                        'onDelete' => 'RESTRICT',
+                                        'onUpdate' => 'RESTRICT'
+                                    ];
+
+                                    if (\array_key_exists('onDelete', $columnMatching)) {
+                                        $options['onDelete'] = $columnMatching['onDelete'];
+                                    }
+
+                                    if (\array_key_exists('onUpdate', $columnMatching)) {
+                                        $options['onUpdate'] = $columnMatching['onUpdate'];
+                                    }
+
+                                    if (\array_key_exists('constraint', $columnMatching) && \is_array($columnMatching['constraint']) && \count($columnMatching['constraint']) > 0) {
+
+                                        // Only one per Table // Maybe @TODO
+                                        foreach ($columnMatching['constraint'] as $localColumn => $foreignColumn) {
+                                            $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
+                                            break;
+                                        }
+
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
                     if (\array_key_exists('unique', $currentTable)) {
                         if (\is_array($currentTable['unique'])) {
                             $table->addUniqueIndex($currentTable['unique']);

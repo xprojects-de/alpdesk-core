@@ -76,6 +76,22 @@
       "primary": [
         "id"
       ],
+      "foreignKeys": {
+        "testtable": {
+          "onDelete": "CASCADE",
+          "onUpdate": "RESTRICT",
+          "constraint": {
+            "myint": "id"
+          }
+        },
+        "testtable3": {
+          "onDelete": "RESTRICT",
+          "onUpdate": "CASCADE",
+          "constraint": {
+            "myint2": "id"
+          }
+        }
+      },
       "fields": {
         "id": {
           "type": "int",
@@ -91,6 +107,12 @@
           "default": "0"
         },
         "myint": {
+          "type": "int",
+          "unsigned": true,
+          "notnull": true,
+          "default": "10"
+        },
+        "myint2": {
           "type": "int",
           "unsigned": true,
           "notnull": true,
@@ -130,6 +152,34 @@
           "type": "date",
           "notnull": false,
           "default": "NULL"
+        }
+      }
+    },
+    {
+      "table": "testtable3",
+      "comment": "Testcomment",
+      "primary": [
+        "id"
+      ],
+      "fields": {
+        "id": {
+          "type": "int",
+          "comment": "Testcomment id",
+          "autoincrement": true,
+          "unsigned": true,
+          "notnull": true
+        },
+        "tstamp": {
+          "type": "integer",
+          "unsigned": true,
+          "notnull": true,
+          "default": "0"
+        },
+        "myint": {
+          "type": "int",
+          "unsigned": true,
+          "notnull": true,
+          "default": "10"
         }
       }
     }
