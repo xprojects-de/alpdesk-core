@@ -6,22 +6,21 @@ namespace Alpdesk\AlpdeskCore\Elements\Hello;
 
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCorePlugincallEvent;
 
-class AlpdeskCoreElementHello {
+class AlpdeskCoreElementHello
+{
+    public function __invoke(AlpdeskCorePlugincallEvent $event): void
+    {
+        if ('hello' !== $event->getResultData()->getPlugin()) {
+            return;
+        }
 
-  public function __invoke(AlpdeskCorePlugincallEvent $event): void {
+        $requestdata = $event->getResultData()->getRequestData();
 
-    if ('hello' !== $event->getResultData()->getPlugin()) {
-      return;
+        $data = [
+            'Mandant' => $event->getResultData()->getMandantInfo()->getMandant(),
+            'Value' => 'Hello AlpdeskPlugin'
+        ];
+
+        $event->getResultData()->setData($data);
     }
-
-    $requestdata = $event->getResultData()->getRequestData();
-
-    $data = [
-        'Mandant' => $event->getResultData()->getMandantInfo()->getMandant(),
-        'Value' => 'Hello AlpdeskPlugin'
-    ];
-
-    $event->getResultData()->setData($data);
-  }
-
 }

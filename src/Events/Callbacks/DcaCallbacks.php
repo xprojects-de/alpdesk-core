@@ -9,47 +9,48 @@ use Contao\Image;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
 
-class DcaCallbacks {
+class DcaCallbacks
+{
+    protected AlpdeskCoreEventService $eventService;
 
-  protected AlpdeskCoreEventService $eventService;
-
-  public function __construct(AlpdeskCoreEventService $eventService) {
-    $this->eventService = $eventService;
-  }
-
-  private function getLegacyElements(): array {
-
-    $data = [];
-
-    if (isset($GLOBALS['TL_ADME']) && \count($GLOBALS['TL_ADME'])) {
-      foreach ($GLOBALS['TL_ADME'] as $k => $v) {
-        $data[$k] = $GLOBALS['TL_LANG']['ADME'][$k];
-      }
+    public function __construct(AlpdeskCoreEventService $eventService)
+    {
+        $this->eventService = $eventService;
     }
 
-    return $data;
-  }
+    private function getLegacyElements(): array
+    {
+        $data = [];
 
-  public function getMandantElements(DataContainer $dc) {
+        if (isset($GLOBALS['TL_ADME']) && \count($GLOBALS['TL_ADME'])) {
+            foreach ($GLOBALS['TL_ADME'] as $k => $v) {
+                $data[$k] = $GLOBALS['TL_LANG']['ADME'][$k];
+            }
+        }
 
-    $event = new AlpdeskCoreRegisterPlugin($this->getLegacyElements(), []);
-    $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
+        return $data;
+    }
 
-    return $event->getPluginData();
-  }
+    public function getMandantElements(DataContainer $dc): array
+    {
+        $event = new AlpdeskCoreRegisterPlugin($this->getLegacyElements(), []);
+        $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
 
-  public function addMandantElementType($arrRow): string {
+        return $event->getPluginData();
+    }
 
-    $event = new AlpdeskCoreRegisterPlugin($this->getLegacyElements(), []);
-    $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
+    public function addMandantElementType($arrRow): string
+    {
+        $event = new AlpdeskCoreRegisterPlugin($this->getLegacyElements(), []);
+        $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
 
-    $dataComplete = $event->getPluginData();
+        $dataComplete = $event->getPluginData();
 
-    $key = $arrRow['disabled'] ? 'unpublished' : 'published';
-    $icon = (($arrRow['invisible'] | $arrRow['disabled']) ? 'invisible.svg' : 'visible.svg');
-    $type = $dataComplete[$arrRow['type']] ?: '- INVALID -';
+        $key = $arrRow['disabled'] ? 'unpublished' : 'published';
+        $icon = (($arrRow['invisible'] | $arrRow['disabled']) ? 'invisible.svg' : 'visible.svg');
+        $type = $dataComplete[$arrRow['type']] ?: '- INVALID -';
 
-    return '<div class="cte_type ' . $key . '">' . Image::getHtml($icon) . '&nbsp;&nbsp;' . $type . '</div>';
-  }
+        return '<div class="cte_type ' . $key . '">' . Image::getHtml($icon) . '&nbsp;&nbsp;' . $type . '</div>';
+    }
 
 }

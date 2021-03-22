@@ -15,6 +15,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
 {
     private array $search_custom = array();
     private array $replace_custom = array();
+
     private array $footersesstingsarray = array(
         'valid' => false,
         'text' => 'Hallo Footer',
@@ -26,6 +27,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         'width' => 0,
         'height' => 0
     );
+
     private array $headersesstingsarray = array(
         'valid' => false,
         'text' => '',
@@ -99,13 +101,23 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->search_custom = $search;
     }
 
+    /**
+     * @param int $id
+     * @param string $path
+     * @param string $pdfname
+     * @return string
+     * @throws \Exception
+     */
     public function generateById(int $id, string $path, string $pdfname): string
     {
         $pdfData = AlpdeskcorePdfElementsModel::findById($id);
+
         if ($pdfData === null) {
             throw new AlpdeskCorePDFException("id for PDF not found");
         }
+
         $font = StringUtil::deserialize($pdfData->font);
+
         $settingsarray = array(
             'font_family' => ($font[0] != "" ? $font[0] : 'helvetica'),
             'font_size' => ($font[1] != "" ? $font[1] : '12'),
@@ -113,10 +125,12 @@ class AlpdeskCorePDFCreator extends \TCPDF
             'pdfauthor' => $pdfData->pdfauthor,
             'pdftitel' => $pdfData->name
         );
+
         $footerglobalsize = StringUtil::deserialize($pdfData->footer_globalsize);
         $footerglobalfont = StringUtil::deserialize($pdfData->footer_globalfont);
+
         $this->footersesstingsarray = array(
-            'valid' => ($pdfData->footer_text != '' ? true : false),
+            'valid' => ($pdfData->footer_text != ''),
             'text' => $pdfData->footer_text,
             'font' => ($footerglobalfont[0] != "" ? $footerglobalfont[0] : 'helvetica'),
             'fontstyle' => ($footerglobalfont[2] != "" ? $footerglobalfont[2] : ''),
@@ -126,10 +140,12 @@ class AlpdeskCorePDFCreator extends \TCPDF
             'width' => intval($footerglobalsize[0]),
             'height' => intval($footerglobalsize[1])
         );
+
         $headerglobalsize = StringUtil::deserialize($pdfData->header_globalsize);
         $headerglobalfont = StringUtil::deserialize($pdfData->header_globalfont);
+
         $this->headersesstingsarray = array(
-            'valid' => ($pdfData->header_text != '' ? true : false),
+            'valid' => ($pdfData->header_text != ''),
             'text' => $pdfData->header_text,
             'width' => intval($headerglobalsize[0]),
             'height' => intval($headerglobalsize[1]),
@@ -138,7 +154,8 @@ class AlpdeskCorePDFCreator extends \TCPDF
             'fontsize' => ($headerglobalfont[1] != "" ? intval($headerglobalfont[1]) : '10'),
             'alignment' => ($headerglobalfont[3] != "" ? $headerglobalfont[3] : '')
         );
-        $objFile = new File($path . "/" . $pdfname, true);
+
+        $objFile = new File($path . "/" . $pdfname);
         if ($objFile->exists()) {
             $objFile->delete();
         }
@@ -147,31 +164,44 @@ class AlpdeskCorePDFCreator extends \TCPDF
 
     }
 
+    /**
+     * @param $text
+     * @param $filename
+     * @param $path
+     * @param $settingsarray
+     * @return string
+     * @throws \Exception
+     */
     public function generate($text, $filename, $path, $settingsarray): string
     {
         ob_start();
+
         $l['a_meta_dir'] = 'ltr';
         $l['a_meta_charset'] = $GLOBALS['TL_CONFIG']['characterSet'];
         $l['a_meta_language'] = $GLOBALS['TL_LANGUAGE'];
         $l['w_page'] = "page";
+
         $this->SetCreator(PDF_CREATOR);
         $this->SetAuthor($settingsarray['pdfauthor']);
         $this->SetTitle($settingsarray['pdftitel']);
         $this->SetSubject("");
         $this->SetKeywords("");
         $this->setFontSubsetting(false);
+
         foreach ($this->headersesstingsarray as $key => $value) {
             if ($key == 'text') {
                 $value = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($value, false));
             }
             $this->setHeaderDataItem($key, $value);
         }
+
         foreach ($this->footersesstingsarray as $key => $value) {
             if ($key == 'text') {
                 $value = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($value, false));
             }
             $this->setFooterDataItem($key, $value);
         }
+
         $this->setPrintHeader($this->getHeaderDataItem('valid'));
         $this->setPrintFooter($this->getFooterDataItem('valid'));
         $this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + ($this->getHeaderDataItem('valid') == true ? intval($this->getHeaderDataItem('height')) : 0), PDF_MARGIN_RIGHT);
@@ -183,12 +213,14 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->SetFont($settingsarray['font_family'], $settingsarray['font_style'], $settingsarray['font_size']);
         $this->AddPage();
         $html = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($text, false));
-        $this->writeHTML($html, true, false, true, false, '');
+        $this->writeHTML($html, true, false, true, false);
         $this->lastPage();
+
         $xdir = TL_ROOT . "/" . $path;
         if (!is_dir($xdir)) {
-            mkdir($xdir, 0777);
+            mkdir($xdir);
         }
+
         $this->Output($xdir . "/" . $filename, 'F');
         ob_end_clean();
 
@@ -205,5 +237,4 @@ class AlpdeskCorePDFCreator extends \TCPDF
 
         return $resultPath;
     }
-
 }

@@ -6,8 +6,7 @@ namespace Alpdesk\AlpdeskCore\Model\Auth;
 
 use Contao\Model;
 
-class AlpdeskcoreSessionsModel extends Model {
-
-  protected static $strTable = 'tl_alpdeskcore_sessions';
-
+class AlpdeskcoreSessionsModel extends Model
+{
+    protected static $strTable = 'tl_alpdeskcore_sessions';
 }

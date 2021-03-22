@@ -6,16 +6,17 @@ namespace Alpdesk\AlpdeskCore\Events;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AlpdeskCoreEventService {
+class AlpdeskCoreEventService
+{
+    protected EventDispatcherInterface $dispatcher;
 
-  protected $dispatcher;
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
-  public function __construct(EventDispatcherInterface $dispatcher) {
-    $this->dispatcher = $dispatcher;
-  }
-
-  public function getDispatcher(): EventDispatcherInterface {
-    return $this->dispatcher;
-  }
-
+    public function getDispatcher(): EventDispatcherInterface
+    {
+        return $this->dispatcher;
+    }
 }

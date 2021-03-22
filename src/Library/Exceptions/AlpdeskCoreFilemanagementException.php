@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Exceptions;
 
-class AlpdeskCoreFilemanagementException extends \Exception {
-  
+class AlpdeskCoreFilemanagementException extends \Exception
+{
+
 }
