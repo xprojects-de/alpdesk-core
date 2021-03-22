@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Filemanagement;
 
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
-use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\FilesModel;
 use Contao\File;
@@ -30,9 +29,15 @@ class AlpdeskCoreFilemanagement
         $this->rootDir = $rootDir;
     }
 
+    /**
+     * @param AlpdeskcoreUser $user
+     * @return AlpdescCoreBaseMandantInfo
+     * @throws AlpdeskCoreFilemanagementException
+     */
     private function getMandantInformation(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo
     {
         $mandantInfo = AlpdeskcoreMandantModel::findById($user->getMandantPid());
+
         if ($mandantInfo !== null) {
 
             $mInfo = new AlpdescCoreBaseMandantInfo();
@@ -50,6 +55,7 @@ class AlpdeskCoreFilemanagement
             $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
 
             if ($user->getHomeDir() !== null) {
+
                 $rootPathMember = FilesModel::findByUuid($user->getHomeDir());
                 $mInfo->setFilemount_uuid($user->getHomeDir());
                 $mInfo->setFilemount_path($rootPathMember->path);
@@ -69,6 +75,7 @@ class AlpdeskCoreFilemanagement
             $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
 
             return $mInfo;
+
         } else {
             throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
         }
@@ -79,13 +86,19 @@ class AlpdeskCoreFilemanagement
         return (\preg_match('#' . $haystack . '$#', $needle) == 1);
     }
 
-    private static function startsWith($startString, $string)
+    private static function startsWith($startString, $string): bool
     {
         $len = \strlen($startString);
         $sub = \substr($string, 0, $len);
+
         return ($sub === $startString);
     }
 
+    /**
+     * @param string $src
+     * @return string
+     * @throws AlpdeskCoreFilemanagementException
+     */
     private static function preparePath(string $src): string
     {
         // Remove invisible control characters and unused code points
@@ -136,6 +149,12 @@ class AlpdeskCoreFilemanagement
         return $arrReturn;
     }
 
+    /**
+     * @param $basePath
+     * @param $srcPath
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @throws AlpdeskCoreFilemanagementException
+     */
     private static function checkFilemountPermission($basePath, $srcPath, AlpdescCoreBaseMandantInfo $mandantInfo): void
     {
         if ($basePath === null) {
@@ -153,6 +172,13 @@ class AlpdeskCoreFilemanagement
         }
     }
 
+    /**
+     * @param UploadedFile $uploadFile
+     * @param string $target
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param AlpdeskCoreFileuploadResponse $response
+     * @throws \Exception
+     */
     private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void
     {
         if ($mandantInfo->getAccessUpload() == false) {
@@ -220,11 +246,18 @@ class AlpdeskCoreFilemanagement
             $response->setUuid(StringUtil::binToUuid($objnFile->uuid));
             $response->setRootFileName($objTarget->path . '/' . $fileName);
             $response->setFileName($nFile->basename);
+
         } else {
             throw new AlpdeskCoreFilemanagementException("error upload file");
         }
     }
 
+    /**
+     * @param string $target
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @return BinaryFileResponse
+     * @throws AlpdeskCoreFilemanagementException
+     */
     private function downloadFile(string $target, AlpdescCoreBaseMandantInfo $mandantInfo): BinaryFileResponse
     {
         if ($mandantInfo->getAccessDownload() == false) {
@@ -248,15 +281,24 @@ class AlpdeskCoreFilemanagement
         $pDest = $mandantInfo->getRootDir() . '/' . $target;
 
         if (\file_exists($pDest) && \is_file($pDest)) {
+
             $response = new BinaryFileResponse($pDest);
             $response->headers->set('Access-Control-Expose-Headers', 'Content-Disposition');
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, str_replace('/', '_', $target));
+
             return $response;
+
         } else {
             throw new AlpdeskCoreFilemanagementException("src-File not found on server");
         }
     }
 
+    /**
+     * @param array $finderData
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @return array
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public static function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array
     {
         try {
@@ -337,11 +379,19 @@ class AlpdeskCoreFilemanagement
             }
 
             return $data;
+
         } catch (\Exception $ex) {
             throw new AlpdeskCoreFilemanagementException("error at listFolder - " . $ex->getMessage());
         }
     }
 
+    /**
+     * @param array $finderData
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param bool $accessCheck
+     * @return array
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public static function create(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array
     {
         if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
@@ -379,17 +429,21 @@ class AlpdeskCoreFilemanagement
             }
 
             if ($target === 'file') {
+
                 $cFile = new File($objTargetBase->path . '/' . $src);
                 $cFile->write('init');
                 $cFile->close();
+
             } else if ($target === 'dir') {
-                $cFolder = new Folder($objTargetBase->path . '/' . $src);
+
+                new Folder($objTargetBase->path . '/' . $src);
+
             } else {
                 throw new AlpdeskCoreFilemanagementException("invalid targetmode");
             }
 
             $objTargetModel = FilesModel::findByPath($objTargetBase->path . '/' . $src);
-            if ($objTargetBase === null) {
+            if ($objTargetModel === null) {
                 throw new AlpdeskCoreFilemanagementException("invalid Mandant Filemount");
             }
 
@@ -397,11 +451,18 @@ class AlpdeskCoreFilemanagement
                 'uuid' => StringUtil::binToUuid($objTargetModel->uuid),
                 'path' => $objTargetModel->path
             ];
+
         } catch (\Exception $ex) {
             throw new AlpdeskCoreFilemanagementException("error at create - " . $ex->getMessage());
         }
     }
 
+    /**
+     * @param array $finderData
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param bool $accessCheck
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public static function delete(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void
     {
         if ($accessCheck == true && $mandantInfo->getAccessDelete() == false) {
@@ -437,6 +498,13 @@ class AlpdeskCoreFilemanagement
         }
     }
 
+    /**
+     * @param array $finderData
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param bool $accessCheck
+     * @return array
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public static function rename(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array
     {
         if ($accessCheck == true && $mandantInfo->getAccessRename() == false) {
@@ -520,6 +588,14 @@ class AlpdeskCoreFilemanagement
         }
     }
 
+    /**
+     * @param array $finderData
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param bool $copy
+     * @param bool $accessCheck
+     * @return array
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public static function moveOrCopy(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): array
     {
         if ($copy == true) {
@@ -598,6 +674,7 @@ class AlpdeskCoreFilemanagement
                     'name' => $basename,
                     'path' => $targetObject->path
                 ];
+
             } else if ($objFileModelSrc->type === 'file') {
 
                 $srcObject = new File($objFileModelSrc->path);
@@ -623,14 +700,23 @@ class AlpdeskCoreFilemanagement
                     'name' => $basename,
                     'path' => $targetObject->path
                 ];
+
             } else {
                 throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
             }
+
         } catch (\Exception $ex) {
             throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
         }
     }
 
+    /**
+     * @param array $finderData
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param bool $accessCheck
+     * @return array
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public static function meta(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array
     {
         try {
@@ -713,25 +799,42 @@ class AlpdeskCoreFilemanagement
                 'url' => $url,
                 'meta' => $metaData
             ];
+
         } catch (\Exception $ex) {
             throw new AlpdeskCoreFilemanagementException("error at meta - " . $ex->getMessage());
         }
     }
 
+    /**
+     * @param UploadedFile $uploadFile
+     * @param string $target
+     * @param AlpdeskcoreUser $user
+     * @return AlpdeskCoreFileuploadResponse
+     * @throws \Exception
+     */
     public function upload(UploadedFile $uploadFile, string $target, AlpdeskcoreUser $user): AlpdeskCoreFileuploadResponse
     {
         if ($uploadFile == null) {
             throw new AlpdeskCoreFilemanagementException("invalid key-parameters for upload");
         }
+
         $mandantInfo = $this->getMandantInformation($user);
+
         $response = new AlpdeskCoreFileuploadResponse();
         $this->copyToTarget($uploadFile, $target, $mandantInfo, $response);
         $response->setUsername($user->getUsername());
         $response->setAlpdesk_token($user->getUsedToken());
         $response->setMandantInfo($mandantInfo);
+
         return $response;
     }
 
+    /**
+     * @param AlpdeskcoreUser $user
+     * @param array $downloadData
+     * @return BinaryFileResponse
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public function download(AlpdeskcoreUser $user, array $downloadData): BinaryFileResponse
     {
         if (!\array_key_exists('target', $downloadData)) {
@@ -742,9 +845,14 @@ class AlpdeskCoreFilemanagement
         return $this->downloadFile($target, $mandantInfo);
     }
 
+    /**
+     * @param AlpdeskcoreUser $user
+     * @param array $finderData
+     * @return array|bool
+     * @throws AlpdeskCoreFilemanagementException
+     */
     public function finder(AlpdeskcoreUser $user, array $finderData)
     {
-
         if (!\array_key_exists('mode', $finderData)) {
             throw new AlpdeskCoreFilemanagementException("invalid key-parameter mode for finder");
         }
@@ -787,5 +895,4 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid mode for finder", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
         }
     }
-
 }
