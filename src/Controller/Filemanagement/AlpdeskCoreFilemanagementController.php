@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
-use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +15,7 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadEvent;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreFilemanagementController extends AbstractController
 {
@@ -53,7 +53,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
-    public function upload(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function upload(Request $request, UserInterface $user): JsonResponse
     {
         try {
 
@@ -82,7 +82,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         }
     }
 
-    public function download(Request $request, AlpdeskcoreUser $user)
+    public function download(Request $request, UserInterface $user)
     {
         try {
 
@@ -101,7 +101,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         }
     }
 
-    public function finder(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function finder(Request $request, UserInterface $user): JsonResponse
     {
         try {
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Plugin;
 
-use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +15,7 @@ use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugincallResponse;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCorePlugincallEvent;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCorePluginController extends AbstractController
 {
@@ -53,7 +53,7 @@ class AlpdeskCorePluginController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
-    public function call(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function call(Request $request, UserInterface $user): JsonResponse
     {
         try {
 

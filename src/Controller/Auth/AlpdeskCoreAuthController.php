@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Auth;
 
-use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +21,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMemberResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Contao\MemberModel;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreAuthController extends AbstractController
 {
@@ -81,7 +81,7 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
-    public function verify(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function verify(Request $request, UserInterface $user): JsonResponse
     {
         try {
 
@@ -105,7 +105,7 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
-    public function member(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function member(Request $request, UserInterface $user): JsonResponse
     {
         try {
 
@@ -168,7 +168,7 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
-    public function logout(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function logout(Request $request, UserInterface $user): JsonResponse
     {
         try {
 

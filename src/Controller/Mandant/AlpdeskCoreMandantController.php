@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Mandant;
 
-use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +14,7 @@ use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandantResponse;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreMandantListEvent;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreMandantController extends AbstractController
 {
@@ -63,7 +63,7 @@ class AlpdeskCoreMandantController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
-    public function list(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function list(Request $request, UserInterface $user): JsonResponse
     {
         try {
 
@@ -84,7 +84,7 @@ class AlpdeskCoreMandantController extends AbstractController
         }
     }
 
-    public function edit(Request $request, AlpdeskcoreUser $user): JsonResponse
+    public function edit(Request $request, UserInterface $user): JsonResponse
     {
         return $this->outputError('Not Supported', AlpdeskCoreConstants::$ERROR_COMMON, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
