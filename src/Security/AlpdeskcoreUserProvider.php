@@ -77,7 +77,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     /**
      * Override from UserProviderInterface
      * @param string $username
-     * @return type
+     * @return AlpdeskcoreUser
      * @throws AuthenticationException
      */
     public function loadUserByUsername($username)

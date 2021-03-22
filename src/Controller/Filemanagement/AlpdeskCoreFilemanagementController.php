@@ -74,7 +74,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             $this->logger->error('invalid parameters (=null) for upload', __METHOD__);
             return $this->outputError('invalid parameters (=null) for upload', AlpdeskCoreConstants::$ERROR_FILEMANAGEMENT_INVALIDFILES, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
 
-        } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Exception $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);

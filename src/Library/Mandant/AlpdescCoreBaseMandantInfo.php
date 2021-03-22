@@ -35,11 +35,17 @@ class AlpdescCoreBaseMandantInfo
         return $this->mandant;
     }
 
+    /**
+     * @return string The binary data
+     */
     public function getFilemountmandant_uuid(): string
     {
         return $this->filemountmandant_uuid;
     }
 
+    /**
+     * @param string $filemountmandant_uuid The binary data
+     */
     public function setFilemountmandant_uuid(string $filemountmandant_uuid): void
     {
         $this->filemountmandant_uuid = $filemountmandant_uuid;
@@ -65,6 +71,9 @@ class AlpdescCoreBaseMandantInfo
         $this->filemountmandant_rootpath = $filemountmandant_rootpath;
     }
 
+    /**
+     * @return string The binary data
+     */
     public function getFilemount_uuid(): string
     {
         return $this->filemount_uuid;
@@ -85,6 +94,9 @@ class AlpdescCoreBaseMandantInfo
         $this->mandant = $mandant;
     }
 
+    /**
+     * @param string $filemount_uuid The binary data
+     */
     public function setFilemount_uuid(string $filemount_uuid): void
     {
         $this->filemount_uuid = $filemount_uuid;

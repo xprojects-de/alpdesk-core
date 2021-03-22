@@ -55,12 +55,14 @@ class AlpdeskcoreDatabasemanagerModel extends Model
     public static function destroy(int $id)
     {
         if (\array_key_exists($id, self::$connectionsTable)) {
+
             if (self::$connectionsTable[$id] instanceof Connection) {
                 if (self::$connectionsTable[$id] !== null) {
                     self::$connectionsTable[$id]->close();
                     self::$connectionsTable[$id] = null;
                 }
             }
+
         }
     }
 
@@ -90,19 +92,25 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
                     $options = "";
                     $tableOptions = $table->getOptions();
+
                     if ($tableOptions !== null && \is_array($tableOptions) && \count($tableOptions) > 0) {
+
                         if (\array_key_exists('engine', $tableOptions)) {
                             $options .= 'engine: ' . $tableOptions['engine'];
                         }
+
                         if (\array_key_exists('collation', $tableOptions)) {
                             $options .= '<br>collation: ' . $tableOptions['collation'];
                         }
+
                         if (\array_key_exists('autoincrement', $tableOptions)) {
                             $options .= '<br>autoincrement: ' . $tableOptions['autoincrement'];
                         }
+
                     }
 
                     $primaryKey = array();
+
                     $pKey = $table->getPrimaryKey();
                     if ($pKey !== null) {
                         foreach ($pKey->getColumns() as $column) {
@@ -112,19 +120,24 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
                     $indexes = array();
                     foreach ($table->getIndexes() as $indexEntry) {
+
                         if ('PRIMARY' !== $indexEntry->getName()) {
+
                             $indexInfo = array(
                                 'indexunique' => $indexEntry->isUnique(),
                                 'indexfields' => '',
                                 'indexname' => $indexEntry->getName()
                             );
+
                             $tmpIndexFields = array();
                             foreach ($indexEntry->getColumns() as $column) {
                                 \array_push($tmpIndexFields, $column);
                             }
+
                             $indexInfo['indexfields'] = \implode(',', $tmpIndexFields);
                             \array_push($indexes, $indexInfo);
                         }
+
                     }
 
                     $indiciesStringArray = array();
@@ -133,6 +146,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                             \array_push($indiciesStringArray, 'Name: ' . $ind['indexname'] . ', Unique: ' . ($ind['indexunique'] === true ? 'true' : 'false') . ', Fields: ' . $ind['indexfields']);
                         }
                     }
+
                     $structure[$table->getName()] = array(
                         'options' => $options,
                         'primary' => \implode('<br>', $primaryKey),
@@ -141,34 +155,43 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
                     $columns = $table->getColumns();
                     if ($columns !== null && \is_array($columns) && \count($columns) > 0) {
+
                         foreach ($columns as $column) {
+
                             if ($column instanceof Column) {
+
                                 $type = $column->getType();
-                                $autoincrement = $column->getAutoincrement();
                                 $output = $type->getName();
+
                                 if ($column->getAutoincrement()) {
                                     $output .= ' | autoincrement';
                                 }
+
                                 if ($column->getUnsigned()) {
                                     $output .= ' | unsigned';
                                 }
+
                                 if ($column->getNotnull()) {
                                     $output .= ' | NOT NULL';
                                 }
+
                                 $default = $column->getDefault();
                                 if ($default !== null) {
                                     $output .= ' | DEFAULT "' . $default . '"';
                                 }
+
                                 $length = $column->getLength();
                                 if ($length !== null && $length != "") {
                                     $output .= ' | LENGTH ' . $length;
                                 }
+
                                 $platformOptions = $column->getPlatformOptions();
                                 if ($platformOptions !== null && \is_array($platformOptions) && \count($platformOptions) > 0) {
                                     foreach ($platformOptions as $pKey => $pValue) {
                                         $output .= ' | ' . $pKey . ' ' . $pValue;
                                     }
                                 }
+
                                 $structure[$table->getName()][$column->getName()] = $output;
                             }
                         }

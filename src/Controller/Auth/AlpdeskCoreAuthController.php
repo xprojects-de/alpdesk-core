@@ -73,7 +73,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
 
-        } catch (AlpdeskCoreAuthException $exception) {
+        } catch (\Exception $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);

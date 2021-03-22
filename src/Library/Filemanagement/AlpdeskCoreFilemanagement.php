@@ -57,12 +57,15 @@ class AlpdeskCoreFilemanagement
             if ($user->getHomeDir() !== null) {
 
                 $rootPathMember = FilesModel::findByUuid($user->getHomeDir());
-                $mInfo->setFilemount_uuid($user->getHomeDir());
-                $mInfo->setFilemount_path($rootPathMember->path);
-                $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPathMember->path);
+                if ($rootPathMember !== null) {
+                    $mInfo->setFilemount_uuid($rootPathMember->uuid);
+                    $mInfo->setFilemount_path($rootPathMember->path);
+                    $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPathMember->path);
+                }
+
             }
 
-            $mInfo->setId(intval($mandantInfo->id));
+            $mInfo->setId(\intval($mandantInfo->id));
             $mInfo->setMemberId($user->getMemberId());
             $mInfo->setMandant($mandantInfo->mandant);
             $mInfo->setAccessDownload($user->getAccessDownload());

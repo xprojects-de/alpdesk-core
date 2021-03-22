@@ -18,6 +18,10 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
     protected $blnForAttribute = true;
     protected $strTemplate = 'be_widget';
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function generate(): string
     {
         $outputValue = '';

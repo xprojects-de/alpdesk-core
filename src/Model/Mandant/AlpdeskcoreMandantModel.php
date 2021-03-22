@@ -15,6 +15,11 @@ class AlpdeskcoreMandantModel extends Model
 {
     protected static $strTable = 'tl_alpdeskcore_mandant';
 
+    /**
+     * @param $username
+     * @return AlpdeskcoreUser
+     * @throws AlpdeskCoreModelException
+     */
     public static function findByUsername($username): AlpdeskcoreUser
     {
         $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?'], [1, 1, $username]);
@@ -106,6 +111,7 @@ class AlpdeskcoreMandantModel extends Model
             }
 
             return $alpdeskUser;
+
         } else {
             throw new AlpdeskCoreModelException("error auth - invalid member", AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
         }
