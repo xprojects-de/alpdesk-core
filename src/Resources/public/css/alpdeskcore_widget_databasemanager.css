@@ -1,46 +1,46 @@
 
 .widget .alpdeskcore_widget_databasemanager_container {
-  font-size: .875rem;
+    font-size: .875rem;
 }
 
 .alpdeskcore_widget_databasemanager_container {
-  padding:20px;
-  background: #f3f3f3;
-  border:1px solid #ccc;
-  margin-top:10px;
-  color:#000;
-  min-height: 100px;
+    padding: 20px;
+    background: #f3f3f3;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    color: #000;
+    min-height: 100px;
 }
 
 .alpdeskcore_widget_databasemanager_container p {
-  background: #fff;
-  padding:10px;
-  border:1px solid #ccc;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
 
 .alpdeskcore_widget_databasemanager_container p.notice {
-  color:#f60000;
+    color: #f60000;
 }
 
 .alpdeskcore_widget_databasemanager_container a {
-  display: inline-block;
-  border:1px solid #ccc;
-  padding:10px;
-  background: #f0f0f0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #f0f0f0;
 }
 
 .alpdeskcore_widget_databasemanager_table {
-  margin-bottom: 25px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
 }
 
 .alpdeskcore_widget_databasemanager_tablecolumns {
-  margin-top: 20px
+    margin-top: 20px
 }
 
 p.alpdeskcore_widget_databasemanager_specialtablecolumns {
-  border: 2px solid #3f51b5;
+    border: 2px solid #3f51b5;
 }
 
 
