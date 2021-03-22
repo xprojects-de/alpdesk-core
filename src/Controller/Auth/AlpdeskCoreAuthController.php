@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Auth;
 
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +20,6 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthMemberEvent;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMemberResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Contao\MemberModel;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 
@@ -52,7 +52,6 @@ class AlpdeskCoreAuthController extends AbstractController
 
     private function outputError(string $data, $code, int $statusCode): JsonResponse
     {
-
         if ($code === null || $code === 0) {
             $code = AlpdeskCoreConstants::$ERROR_COMMON;
         }
@@ -63,37 +62,50 @@ class AlpdeskCoreAuthController extends AbstractController
     public function auth(Request $request): JsonResponse
     {
         try {
+
             $authdata = (array)\json_decode($request->getContent(), true);
+
             $response = (new AlpdeskCoreAuthToken())->generateToken($authdata);
+
             $event = new AlpdeskCoreAuthSuccessEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthSuccessEvent::NAME);
             $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Auth successfully', __METHOD__);
+
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
+
         } catch (AlpdeskCoreAuthException $exception) {
+
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+
         }
     }
 
-    public function verify(Request $request, UserInterface $user): JsonResponse
+    public function verify(Request $request, AlpdeskcoreUser $user): JsonResponse
     {
         try {
+
             $response = new AlpdeskCoreAuthResponse();
             $response->setUsername($user->getUsername());
             $response->setAlpdesk_token($user->getUsedToken());
             $response->setInvalid(false);
             $response->setVerify(true);
+
             $event = new AlpdeskCoreAuthVerifyEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthVerifyEvent::NAME);
             $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Verify successfully', __METHOD__);
+
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
-        } catch (\Exception | AlpdeskCoreAuthException $exception) {
+
+        } catch (\Exception $exception) {
+
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+
         }
     }
 
-    public function member(Request $request, UserInterface $user): JsonResponse
+    public function member(Request $request, AlpdeskcoreUser $user): JsonResponse
     {
         try {
 
@@ -149,23 +161,31 @@ class AlpdeskCoreAuthController extends AbstractController
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthMemberEvent::NAME);
 
             return (new JsonResponse($event->getResultData()->getData(), AlpdeskCoreConstants::$STATUSCODE_OK));
-        } catch (AlpdeskCoreAuthException $exception) {
+
+        } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
         }
     }
 
-    public function logout(Request $request, UserInterface $user): JsonResponse
+    public function logout(Request $request, AlpdeskcoreUser $user): JsonResponse
     {
         try {
+
             $response = (new AlpdeskCoreAuthToken())->invalidToken($user);
+
             $event = new AlpdeskCoreAuthInvalidEvent($response);
+
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthInvalidEvent::NAME);
             $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Logout successfully', __METHOD__);
+
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
+
         } catch (\Exception $exception) {
+
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+
         }
     }
 
