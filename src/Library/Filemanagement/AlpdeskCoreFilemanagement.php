@@ -449,7 +449,8 @@ class AlpdeskCoreFilemanagement
 
             return [
                 'uuid' => StringUtil::binToUuid($objTargetModel->uuid),
-                'path' => $objTargetModel->path
+                'path' => $objTargetModel->path,
+                'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objTargetModel->path)
             ];
 
         } catch (\Exception $ex) {
@@ -558,7 +559,8 @@ class AlpdeskCoreFilemanagement
 
                 return [
                     'uuid' => StringUtil::binToUuid($targetObject->uuid),
-                    'path' => $targetObject->path
+                    'path' => $targetObject->path,
+                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
                 ];
             } else if ($objFileModelSrc->type === 'file') {
 
@@ -578,7 +580,8 @@ class AlpdeskCoreFilemanagement
 
                 return [
                     'uuid' => StringUtil::binToUuid($targetObject->uuid),
-                    'path' => $targetObject->path
+                    'path' => $targetObject->path,
+                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
                 ];
             } else {
                 throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
@@ -672,7 +675,8 @@ class AlpdeskCoreFilemanagement
                 return [
                     'uuid' => StringUtil::binToUuid($targetObject->uuid),
                     'name' => $basename,
-                    'path' => $targetObject->path
+                    'path' => $targetObject->path,
+                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
                 ];
 
             } else if ($objFileModelSrc->type === 'file') {
@@ -698,7 +702,8 @@ class AlpdeskCoreFilemanagement
                 return [
                     'uuid' => StringUtil::binToUuid($targetObject->uuid),
                     'name' => $basename,
-                    'path' => $targetObject->path
+                    'path' => $targetObject->path,
+                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
                 ];
 
             } else {
@@ -792,6 +797,7 @@ class AlpdeskCoreFilemanagement
                 'uuid' => StringUtil::binToUuid($objFileModelSrc->uuid),
                 'name' => $basename,
                 'path' => $objFileModelSrc->path,
+                'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileModelSrc->path),
                 'extention' => $extention,
                 'size' => $size,
                 'isimage' => $isImage,
