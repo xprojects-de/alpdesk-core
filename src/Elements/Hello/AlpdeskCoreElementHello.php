@@ -14,8 +14,6 @@ class AlpdeskCoreElementHello
             return;
         }
 
-        $requestdata = $event->getResultData()->getRequestData();
-
         $data = [
             'Mandant' => $event->getResultData()->getMandantInfo()->getMandant(),
             'Value' => 'Hello AlpdeskPlugin'

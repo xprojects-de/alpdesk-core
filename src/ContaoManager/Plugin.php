@@ -22,6 +22,12 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
         return [BundleConfig::create(AlpdeskCoreBundle::class)->setLoadAfter([ContaoCoreBundle::class])];
     }
 
+    /**
+     * @param LoaderResolverInterface $resolver
+     * @param KernelInterface $kernel
+     * @return mixed|\Symfony\Component\Routing\RouteCollection|null
+     * @throws \Exception
+     */
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
     {
         $file = __DIR__ . '/../Resources/config/routes.yml';

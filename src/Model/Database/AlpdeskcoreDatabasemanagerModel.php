@@ -159,8 +159,8 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                         foreach ($columns as $column) {
 
                             if ($column instanceof Column) {
+
                                 $type = $column->getType();
-                                $autoincrement = $column->getAutoincrement();
                                 $output = $type->getName();
 
                                 if ($column->getAutoincrement()) {

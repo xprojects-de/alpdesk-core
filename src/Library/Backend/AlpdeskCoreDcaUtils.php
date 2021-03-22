@@ -55,6 +55,12 @@ class AlpdeskCoreDcaUtils extends Backend
         return $varValue;
     }
 
+    /**
+     * @param $varValue
+     * @param DataContainer $dc
+     * @return string
+     * @throws \Exception
+     */
     public function generateEncryptPassword($varValue, DataContainer $dc): string
     {
         if ($varValue === '') {

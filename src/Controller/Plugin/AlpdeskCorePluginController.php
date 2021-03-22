@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugin;
-use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePluginException;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugincallResponse;
@@ -68,7 +67,7 @@ class AlpdeskCorePluginController extends AbstractController
 
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
 
-        } catch (\Exception | AlpdeskCorePluginException $exception) {
+        } catch (\Exception $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
