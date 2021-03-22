@@ -15,7 +15,7 @@ class JsonProxy
     private bool $verifyPeer = false;
     private bool $followLocation = true;
     private bool $verbose = true;
-    private bool $customHeaders = array();
+    private array $customHeaders = array();
     private bool $requestEncode = false;
     private bool $responseDecode = false;
 

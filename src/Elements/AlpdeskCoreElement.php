@@ -31,5 +31,5 @@ abstract class AlpdeskCoreElement
         return $this->customTemplate;
     }
 
-    abstract protected function execute(AlpdescCoreBaseMandantInfo $mandantInfo, array $data): array;
+    abstract public function execute(AlpdescCoreBaseMandantInfo $mandantInfo, array $data): array;
 }
