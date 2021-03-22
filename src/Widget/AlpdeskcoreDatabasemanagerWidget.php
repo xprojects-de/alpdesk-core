@@ -14,7 +14,6 @@ use Alpdesk\AlpdeskCore\Database\AlpdeskcoreMigration;
 
 class AlpdeskcoreDatabasemanagerWidget extends Widget
 {
-
     protected $blnSubmitInput = true;
     protected $blnForAttribute = true;
     protected $strTemplate = 'be_widget';
