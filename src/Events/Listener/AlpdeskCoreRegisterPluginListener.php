@@ -6,20 +6,19 @@ namespace Alpdesk\AlpdeskCore\Events\Listener;
 
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
 
-class AlpdeskCoreRegisterPluginListener {
+class AlpdeskCoreRegisterPluginListener
+{
+    public function __invoke(AlpdeskCoreRegisterPlugin $event): void
+    {
+        $data = $event->getPluginData();
+        $info = $event->getPluginInfo();
 
-  public function __invoke(AlpdeskCoreRegisterPlugin $event): void {
+        $data['hello'] = $GLOBALS['TL_LANG']['ADME']['helloplugin'];
+        $info['hello'] = [
+            'customTemplate' => false
+        ];
 
-    $data = $event->getPluginData();
-    $info = $event->getPluginInfo();
-
-    $data['hello'] = $GLOBALS['TL_LANG']['ADME']['helloplugin'];
-    $info['hello'] = [
-        'customTemplate' => false
-    ];
-
-    $event->setPluginData($data);
-    $event->setPluginInfo($info);
-  }
-
+        $event->setPluginData($data);
+        $event->setPluginInfo($info);
+    }
 }
