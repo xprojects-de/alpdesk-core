@@ -1,6 +1,5 @@
 <?php
 
-// Fields
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['name'] = array('Name der Vorlage', 'Geben sie den Namen ein');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['pdfauthor'] = array('Author der Vorlage', 'Geben sie den Author ein');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['html'] = array('HTML-Template', 'Geben sie den HTML-Code ein');
@@ -17,4 +16,4 @@ $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['new'] = array('Neue Vorlage'
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['edit'] = array('Vorlage bearbeiten', 'Vorlage ID %s bearbeiten');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['delete'] = array('Vorlage löschen', 'Vorlage ID %s löschen');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['generatetestpdf'] = array('Test-PDF generieren', 'Test-PDF ID %s generieren');
-?>
+

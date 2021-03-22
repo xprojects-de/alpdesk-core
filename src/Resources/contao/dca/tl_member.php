@@ -3,22 +3,22 @@
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
-        ->addField('alpdeskcore_mandant', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_fixtoken', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_elements', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_admin', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_mandantwhitelist', 'login_legend', PaletteManipulator::POSITION_APPEND)
-        ->applyToSubpalette('login', 'tl_member');
+    ->addField('alpdeskcore_mandant', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_fixtoken', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_elements', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_admin', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_mandantwhitelist', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToSubpalette('login', 'tl_member');
 
 PaletteManipulator::create()
-        ->addField('alpdeskcore_upload', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_download', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_create', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_delete', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_rename', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_move', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->addField('alpdeskcore_copy', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
-        ->applyToPalette('default', 'tl_member');
+    ->addField('alpdeskcore_upload', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_download', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_create', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_delete', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_rename', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_move', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_copy', 'homedir_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_member');
 
 $GLOBALS['TL_DCA']['tl_member']['config']['sql']['keys']['disable,login,username'] = 'index';
 

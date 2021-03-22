@@ -6,8 +6,7 @@ namespace Alpdesk\AlpdeskCore\Model\PDF;
 
 use Contao\Model;
 
-class AlpdeskcorePdfElementsModel extends Model {
-
-  protected static $strTable = 'tl_alpdeskcore_pdf_elements';
-
+class AlpdeskcorePdfElementsModel extends Model
+{
+    protected static $strTable = 'tl_alpdeskcore_pdf_elements';
 }

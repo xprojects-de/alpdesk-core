@@ -1,51 +1,51 @@
 <?php
 
 $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
-    (
+(
     'config' => array
-        (
+    (
         'dataContainer' => 'Table',
         'ctable' => array('tl_alpdeskcore_mandant_elements'),
         'switchToEdit' => true,
         'enableVersioning' => true,
         'sql' => array
-            (
+        (
             'keys' => array
-                (
+            (
                 'id' => 'primary'
             )
         ),
     ),
     'list' => array
-        (
+    (
         'sorting' => array
-            (
+        (
             'mode' => 2,
             'fields' => array('mandant ASC'),
             'flag' => 1,
             'panelLayout' => 'search,limit'
         ),
         'label' => array
-            (
+        (
             'fields' => array('mandant'),
             'showColumns' => true,
         ),
         'operations' => array
-            (
+        (
             'edit' => array
-                (
+            (
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['edit'],
                 'href' => 'table=tl_alpdeskcore_mandant_elements',
                 'icon' => 'edit.gif'
             ),
             'editheader' => array
-                (
+            (
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['editheader'],
                 'href' => 'act=edit',
                 'icon' => 'header.gif',
             ),
             'delete' => array
-                (
+            (
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
@@ -54,21 +54,21 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
         )
     ),
     'palettes' => array
-        (
+    (
         'default' => 'mandant;filemount'
     ),
     'fields' => array
-        (
+    (
         'id' => array
-            (
+        (
             'sql' => "int(10) unsigned NOT NULL auto_increment"
         ),
         'tstamp' => array
-            (
+        (
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
         'mandant' => array
-            (
+        (
             'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['mandant'],
             'exclude' => true,
             'search' => true,
@@ -78,7 +78,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
             'sql' => "varchar(250) NOT NULL default ''"
         ),
         'filemount' => array
-            (
+        (
             'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['filemount'],
             'exclude' => true,
             'inputType' => 'fileTree',

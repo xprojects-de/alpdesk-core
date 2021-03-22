@@ -13,7 +13,7 @@ use Doctrine\DBAL\Platforms\MySqlPlatform;
 class AlpdeskcoreMigration
 {
     private Connection $connection;
-    private array $model = [];
+    private array $model;
 
     public function __construct(Connection $connection, array $model)
     {
@@ -21,19 +21,31 @@ class AlpdeskcoreMigration
         $this->model = $model;
     }
 
+    /**
+     * @param $commands
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function executeMigrations($commands): void
     {
         foreach ($commands as $command) {
-            $this->connection->query($command);
+            $this->connection->executeQuery($command);
         }
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function showMigrations(): array
     {
         $fromSchema = $this->connection->getSchemaManager()->createSchema();
         return $fromSchema->getMigrateToSql($this->parseSql(), $this->connection->getDatabasePlatform());
     }
 
+    /**
+     * @return Schema
+     * @throws \Exception
+     */
     private function parseSql(): Schema
     {
         if (\count($this->model) > 0) {
@@ -44,12 +56,15 @@ class AlpdeskcoreMigration
             if (\array_key_exists('charset', $this->model)) {
                 $defaultOptions['charset'] = $this->model['charset'];
             }
+
             if (\array_key_exists('collation', $this->model)) {
                 $defaultOptions['collate'] = $this->model['collation'];
             }
+
             if (\array_key_exists('engine', $this->model)) {
                 $defaultOptions['engine'] = $this->model['engine'];
             }
+
             $schemaConfig->setDefaultTableOptions($defaultOptions);
             $schema = new Schema([], [], $schemaConfig);
 
@@ -128,16 +143,23 @@ class AlpdeskcoreMigration
                     }
                 }
             }
+
             return $schema;
+
         } else {
             throw new \Exception('invalid database model');
         }
 
     }
 
+    /**
+     * @param Table $table
+     * @param string $field
+     * @param array $fieldattributes
+     * @throws \Doctrine\DBAL\Exception
+     */
     private function parseField(Table $table, string $field, array $fieldattributes): void
     {
-
         $dbType = $fieldattributes['type'];
 
         $length = null;
@@ -180,10 +202,6 @@ class AlpdeskcoreMigration
             $length = null;
         }
 
-        /* if (\strtolower($type) == 'binary') {
-          $collation = $this->getBinaryCollation($table);
-          } */
-
         $notNull = false;
         if (\array_key_exists('notnull', $fieldattributes)) {
             $notNull = $fieldattributes['notnull'];
@@ -220,7 +238,6 @@ class AlpdeskcoreMigration
 
     private function setLengthAndPrecisionByType(string $type, string $dbType, ?int &$length, ?int &$scale, ?int &$precision, bool &$fixed): void
     {
-
         switch ($type) {
             case 'char':
             case 'binary':
@@ -273,18 +290,13 @@ class AlpdeskcoreMigration
         }
     }
 
-    private function getBinaryCollation(Table $table): ?string
-    {
-        if (!$table->hasOption('charset')) {
-            return null;
-        }
-        return $table->getOption('charset') . '_bin';
-    }
-
+    /**
+     * @param $dbversion
+     * @throws \Exception
+     */
     public function hasConfigurationError(&$dbversion)
     {
-
-        [$version] = explode('-', $this->connection->fetchOne('SELECT @@version'));
+        [$version] = \explode('-', $this->connection->fetchOne('SELECT @@version'));
         $dbversion = $version;
 
         // The database version is too old
@@ -365,5 +377,4 @@ class AlpdeskcoreMigration
             }
         }
     }
-
 }
