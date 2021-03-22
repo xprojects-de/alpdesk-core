@@ -7,22 +7,24 @@ namespace Alpdesk\AlpdeskCore\Events\Event;
 use Symfony\Contracts\EventDispatcher\Event;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandantResponse;
 
-class AlpdeskCoreMandantEditEvent extends Event {
+class AlpdeskCoreMandantEditEvent extends Event
+{
+    public const NAME = 'alpdesk.mandantedit';
 
-  public const NAME = 'alpdesk.mandantedit';
+    private AlpdeskCoreMandantResponse $resultData;
 
-  private AlpdeskCoreMandantResponse $resultData;
+    public function __construct(AlpdeskCoreMandantResponse $resultData)
+    {
+        $this->resultData = $resultData;
+    }
 
-  public function __construct(AlpdeskCoreMandantResponse $resultData) {
-    $this->resultData = $resultData;
-  }
+    public function getResultData(): AlpdeskCoreMandantResponse
+    {
+        return $this->resultData;
+    }
 
-  public function getResultData(): AlpdeskCoreMandantResponse {
-    return $this->resultData;
-  }
-
-  public function setResultData(AlpdeskCoreMandantResponse $resultData) {
-    $this->resultData = $resultData;
-  }
-
+    public function setResultData(AlpdeskCoreMandantResponse $resultData)
+    {
+        $this->resultData = $resultData;
+    }
 }
