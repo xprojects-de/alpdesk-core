@@ -19,7 +19,8 @@
   },
   "require-dev": {
     "contao/manager-plugin": "^2.0",
-    "phpstan/phpstan": "^0.12.81"
+    "phpstan/phpstan": "^0.12.81",
+    "vimeo/psalm": "^4.6"
   },
   "authors": [
     {
