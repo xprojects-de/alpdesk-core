@@ -11,6 +11,9 @@ use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
+/**
+ * @method static Model|AlpdeskcoreMandantModel|null findById(int $getMandantPid)
+ */
 class AlpdeskcoreMandantModel extends Model
 {
     protected static $strTable = 'tl_alpdeskcore_mandant';
