@@ -20,7 +20,8 @@
   "require-dev": {
     "contao/manager-plugin": "^2.0",
     "phpstan/phpstan": "^0.12.81",
-    "vimeo/psalm": "^4.6"
+    "vimeo/psalm": "^4.6",
+    "phpunit/phpunit": "^9.5"
   },
   "authors": [
     {
