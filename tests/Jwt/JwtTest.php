@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Alpdesk\AlpdeskCore\Tests;
+namespace Alpdesk\AlpdeskCoreTest\Jwt;
 
 use PHPUnit\Framework\TestCase;
 
