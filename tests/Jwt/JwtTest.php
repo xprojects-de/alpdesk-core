@@ -52,11 +52,25 @@ class StubContainerInterface implements ContainerInterface
 class JwtTest extends TestCase
 {
 
-    public function testJwt()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         System::setContainer(new StubContainerInterface());
         System::getContainer()->setParameter('kernel.secret', '000adc04469d7c761f1407279738f4268e8cf58310e6ff2b3b317df0c61d3fc2');
 
+    }
+
+    protected function assertPreConditions(): void
+    {
+        parent::assertPreConditions();
+
+        $this->assertNotNull(System::getContainer());
+        $this->assertNotEmpty(System::getContainer()->getParameter('kernel.secret'));
+    }
+
+    public function testJwt()
+    {
         $username = 'test';
         $jti = \base64_encode('alpdesk_' . $username);
         $nbf = 3600;
