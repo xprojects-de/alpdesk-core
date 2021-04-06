@@ -49,7 +49,7 @@ class StubContainerInterface implements ContainerInterface
     }
 }
 
-class JwtTest extends TestCase
+class JwtTokenTest extends TestCase
 {
 
     protected function setUp(): void
