@@ -113,6 +113,6 @@ class AlpdeskCoreDcaUtils extends Backend
 
     public function generatetestpdfLinkCallback($row, $href, $label, $title, $icon, $attributes): string
     {
-        return '<a href="' . $this->addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
+        return '<a href="' . $this->addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
     }
 }
