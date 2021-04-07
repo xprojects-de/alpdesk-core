@@ -32,7 +32,8 @@ class AlpdeskcoreDatabasemanagerModel extends Model
             'port' => $port,
             'user' => $username,
             'password' => $password,
-            'dbname' => $database
+            'dbname' => $database,
+            'charset' => 'utf8mb4'
         ];
 
         try {
