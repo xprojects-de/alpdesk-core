@@ -1,3 +1,10 @@
+alpdesk_logs_backend:
+  path: /contao/alpdeskcorelogs
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController:endpoint
+    _scope: backend
+  methods: [ POST, GET ]
+
 alpdesk_auth:
   path: /auth
   defaults:

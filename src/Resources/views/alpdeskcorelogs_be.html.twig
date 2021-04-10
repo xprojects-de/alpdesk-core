@@ -1,0 +1,48 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    Logs
+{% endblock %}
+
+{% block error %}
+    {{ numberOfLogs }}
+{% endblock %}
+
+{% block main %}
+    <div id="alpdeskcorelogs_backendcontainer">
+
+        <table class="tl_listing">
+            <tbody>
+
+            {% for key,value in logs %}
+
+                <tr>
+                    <td colspan="2" class="tl_folder_tlist">
+                        {{ value.logfile }}
+                        <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
+                           onclick="if(!confirm('{{ confirm }}'))return false;"
+                           class="alpdeskcorelogsdelete">
+                            <img src="system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
+                        </a>
+                    </td>
+                </tr>
+
+                {% for keycontent,valuecontent in value.content %}
+
+                    <tr class="hover-row">
+                        <td class="tl_file_list">
+                            <div class="alpdeskcorelogitem">
+                                {{ valuecontent }}
+                            </div>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

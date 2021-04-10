@@ -1,5 +1,14 @@
 services:
 
+  alpdeskcore.backendmenulistener:
+    class: Alpdesk\AlpdeskCore\Events\Listener\AlpdeskCoreBackendMenuListener
+    arguments:
+      - '@security.helper'
+      - '@router'
+      - '@request_stack'
+    tags:
+      - { name: kernel.event_listener, event: contao.backend_menu_build, priority: -255 }
+
   alpdeskcore.listener.registerplugin:
     class: Alpdesk\AlpdeskCore\Events\Listener\AlpdeskCoreRegisterPluginListener
     tags:
