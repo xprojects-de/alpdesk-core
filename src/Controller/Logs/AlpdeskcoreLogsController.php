@@ -12,10 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment as TwigEnvironment;
-use Contao\Environment;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
-use Alpdesk\AlpdeskFrontendediting\Utils\Utils;
 
 class AlpdeskcoreLogsController extends AbstractController
 {
@@ -45,6 +43,9 @@ class AlpdeskcoreLogsController extends AbstractController
         return ($sub === $startString);
     }
 
+    /**
+     * @throws \Exception
+     */
     private function scanDir(string $parseFolder): array
     {
         $strFolder = $this->projectDir . '/' . $parseFolder;
@@ -93,6 +94,9 @@ class AlpdeskcoreLogsController extends AbstractController
 
     }
 
+    /**
+     * @throws \Exception
+     */
     public function endpoint(): Response
     {
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_logs.js';
