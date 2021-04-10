@@ -71,3 +71,13 @@ services:
       - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: fields.type.options, method: getMandantElements }
       - { name: contao.callback, table: tl_member, target: fields.alpdeskcore_elements.options, method: getMandantElements }
       - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: list.sorting.child_record, method: addMandantElementType }
+
+  Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController:
+    arguments:
+      - '@twig'
+      - '@contao.csrf.token_manager'
+      - '%contao.csrf_token_name%'
+      - '@router'
+      - '@security.helper'
+    tags:
+      - controller.service_arguments
