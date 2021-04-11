@@ -17,11 +17,18 @@ class AlpdeskcoreLogger
     {
         $this->framework = $framework;
         $this->framework->initialize();
+
         $this->logger = new Logger('alpdeskcorelogger');
         $this->logger->setTimezone(new DateTimeZone($GLOBALS['TL_CONFIG']['timeZone']));
 
         $handler = new RotatingFileHandler($rootDir . '/var/logs/' . $environment . '-alpdesk.log', 0, ($environment == 'dev' ? Logger::DEBUG : Logger::WARNING));
-        $handler->setFormatter(new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n"));
+
+        $datimFormat = $GLOBALS['TL_CONFIG']['datimFormat'];
+        if ($datimFormat === null || $datimFormat === '') {
+            $datimFormat = 'd.m.Y H:i:s';
+        }
+
+        $handler->setFormatter(new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n", $datimFormat));
 
         $this->logger->pushHandler($handler);
     }
