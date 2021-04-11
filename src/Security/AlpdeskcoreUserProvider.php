@@ -57,7 +57,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
         $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
 
         if ($validateAndVerify == false) {
-            $msg = 'invalid JWT-Token for username:' . $username . ' at verification and validation';
+            $msg = 'invalid JWT-Token for username:' . $username;
             throw new AuthenticationException($msg);
         }
 

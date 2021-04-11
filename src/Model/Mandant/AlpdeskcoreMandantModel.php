@@ -116,7 +116,7 @@ class AlpdeskcoreMandantModel extends Model
             return $alpdeskUser;
 
         } else {
-            throw new AlpdeskCoreModelException("error auth - invalid member", AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
+            throw new AlpdeskCoreModelException("invalid member: " . $username, AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
         }
     }
 }

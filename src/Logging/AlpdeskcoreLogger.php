@@ -3,6 +3,7 @@
 namespace Alpdesk\AlpdeskCore\Logging;
 
 use DateTimeZone;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -18,7 +19,11 @@ class AlpdeskcoreLogger
         $this->framework->initialize();
         $this->logger = new Logger('alpdeskcorelogger');
         $this->logger->setTimezone(new DateTimeZone($GLOBALS['TL_CONFIG']['timeZone']));
-        $this->logger->pushHandler(new RotatingFileHandler($rootDir . '/var/logs/' . $environment . '-alpdesk.log', 0, ($environment == 'dev' ? Logger::DEBUG : Logger::WARNING)));
+
+        $handler = new RotatingFileHandler($rootDir . '/var/logs/' . $environment . '-alpdesk.log', 0, ($environment == 'dev' ? Logger::DEBUG : Logger::WARNING));
+        $handler->setFormatter(new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n"));
+
+        $this->logger->pushHandler($handler);
     }
 
     public function info($strText, $strFunction)
