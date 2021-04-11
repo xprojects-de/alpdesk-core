@@ -83,7 +83,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
         try {
             $username = $userProvider->getValidatedUsernameFromToken($credentials['token']);
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), __METHOD__);
+            //$this->logger->error($e->getMessage(), __METHOD__);
             throw new AuthenticationException($e->getMessage(), $e->getCode());
         }
 

@@ -49,7 +49,7 @@ class AlpdeskCorePlugin
             }
 
             if ($validPlugin == false) {
-                $msg = 'error loading plugin for username:' . $username;
+                $msg = 'error loading plugin: ' . $plugin . ' for username:' . $username;
                 throw new AlpdeskCorePluginException($msg, AlpdeskCoreConstants::$ERROR_INVALID_PLUGIN);
             }
 
