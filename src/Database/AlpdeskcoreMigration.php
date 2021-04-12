@@ -138,7 +138,15 @@ class AlpdeskcoreMigration
 
                     if (\array_key_exists('unique', $currentTable)) {
                         if (\is_array($currentTable['unique'])) {
-                            $table->addUniqueIndex($currentTable['unique']);
+
+                            $uniqueValueArray = $currentTable['unique'];
+                            foreach ($uniqueValueArray as $uValue) {
+
+                                if (\is_array($uValue)) {
+                                    $table->addUniqueIndex($uValue);
+                                }
+                            }
+
                         }
                     }
                 }
