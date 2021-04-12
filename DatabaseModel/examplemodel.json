@@ -15,7 +15,9 @@
         ]
       },
       "unique": [
-        "title"
+        [
+          "title"
+        ]
       ],
       "fields": {
         "id": {
@@ -76,6 +78,15 @@
       "primary": [
         "id"
       ],
+      "unique": [
+        [
+          "varchar27",
+          "varchar26"
+        ],
+        [
+          "varchar64"
+        ]
+      ],
       "foreignKeys": {
         "testtable": {
           "onDelete": "CASCADE",
@@ -133,6 +144,18 @@
         "varchar64": {
           "type": "string",
           "length": "64",
+          "notnull": true,
+          "default": "my default"
+        },
+        "varchar26": {
+          "type": "string",
+          "length": "26",
+          "notnull": true,
+          "default": "my default"
+        },
+        "varchar27": {
+          "type": "string",
+          "length": "27",
           "notnull": true,
           "default": "my default"
         },
