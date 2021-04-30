@@ -71,6 +71,43 @@
 			"response": []
 		},
 		{
+			"name": "Auth-Refresh",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"alpdesk_refresh_token\": \"{{refresh_token}}\",\n    \"ttltoken\": 20000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/auth/refresh",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Auth-Member",
 			"request": {
 				"auth": {
@@ -359,7 +396,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/alpdesk/alpdesk5\", \n    \"target\": \"dir\"\n}",
+					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/test2\", \n    \"target\": \"dir\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
