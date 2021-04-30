@@ -21,6 +21,14 @@ alpdesk_auth_verify:
     _token_check: false
   methods: [ POST ]
 
+alpdeskcore_auth_refresh:
+  path: /auth/refresh
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:refresh
+    _scope: alpdeskapi
+    _token_check: false
+  methods: [ POST ]
+
 alpdesk_auth_member:
   path: /auth/member
   defaults:
