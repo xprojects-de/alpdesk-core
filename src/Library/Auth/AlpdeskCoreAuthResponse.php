@@ -9,6 +9,7 @@ use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 class AlpdeskCoreAuthResponse
 {
     private string $alpdesk_token = '';
+    private string $alpdesk_refresh_token = '';
     private string $username = '';
     private bool $verify = false;
     private bool $invalid = true;
@@ -51,6 +52,16 @@ class AlpdeskCoreAuthResponse
     public function setInvalid(bool $invalid): void
     {
         $this->invalid = $invalid;
+    }
+
+    public function getAlpdeskRefreshToken(): string
+    {
+        return $this->alpdesk_refresh_token;
+    }
+
+    public function setAlpdeskRefreshToken(string $alpdesk_refresh_token): void
+    {
+        $this->alpdesk_refresh_token = $alpdesk_refresh_token;
     }
 
     public function getExp(): int

@@ -24,6 +24,7 @@ class AlpdeskCoreAuthToken
         $sessionModel->tstamp = time();
         $sessionModel->username = $username;
         $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, $ttl_token);
+        $sessionModel->refresh_token = AlpdeskcoreUserProvider::createRefreshToken($username, $ttl_token);
         $sessionModel->save();
 
         return $sessionModel;
@@ -40,6 +41,7 @@ class AlpdeskCoreAuthToken
 
         if ($sessionModel !== null) {
             $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, 1);
+            $sessionModel->refresh_token = AlpdeskcoreUserProvider::createRefreshToken($username, 1);
             $sessionModel->save();
         } else {
             $msg = 'Auth-Session not found for username:' . $username;
@@ -78,6 +80,60 @@ class AlpdeskCoreAuthToken
         $response->setVerify(true);
         $tokenData = $this->setAuthSession($username, $ttlToken);
         $response->setAlpdesk_token($tokenData->token);
+        $response->setAlpdeskRefreshToken($tokenData->refresh_token);
+
+        return $response;
+    }
+
+    /**
+     * @param array $refreshData
+     * @param AlpdeskcoreUser $user
+     * @return AlpdeskCoreAuthResponse
+     * @throws \Exception
+     */
+    public function refreshToken(array $refreshData, AlpdeskcoreUser $user): AlpdeskCoreAuthResponse
+    {
+        if (!\array_key_exists('alpdesk_refresh_token', $refreshData)) {
+            throw new AlpdeskCoreAuthException('invalid key-parameters for refresh', AlpdeskCoreConstants::$ERROR_INVALID_KEYPARAMETERS);
+        }
+
+        $ttlToken = AlpdeskCoreConstants::$TOKENTTL;
+        if (\array_key_exists('ttltoken', $refreshData)) {
+            $ttlToken = (int)AlpdeskcoreInputSecurity::secureValue($refreshData['ttltoken']);
+        }
+
+        $refreshToken = (string)AlpdeskcoreInputSecurity::secureValue($refreshData['alpdesk_refresh_token']);
+
+        try {
+
+            $tokenUsername = AlpdeskcoreUserProvider::extractUsernameFromToken($refreshToken);
+            if ($tokenUsername !== $user->getUsername()) {
+                throw new AlpdeskCoreAuthException('refresh_token not valid for username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+            }
+
+            $sessionModel = AlpdeskcoreSessionsModel::findByUsername($user->getUsername());
+            if ($sessionModel === null) {
+                throw new AlpdeskCoreAuthException('invalid member session', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+            }
+
+            $sessionRefreshToken = (string) $sessionModel->refresh_token;
+
+            if ($refreshToken !== $sessionRefreshToken) {
+                throw new AlpdeskCoreAuthException('refresh_token not valid for username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+            }
+
+        } catch (\Exception $ex) {
+            throw new AlpdeskCoreAuthException($ex->getMessage(), $ex->getCode());
+        }
+
+
+        $response = new AlpdeskCoreAuthResponse();
+        $response->setUsername($user->getUsername());
+        $response->setInvalid(false);
+        $response->setVerify(true);
+        $tokenData = $this->setAuthSession($user->getUsername(), $ttlToken);
+        $response->setAlpdesk_token($tokenData->token);
+        $response->setAlpdeskRefreshToken($tokenData->refresh_token);
 
         return $response;
     }
