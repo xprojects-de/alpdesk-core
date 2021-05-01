@@ -62,7 +62,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             if ($uploadFile !== null && $target !== null) {
 
-                $response = (new AlpdeskCoreFilemanagement($this->rootDir))->upload($uploadFile, $target, $user);
+                $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->upload($uploadFile, $target, $user);
 
                 $event = new AlpdeskCoreFileuploadEvent($response);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFileuploadEvent::NAME);
@@ -88,7 +88,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $downloadData = (array)\json_decode($request->getContent(), true);
 
-            $file = (new AlpdeskCoreFilemanagement($this->rootDir))->download($user, $downloadData);
+            $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->download($user, $downloadData);
             $this->logger->info('Download successfully', __METHOD__);
 
             return $file;
@@ -107,7 +107,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $finderData = (array)\json_decode($request->getContent(), true);
 
-            $response = (new AlpdeskCoreFilemanagement($this->rootDir))->finder($user, $finderData);
+            $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->finder($user, $finderData);
             $this->logger->info('Finder successfully', __METHOD__);
 
             return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));

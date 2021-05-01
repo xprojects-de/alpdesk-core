@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Filemanagement;
 
+use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderDeleteEvent;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderListEvent;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderMetaEvent;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\FilesModel;
@@ -23,10 +27,12 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 class AlpdeskCoreFilemanagement
 {
     protected string $rootDir;
+    private AlpdeskCoreEventService $eventService;
 
-    public function __construct(string $rootDir)
+    public function __construct(string $rootDir, AlpdeskCoreEventService $eventService)
     {
         $this->rootDir = $rootDir;
+        $this->eventService = $eventService;
     }
 
     /**
@@ -873,7 +879,13 @@ class AlpdeskCoreFilemanagement
         switch ($mode) {
             case 'list':
             {
-                return self::listFolder($finderData, $mandantInfo);
+                $finderResponseData = self::listFolder($finderData, $mandantInfo);
+
+                $event = new AlpdeskCoreFilemanagementFinderListEvent($finderData, $finderResponseData, $mandantInfo);
+                $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderListEvent::NAME);
+
+                return $event->getResultData();
+
             }
             case 'create':
             {
@@ -882,7 +894,12 @@ class AlpdeskCoreFilemanagement
             case 'delete':
             {
                 self::delete($finderData, $mandantInfo);
-                return true;
+
+                $event = new AlpdeskCoreFilemanagementFinderDeleteEvent($finderData, true, $mandantInfo);
+                $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderDeleteEvent::NAME);
+
+                return $event->getResultData();
+
             }
             case 'rename':
             {
@@ -898,7 +915,13 @@ class AlpdeskCoreFilemanagement
             }
             case 'meta':
             {
-                return self::meta($finderData, $mandantInfo);
+                $finderResponseData = self::meta($finderData, $mandantInfo);
+
+                $event = new AlpdeskCoreFilemanagementFinderMetaEvent($finderData, $finderResponseData, $mandantInfo);
+                $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderMetaEvent::NAME);
+
+                return $event->getResultData();
+
             }
             default:
                 throw new AlpdeskCoreFilemanagementException("invalid mode for finder", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
