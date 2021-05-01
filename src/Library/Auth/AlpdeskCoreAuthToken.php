@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Auth;
 
+use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
@@ -112,6 +113,12 @@ class AlpdeskCoreAuthToken
                 throw new AlpdeskCoreAuthException('refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
+            // Check if it´s a refresh-Token
+            $isRefreshToken = JwtToken::getClaim($refreshToken, 'isRefreshToken');
+            if ($isRefreshToken === null || !$isRefreshToken) {
+                throw new AlpdeskCoreAuthException('invalid refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+            }
+
             // Get valid memberSession
             $sessionModel = AlpdeskcoreSessionsModel::findByUsername($user->getUsername());
             if ($sessionModel === null) {
@@ -124,6 +131,12 @@ class AlpdeskCoreAuthToken
             $sessionRefreshTokenUsername = AlpdeskcoreUserProvider::extractUsernameFromToken($sessionRefreshToken);
             if ($sessionRefreshTokenUsername !== $tokenUsername) {
                 throw new AlpdeskCoreAuthException('session_refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+            }
+
+            // Check if it´s a refresh-Token
+            $isSessionRefreshToken = JwtToken::getClaim($sessionRefreshToken, 'isRefreshToken');
+            if ($isSessionRefreshToken === null || !$isSessionRefreshToken) {
+                throw new AlpdeskCoreAuthException('invalid session_refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
             if ($refreshToken !== $sessionRefreshToken) {
