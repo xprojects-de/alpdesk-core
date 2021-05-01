@@ -86,7 +86,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
-            'eval' => array('mandatory' => true, 'maxlength' => 250, 'tl_class' => 'w50'),
+            'eval' => array('mandatory' => true, 'maxlength' => 1000, 'tl_class' => 'w50'),
             'sql' => "text NULL"
         ),
         'refresh_token' => array
@@ -95,7 +95,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
-            'eval' => array('mandatory' => true, 'maxlength' => 250, 'tl_class' => 'w50'),
+            'eval' => array('mandatory' => true, 'maxlength' => 1000, 'tl_class' => 'w50'),
             'sql' => "text NULL"
         )
     )

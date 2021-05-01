@@ -106,20 +106,28 @@ class AlpdeskCoreAuthToken
 
         try {
 
+            // Method also validate and verify the token
             $tokenUsername = AlpdeskcoreUserProvider::extractUsernameFromToken($refreshToken);
             if ($tokenUsername !== $user->getUsername()) {
-                throw new AlpdeskCoreAuthException('refresh_token not valid for username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+                throw new AlpdeskCoreAuthException('refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
+            // Get valid memberSession
             $sessionModel = AlpdeskcoreSessionsModel::findByUsername($user->getUsername());
             if ($sessionModel === null) {
                 throw new AlpdeskCoreAuthException('invalid member session', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
-            $sessionRefreshToken = (string) $sessionModel->refresh_token;
+            $sessionRefreshToken = (string)$sessionModel->refresh_token;
+
+            // Method also validate and verify the token
+            $sessionRefreshTokenUsername = AlpdeskcoreUserProvider::extractUsernameFromToken($sessionRefreshToken);
+            if ($sessionRefreshTokenUsername !== $tokenUsername) {
+                throw new AlpdeskCoreAuthException('session_refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+            }
 
             if ($refreshToken !== $sessionRefreshToken) {
-                throw new AlpdeskCoreAuthException('refresh_token not valid for username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+                throw new AlpdeskCoreAuthException('refresh_token does not match with session_refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
         } catch (\Exception $ex) {
