@@ -36,6 +36,11 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
         return JwtToken::generate(self::createJti($username), $ttl, array('username' => $username));
     }
 
+    public static function createRefreshToken(string $username, int $ttl): string
+    {
+        return JwtToken::generate(self::createJti($username), $ttl, array('username' => $username, 'isRefreshToken' => true));
+    }
+
     public static function validateAndVerifyToken(string $jwtToken, string $username): bool
     {
         return JwtToken::validateAndVerify($jwtToken, self::createJti($username));

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Auth;
 
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthRefreshEvent;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -71,7 +72,15 @@ class AlpdeskCoreAuthController extends AbstractController
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthSuccessEvent::NAME);
             $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Auth successfully', __METHOD__);
 
-            return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
+            return (new JsonResponse(array(
+                'username' => $event->getResultData()->getUsername(),
+                'alpdesk_token' => $event->getResultData()->getAlpdesk_token(),
+                'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
+                'verify' => $event->getResultData()->getVerify(),
+                'invalid' => $event->getResultData()->getInvalid(),
+                'expires' => ($event->getResultData()->getInvalid() == true ? 0 : $event->getResultData()->getExp())
+            ), AlpdeskCoreConstants::$STATUSCODE_OK
+            ));
 
         } catch (\Exception $exception) {
 
@@ -96,6 +105,32 @@ class AlpdeskCoreAuthController extends AbstractController
             $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Verify successfully', __METHOD__);
 
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
+
+        } catch (\Exception $exception) {
+
+            $this->logger->error($exception->getMessage(), __METHOD__);
+            return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+
+        }
+    }
+
+    public function refresh(Request $request, UserInterface $user): JsonResponse
+    {
+        try {
+
+            $refreshData = (array)\json_decode($request->getContent(), true);
+
+            $response = (new AlpdeskCoreAuthToken())->refreshToken($refreshData, $user);
+
+            $event = new AlpdeskCoreAuthRefreshEvent($response);
+            $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthRefreshEvent::NAME);
+            $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Refresh successfully', __METHOD__);
+
+            return (new JsonResponse(array(
+                'alpdesk_token' => $event->getResultData()->getAlpdesk_token(),
+                'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
+                'expires' => ($event->getResultData()->getInvalid() == true ? 0 : $event->getResultData()->getExp())
+            ), AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Exception $exception) {
 

@@ -9,6 +9,7 @@ use Contao\Model;
 /**
  * @property string $username
  * @property string $token
+ * @property string $refresh_token
  * @property integer $tstamp
  *
  * @method static Model|AlpdeskcoreSessionsModel|null findByUsername(string $username)
