@@ -78,6 +78,10 @@ class AlpdeskcoreLogsController extends AbstractController
         return $arrReturn;
     }
 
+    /**
+     * @param string $parseFolder
+     * @throws \Exception
+     */
     private function deleteLog(string $parseFolder)
     {
         $deleteLog = Input::get('deleteLog');
