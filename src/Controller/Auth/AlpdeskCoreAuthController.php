@@ -34,7 +34,7 @@ class AlpdeskCoreAuthController extends AbstractController
     public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
+
         $this->eventService = $eventService;
         $this->logger = $logger;
     }
@@ -63,6 +63,8 @@ class AlpdeskCoreAuthController extends AbstractController
     public function auth(Request $request): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $authdata = (array)\json_decode($request->getContent(), true);
 
@@ -94,6 +96,8 @@ class AlpdeskCoreAuthController extends AbstractController
     {
         try {
 
+            $this->framework->initialize();
+
             $response = new AlpdeskCoreAuthResponse();
             $response->setUsername($user->getUsername());
             $response->setAlpdesk_token($user->getUsedToken());
@@ -117,6 +121,8 @@ class AlpdeskCoreAuthController extends AbstractController
     public function refresh(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $refreshData = (array)\json_decode($request->getContent(), true);
 
@@ -143,6 +149,8 @@ class AlpdeskCoreAuthController extends AbstractController
     public function member(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $memberdata = (array)json_decode($request->getContent(), true);
 
@@ -206,6 +214,8 @@ class AlpdeskCoreAuthController extends AbstractController
     public function logout(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $response = (new AlpdeskCoreAuthToken())->invalidToken($user);
 
