@@ -25,7 +25,7 @@ class AlpdeskCoreMandantController extends AbstractController
     public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
+
         $this->eventService = $eventService;
         $this->logger = $logger;
     }
@@ -67,6 +67,8 @@ class AlpdeskCoreMandantController extends AbstractController
     {
         try {
 
+            $this->framework->initialize();
+
             $response = (new AlpdeskCoreMandant($this->eventService))->list($user);
 
             $event = new AlpdeskCoreMandantListEvent($response);
@@ -86,6 +88,8 @@ class AlpdeskCoreMandantController extends AbstractController
 
     public function edit(Request $request, UserInterface $user): JsonResponse
     {
+        $this->framework->initialize();
+
         return $this->outputError('Not Supported', AlpdeskCoreConstants::$ERROR_COMMON, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
     }
 

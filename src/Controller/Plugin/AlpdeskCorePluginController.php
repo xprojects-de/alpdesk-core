@@ -26,7 +26,7 @@ class AlpdeskCorePluginController extends AbstractController
     public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger, string $rootDir)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
+
         $this->eventService = $eventService;
         $this->logger = $logger;
         $this->rootDir = $rootDir;
@@ -55,6 +55,8 @@ class AlpdeskCorePluginController extends AbstractController
     public function call(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $plugindata = (array)\json_decode($request->getContent(), true);
 

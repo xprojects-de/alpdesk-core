@@ -23,15 +23,31 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
     protected ContaoFramework $framework;
     protected AlpdeskcoreLogger $logger;
 
+    private bool $initialized;
+
     public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
+
         $this->logger = $logger;
+        $this->initialized = false;
+    }
+
+    private function initialize(): void
+    {
+        if ($this->initialized === false) {
+
+            $this->initialized = true;
+            $this->framework->initialize();
+
+        }
+
     }
 
     public function start(Request $request, AuthenticationException $authException = null): JsonResponse
     {
+        $this->initialize();
+
         $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'message' => 'Auth required'];
         $this->logger->info('Auth required', __METHOD__);
 
@@ -40,6 +56,8 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
+        $this->initialize();
+
         $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'message' => strtr($exception->getMessage(), $exception->getMessageData())];
         $this->logger->error(strtr($exception->getMessage(), $exception->getMessageData()), __METHOD__);
 
@@ -48,16 +66,22 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        $this->initialize();
+
         return null;
     }
 
     public function supportsRememberMe(): bool
     {
+        $this->initialize();
+
         return false;
     }
 
     public function getCredentials(Request $request)
     {
+        $this->initialize();
+
         if (!$request->headers->has(self::$name)) {
             $this->logger->error(self::$name . ' not found in Header', __METHOD__);
             throw new AuthenticationException(self::$name . ' not found in Header');
@@ -80,6 +104,8 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        $this->initialize();
+
         try {
             $username = $userProvider->getValidatedUsernameFromToken($credentials['token']);
         } catch (\Exception $e) {
@@ -92,6 +118,8 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user): bool
     {
+        $this->initialize();
+
         if ($user->getFixToken() === $credentials['token']) {
             $user->setFixTokenAuth(true);
             return ($user->getFixToken() === $credentials['token']);
@@ -106,6 +134,8 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request): bool
     {
+        $this->initialize();
+
         if ('alpdeskapi' === $request->attributes->get('_scope')) {
             return true;
         }

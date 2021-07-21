@@ -27,7 +27,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger, string $rootDir)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
+
         $this->eventService = $eventService;
         $this->logger = $logger;
         $this->rootDir = $rootDir;
@@ -56,6 +56,8 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     public function upload(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $uploadFile = $request->files->get('file');
             $target = $request->get('target');
@@ -86,6 +88,8 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     {
         try {
 
+            $this->framework->initialize();
+
             $downloadData = (array)\json_decode($request->getContent(), true);
 
             $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->download($user, $downloadData);
@@ -104,6 +108,8 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     public function finder(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            $this->framework->initialize();
 
             $finderData = (array)\json_decode($request->getContent(), true);
 

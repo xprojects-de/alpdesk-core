@@ -19,11 +19,24 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     private ContaoFramework $framework;
     protected AlpdeskcoreLogger $logger;
 
+    private bool $initialized;
+
     public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger)
     {
         $this->framework = $framework;
-        $this->framework->initialize();
         $this->logger = $logger;
+        $this->initialized = false;
+    }
+
+    private function initialize(): void
+    {
+        if ($this->initialized === false) {
+
+            $this->initialized = true;
+            $this->framework->initialize();
+
+        }
+
     }
 
     public static function createJti($username): string
@@ -87,6 +100,8 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
+        $this->initialize();
+
         $alpdeskUser = new AlpdeskcoreUser();
         $alpdeskUser->setUsername($username);
 
@@ -128,11 +143,15 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
 
     public function refreshUser(UserInterface $user)
     {
+        $this->initialize();
+
         throw new UnsupportedUserException('Refresh not possible');
     }
 
     public function supportsClass($class)
     {
+        $this->initialize();
+
         return $class === AlpdeskcoreUser::class;
     }
 

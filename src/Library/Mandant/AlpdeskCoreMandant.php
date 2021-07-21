@@ -99,7 +99,9 @@ class AlpdeskCoreMandant
             unset($data['tstamp']);
 
             $returnData = array();
+
             // @ToDo load for other languages
+            System::loadLanguageFile('default', 'de');
             System::loadLanguageFile('tl_alpdeskcore_mandant', 'de');
             Controller::loadDataContainer('tl_alpdeskcore_mandant');
 
