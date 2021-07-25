@@ -73,7 +73,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
     'palettes' => array
     (
         '__selector__' => array(),
-        'default' => 'name,pdfauthor,pdftitel,font;html;header_text,header_globalsize,header_globalfont;footer_text,footer_globalsize,footer_globalfont'
+        'default' => 'name,pdfauthor,pdftitel,font,margins,autobreak_margin;html;header_text,header_globalsize,header_globalfont,header_margin;footer_text,footer_globalsize,footer_globalfont,footer_margin'
     ),
     'fields' => array
     (
@@ -111,6 +111,14 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
             'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),
+        'margins' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['margins'],
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => array('multiple' => true, 'size' => 3, 'tl_class' => 'w50'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        ),
         'font' => array
         (
             'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['font'],
@@ -118,6 +126,14 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 3, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'autobreak_margin' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['autobreak_margin'],
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => array('multiple' => false, 'tl_class' => 'w50'),
+            'sql' => "varchar(64) NOT NULL default ''"
         ),
         'html' => array
         (
@@ -155,6 +171,14 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
             'eval' => array('multiple' => true, 'size' => 4, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),
+        'header_margin' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['header_margin'],
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => array('multiple' => false, 'tl_class' => 'w50'),
+            'sql' => "varchar(64) NOT NULL default ''"
+        ),
         'footer_text' => array
         (
             'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_text'],
@@ -180,6 +204,14 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 4, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'footer_margin' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_margin'],
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => array('multiple' => false, 'tl_class' => 'w50'),
+            'sql' => "varchar(64) NOT NULL default ''"
         )
     )
 );
