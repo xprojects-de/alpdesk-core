@@ -39,6 +39,15 @@ class AlpdeskCorePDFCreator extends \TCPDF
         'height' => 0
     );
 
+    private array $pageMargins = [
+        'left' => null,
+        'top' => null,
+        'right' => null,
+        'footerMargin' => null,
+        'headerMargin' => null,
+        'autobreakMargin' => null
+    ];
+
     public function __construct()
     {
         parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
@@ -126,6 +135,42 @@ class AlpdeskCorePDFCreator extends \TCPDF
             'pdftitel' => $pdfData->name
         );
 
+        if ($pdfData->margins !== null && $pdfData->margins !== '') {
+
+            $margins = StringUtil::deserialize($pdfData->margins);
+            if (\is_array($margins) && \count($margins) === 3) {
+
+                $marginLeft = $margins[0];
+                if ($marginLeft !== null && $marginLeft !== '') {
+                    $this->pageMargins['left'] = (float)$marginLeft;
+                }
+
+                $marginTop = $margins[1];
+                if ($marginTop !== null && $marginTop !== '') {
+                    $this->pageMargins['top'] = (float)$marginTop;
+                }
+
+                $marginRight = $margins[2];
+                if ($marginRight !== null && $marginRight !== '') {
+                    $this->pageMargins['right'] = (float)$marginRight;
+                }
+
+            }
+
+        }
+
+        if ($pdfData->autobreak_margin !== null && $pdfData->autobreak_margin !== '') {
+            $this->pageMargins['autobreakMargin'] = (float)$pdfData->autobreak_margin;
+        }
+
+        if ($pdfData->header_margin !== null && $pdfData->header_margin !== '') {
+            $this->pageMargins['headerMargin'] = (float)$pdfData->header_margin;
+        }
+
+        if ($pdfData->footer_margin !== null && $pdfData->footer_margin !== '') {
+            $this->pageMargins['footerMargin'] = (float)$pdfData->footer_margin;
+        }
+
         $footerglobalsize = StringUtil::deserialize($pdfData->footer_globalsize);
         $footerglobalfont = StringUtil::deserialize($pdfData->footer_globalfont);
 
@@ -204,10 +249,29 @@ class AlpdeskCorePDFCreator extends \TCPDF
 
         $this->setPrintHeader($this->getHeaderDataItem('valid'));
         $this->setPrintFooter($this->getFooterDataItem('valid'));
-        $this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + ($this->getHeaderDataItem('valid') == true ? intval($this->getHeaderDataItem('height')) : 0), PDF_MARGIN_RIGHT);
-        $this->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $this->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM + 10);
+
+        $marginLeft = PDF_MARGIN_LEFT;
+        if ($this->pageMargins['left'] !== null) {
+            $marginLeft = (float)$this->pageMargins['left'];
+        }
+
+        $marginTop = PDF_MARGIN_TOP;
+        if ($this->pageMargins['top'] !== null) {
+            $marginTop = (float)$this->pageMargins['top'];
+        }
+
+        $marginRight = PDF_MARGIN_RIGHT;
+        if ($this->pageMargins['right'] !== null) {
+            $marginRight = (float)$this->pageMargins['right'];
+        }
+
+        $this->SetMargins($marginLeft, $marginTop + ($this->getHeaderDataItem('valid') == true ? intval($this->getHeaderDataItem('height')) : 0), $marginRight);
+
+        $this->SetHeaderMargin(($this->pageMargins['headerMargin'] !== null ? (float)$this->pageMargins['headerMargin'] : PDF_MARGIN_HEADER));
+        $this->SetFooterMargin(($this->pageMargins['footerMargin'] !== null ? (float)$this->pageMargins['footerMargin'] : PDF_MARGIN_FOOTER));
+
+        $this->SetAutoPageBreak(true, ($this->pageMargins['autobreakMargin'] !== null ? (float)$this->pageMargins['autobreakMargin'] : PDF_MARGIN_BOTTOM + 10));
+
         $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $this->setLanguageArray($l);
         $this->SetFont($settingsarray['font_family'], $settingsarray['font_style'], $settingsarray['font_size']);
