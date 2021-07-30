@@ -18,12 +18,16 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
     private static function create(int $id, string $host, int $port, string $username, string $password, string $database): ?Connection
     {
-        if (\array_key_exists($id, self::$connectionsTable)) {
+        if (\count(self::$connectionsTable) > 0 && \array_key_exists($id, self::$connectionsTable)) {
+
             if (self::$connectionsTable[$id] instanceof Connection) {
-                if (self::$connectionsTable[$id] !== null) {
+
+                if (self::$connectionsTable[$id] !== null && self::$connectionsTable[$id]->isConnected()) {
                     return self::$connectionsTable[$id];
                 }
+
             }
+
         }
 
         $params = [
@@ -94,7 +98,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     $options = "";
                     $tableOptions = $table->getOptions();
 
-                    if ($tableOptions !== null && \is_array($tableOptions) && \count($tableOptions) > 0) {
+                    if (\is_array($tableOptions) && \count($tableOptions) > 0) {
 
                         if (\array_key_exists('engine', $tableOptions)) {
                             $options .= 'engine: ' . $tableOptions['engine'];
@@ -155,7 +159,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     );
 
                     $columns = $table->getColumns();
-                    if ($columns !== null && \is_array($columns) && \count($columns) > 0) {
+                    if (\is_array($columns) && \count($columns) > 0) {
 
                         foreach ($columns as $column) {
 
@@ -187,7 +191,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                                 }
 
                                 $platformOptions = $column->getPlatformOptions();
-                                if ($platformOptions !== null && \is_array($platformOptions) && \count($platformOptions) > 0) {
+                                if (\is_array($platformOptions) && \count($platformOptions) > 0) {
                                     foreach ($platformOptions as $pKey => $pValue) {
                                         $output .= ' | ' . $pKey . ' ' . $pValue;
                                     }
@@ -214,6 +218,18 @@ class AlpdeskcoreDatabasemanagerModel extends Model
      */
     public static function connectionById(int $id): ?Connection
     {
+        if (\count(self::$connectionsTable) > 0 && \array_key_exists($id, self::$connectionsTable)) {
+
+            if (self::$connectionsTable[$id] instanceof Connection) {
+
+                if (self::$connectionsTable[$id] !== null && self::$connectionsTable[$id]->isConnected()) {
+                    return self::$connectionsTable[$id];
+                }
+
+            }
+
+        }
+
         $result = self::findByPk($id);
 
         if ($result !== null) {
