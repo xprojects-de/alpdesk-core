@@ -118,6 +118,11 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function refresh(Request $request, UserInterface $user): JsonResponse
     {
         try {

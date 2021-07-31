@@ -78,6 +78,10 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
         return false;
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function getCredentials(Request $request)
     {
         $this->initialize();

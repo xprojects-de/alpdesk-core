@@ -69,6 +69,50 @@ class JwtTokenTest extends TestCase
         $this->assertNotEmpty(System::getContainer()->getParameter('kernel.secret'));
     }
 
+    private function nullParameter(\DateTimeImmutable $d): void
+    {
+
+    }
+
+    public function testNullCheck()
+    {
+        // InstanceCheck
+
+        $z = null;
+        $t = ($z instanceof \DateTimeImmutable);
+        $this->assertSame(false, $t);
+
+        $z = new \DateTimeImmutable();
+        $u = ($z instanceof \DateTimeImmutable);
+        $this->assertSame(true, $u);
+
+        // null-Parameter-test
+
+        try {
+
+            $this->nullParameter(null);
+            $this->assertSame(true, false);
+
+        } catch (\Throwable $ex) {
+
+            echo($ex->getMessage());
+            $this->assertSame(true, true);
+
+        }
+
+        try {
+
+            $this->nullParameter(new \DateTimeImmutable());
+            $this->assertSame(true, true);
+
+        } catch (\Throwable $ex) {
+
+            echo($ex->getMessage());
+            $this->assertSame(false, true);
+
+        }
+    }
+
     public function testJwt()
     {
         $username = 'test';

@@ -68,15 +68,18 @@ class AlpdeskCoreAuthResponse
     {
         $exp = -1;
         if ($this->alpdesk_token != '') {
+
             $expvalue = JwtToken::getClaim($this->alpdesk_token, 'exp');
-            if ($expvalue !== null) {
-                if ($expvalue instanceof \DateTimeImmutable) {
-                    $exp = $expvalue->getTimestamp() - time();
-                    if ($exp < 0) {
-                        $exp = 0;
-                    }
+
+            if ($expvalue instanceof \DateTimeImmutable) {
+
+                $exp = $expvalue->getTimestamp() - time();
+                if ($exp < 0) {
+                    $exp = 0;
                 }
+
             }
+
         }
 
         return $exp;
