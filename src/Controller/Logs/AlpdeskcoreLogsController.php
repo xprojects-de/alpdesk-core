@@ -18,12 +18,12 @@ use Symfony\Component\Security\Core\Security;
 class AlpdeskcoreLogsController extends AbstractController
 {
 
-    private $twig;
-    private $csrfTokenManager = null;
-    private $csrfTokenName;
-    protected $router;
-    private $security;
-    private $projectDir;
+    private TwigEnvironment $twig;
+    private CsrfTokenManagerInterface $csrfTokenManager;
+    private string $csrfTokenName;
+    protected RouterInterface $router;
+    private Security $security;
+    private string $projectDir;
 
     public function __construct(TwigEnvironment $twig, CsrfTokenManagerInterface $csrfTokenManager, string $csrfTokenName, RouterInterface $router, Security $security, string $projectDir)
     {

@@ -6,10 +6,12 @@ namespace Alpdesk\AlpdeskCore\Library\PDF;
 
 use Alpdesk\AlpdeskCore\Model\PDF\AlpdeskcorePdfElementsModel;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePDFException;
+use Contao\Config;
 use Contao\Controller;
 use Contao\StringUtil;
 use Contao\File;
 use Contao\Dbafs;
+use Contao\System;
 
 class AlpdeskCorePDFCreator extends \TCPDF
 {
@@ -222,8 +224,11 @@ class AlpdeskCorePDFCreator extends \TCPDF
         ob_start();
 
         $l['a_meta_dir'] = 'ltr';
-        $l['a_meta_charset'] = $GLOBALS['TL_CONFIG']['characterSet'];
-        $l['a_meta_language'] = $GLOBALS['TL_LANGUAGE'];
+        $l['a_meta_charset'] = Config::get('characterSet');
+
+        $locale = System::getContainer()->get('request_stack')->getCurrentRequest()->getLocale();
+        $l['a_meta_language'] = $locale;
+
         $l['w_page'] = "page";
 
         $this->SetCreator(PDF_CREATOR);
@@ -280,7 +285,8 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->writeHTML($html, true, false, true, false);
         $this->lastPage();
 
-        $xdir = TL_ROOT . "/" . $path;
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $xdir = $rootDir . "/" . $path;
         if (!is_dir($xdir)) {
             mkdir($xdir);
         }

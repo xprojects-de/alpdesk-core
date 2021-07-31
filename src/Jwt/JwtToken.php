@@ -67,13 +67,11 @@ class JwtToken
         $config = self::getConfig();
         $parser = $config->parser();
 
-        return $parser->parse((string)$token);
+        return $parser->parse($token);
     }
 
     public static function getClaim(string $token, string $name)
     {
-        $value = null;
-
         try {
 
             $tokenObject = self::parse($token);
@@ -98,12 +96,11 @@ class JwtToken
 
         $validator = $config->validator();
 
-        $value = false;
-
         try {
 
             $signer = new SignedWith($config->signer(), InMemory::plainText(self::getDefaultKeyString()));
             $validator->assert($tokenObject, $signer);
+
             $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
 
             if ($value == true) {

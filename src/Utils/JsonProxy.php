@@ -7,9 +7,9 @@ namespace Alpdesk\AlpdeskCore\Utils;
 class JsonProxy
 {
     private string $url = '';
-    private $username = null;
-    private $password = null;
-    private $requestType = null;
+    private ?string $username = null;
+    private ?string $password = null;
+    private ?string $requestType = null;
     private $data = null;
     private bool $verifyHost = false;
     private bool $verifyPeer = false;
@@ -134,9 +134,10 @@ class JsonProxy
 
         $response = curl_exec($ch);
 
+        $http_response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         if (!$response) {
 
-            $http_response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $body = curl_error($ch);
             curl_close($ch);
 
@@ -144,7 +145,6 @@ class JsonProxy
 
         } else {
 
-            $http_response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
             if ($http_response != 200 && $http_response != 201) {

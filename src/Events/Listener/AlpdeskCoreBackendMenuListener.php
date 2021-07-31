@@ -13,10 +13,9 @@ use Contao\BackendUser;
 
 class AlpdeskCoreBackendMenuListener
 {
-
-    protected $router;
-    protected $requestStack;
-    private $security;
+    protected RouterInterface $router;
+    protected RequestStack $requestStack;
+    private Security $security;
 
     public function __construct(Security $security, RouterInterface $router, RequestStack $requestStack)
     {

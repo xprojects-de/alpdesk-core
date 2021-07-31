@@ -19,17 +19,15 @@ class AlpdeskCoreDcaUtils extends Backend
 {
     public function showSessionValid($row, $label, $dc, $args): array
     {
-        $validateAndVerify = false;
-
         try {
             $validateAndVerify = JwtToken::validateAndVerify($args[1], AlpdeskcoreUserProvider::createJti($args[0]));
         } catch (\Exception $ex) {
             $validateAndVerify = false;
         }
 
-        $color = (string)($validateAndVerify == true ? 'green' : 'red');
+        $color = ($validateAndVerify == true ? 'green' : 'red');
 
-        $args[0] = (string)'<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $args[0];
+        $args[0] = '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $args[0];
         $args[1] = substr($args[1], 0, 25) . ' ...';
 
         return $args;

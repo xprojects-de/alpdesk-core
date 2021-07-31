@@ -13,11 +13,17 @@ class DcaCallbacks
 {
     protected AlpdeskCoreEventService $eventService;
 
+    /**
+     * @param AlpdeskCoreEventService $eventService
+     */
     public function __construct(AlpdeskCoreEventService $eventService)
     {
         $this->eventService = $eventService;
     }
 
+    /**
+     * @return array
+     */
     private function getLegacyElements(): array
     {
         $data = [];
@@ -31,7 +37,11 @@ class DcaCallbacks
         return $data;
     }
 
-    public function getMandantElements(DataContainer $dc): array
+    /**
+     * @param DataContainer|null $dc
+     * @return array
+     */
+    public function getMandantElements(?DataContainer $dc): array
     {
         $event = new AlpdeskCoreRegisterPlugin($this->getLegacyElements(), []);
         $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
@@ -39,7 +49,11 @@ class DcaCallbacks
         return $event->getPluginData();
     }
 
-    public function addMandantElementType($arrRow): string
+    /**
+     * @param array $arrRow
+     * @return string
+     */
+    public function addMandantElementType(array $arrRow): string
     {
         $event = new AlpdeskCoreRegisterPlugin($this->getLegacyElements(), []);
         $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreRegisterPlugin::NAME);
@@ -51,6 +65,15 @@ class DcaCallbacks
         $type = $dataComplete[$arrRow['type']] ?: '- INVALID -';
 
         return '<div class="cte_type ' . $key . '">' . Image::getHtml($icon) . '&nbsp;&nbsp;' . $type . '</div>';
+    }
+
+    /**
+     * @param DataContainer|null $dc
+     */
+    public function databaseManagerOnLoad(DataContainer $dc = null): void
+    {
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_widget_databasemanager.css';
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_widget_databasemanager.js';
     }
 
 }

@@ -829,10 +829,6 @@ class AlpdeskCoreFilemanagement
      */
     public function upload(UploadedFile $uploadFile, string $target, AlpdeskcoreUser $user): AlpdeskCoreFileuploadResponse
     {
-        if ($uploadFile == null) {
-            throw new AlpdeskCoreFilemanagementException("invalid key-parameters for upload");
-        }
-
         $mandantInfo = $this->getMandantInformation($user);
 
         $response = new AlpdeskCoreFileuploadResponse();

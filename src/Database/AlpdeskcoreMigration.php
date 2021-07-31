@@ -312,7 +312,21 @@ class AlpdeskcoreMigration
             throw new \Exception('Error: Version < 5.1.0');
         }
 
-        $options = $this->connection->getParams()['defaultTableOptions'];
+        if ($this->connection === null) {
+            throw new \Exception('invalid connection');
+        }
+
+        $schema = $this->connection->getSchemaManager();
+        if ($schema === null) {
+            throw new \Exception('invalid schema');
+        }
+
+        $schemaConfig = $schema->createSchemaConfig();
+        if ($schemaConfig === null) {
+            throw new \Exception('invalid schemaConfig');
+        }
+
+        $options = $schemaConfig->getDefaultTableOptions();
 
         // Check the collation if the user has configured it
         if (isset($options['collate'])) {

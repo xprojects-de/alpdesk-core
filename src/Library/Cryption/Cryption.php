@@ -11,11 +11,10 @@ class Cryption
     private string $key;
 
     /**
-     * Cryption constructor.
-     * @param false $useContaoKey
+     * @param bool $useContaoKey
      * @throws \Exception
      */
-    public function __construct($useContaoKey = false)
+    public function __construct(bool $useContaoKey = false)
     {
         if (!\in_array('sodium', get_loaded_extensions())) {
             throw new \Exception('The PHP sodium extension is not installed');
@@ -52,7 +51,7 @@ class Cryption
      * @return string
      * @throws \Exception
      */
-    public function safeEncrypt(string $message, $zeroKey = true): string
+    public function safeEncrypt(string $message, bool $zeroKey = true): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
 
@@ -80,7 +79,7 @@ class Cryption
      * @return string
      * @throws \Exception
      */
-    public function safeDecrypt(string $encrypted, $zeroKey = true): string
+    public function safeDecrypt(string $encrypted, bool $zeroKey = true): string
     {
         $decoded = base64_decode($encrypted);
         $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');

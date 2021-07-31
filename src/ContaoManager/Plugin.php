@@ -14,10 +14,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Alpdesk\AlpdeskCore\AlpdeskCoreBundle;
+use Symfony\Component\Routing\RouteCollection;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface, ExtensionPluginInterface
 {
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [BundleConfig::create(AlpdeskCoreBundle::class)->setLoadAfter([ContaoCoreBundle::class])];
     }
@@ -25,31 +26,43 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
     /**
      * @param LoaderResolverInterface $resolver
      * @param KernelInterface $kernel
-     * @return mixed|\Symfony\Component\Routing\RouteCollection|null
+     * @return RouteCollection|null
      * @throws \Exception
      */
-    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
     {
         $file = __DIR__ . '/../Resources/config/routes.yml';
         return $resolver->resolve($file)->load($file);
     }
 
-    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
+    /**
+     * @param string $extensionName
+     * @param array $extensionConfigs
+     * @param ContainerBuilder $container
+     * @return array
+     */
+    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container): array
     {
         if ('security' !== $extensionName) {
             return $extensionConfigs;
         }
+
         foreach ($extensionConfigs as &$extensionConfig) {
+
             if (isset($extensionConfig['firewalls'])) {
+
                 $extensionConfig['providers']['alpdeskcore.security.user_provider'] = [
                     'id' => 'alpdeskcore.security.user_provider'
                 ];
+
                 $guard = [
                     'authenticators' => [
                         'alpdeskcore.security.token_authenticator'
-                    ],
+                    ]
                 ];
+
                 $offset = (int)array_search('frontend', array_keys($extensionConfig['firewalls']));
+
                 $extensionConfig['firewalls'] = array_merge(
                     array_slice($extensionConfig['firewalls'], 0, $offset, true),
                     [
@@ -126,9 +139,14 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                     ],
                     array_slice($extensionConfig['firewalls'], $offset, null, true)
                 );
+
                 break;
+
             }
+
         }
+
         return $extensionConfigs;
+
     }
 }
