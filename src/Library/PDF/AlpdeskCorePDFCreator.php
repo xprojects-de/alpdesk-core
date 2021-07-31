@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskCore\Library\PDF;
 
 use Alpdesk\AlpdeskCore\Model\PDF\AlpdeskcorePdfElementsModel;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePDFException;
+use Contao\Config;
 use Contao\Controller;
 use Contao\StringUtil;
 use Contao\File;
@@ -223,10 +224,10 @@ class AlpdeskCorePDFCreator extends \TCPDF
         ob_start();
 
         $l['a_meta_dir'] = 'ltr';
-        $l['a_meta_charset'] = $GLOBALS['TL_CONFIG']['characterSet'];
+        $l['a_meta_charset'] = Config::get('characterSet');
 
-        // @TODO $GLOBALS['TL_LANGUAGE'] @deprecated use $locale = System::getContainer()->get('request_stack')->getCurrentRequest()->getLocale();
-        $l['a_meta_language'] = $GLOBALS['TL_LANGUAGE'];
+        $locale = System::getContainer()->get('request_stack')->getCurrentRequest()->getLocale();
+        $l['a_meta_language'] = $locale;
 
         $l['w_page'] = "page";
 
