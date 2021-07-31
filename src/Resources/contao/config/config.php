@@ -9,6 +9,7 @@ use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
 
 $GLOBALS['BE_FFL']['alpdeskcore_widget_databasemanager'] = AlpdeskcoreDatabasemanagerWidget::class;
 
+// @TODO TL_MODE @deprecated use ScopeMatcher $scopeMatcher
 if (TL_MODE == 'BE') {
     $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_widget_databasemanager.css';
     $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_widget_databasemanager.js';
