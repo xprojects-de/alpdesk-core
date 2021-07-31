@@ -223,7 +223,10 @@ class AlpdeskCorePDFCreator extends \TCPDF
 
         $l['a_meta_dir'] = 'ltr';
         $l['a_meta_charset'] = $GLOBALS['TL_CONFIG']['characterSet'];
+
+        // @TODO $GLOBALS['TL_LANGUAGE'] @deprecated use $locale = System::getContainer()->get('request_stack')->getCurrentRequest()->getLocale();
         $l['a_meta_language'] = $GLOBALS['TL_LANGUAGE'];
+
         $l['w_page'] = "page";
 
         $this->SetCreator(PDF_CREATOR);
@@ -280,6 +283,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->writeHTML($html, true, false, true, false);
         $this->lastPage();
 
+        // @TODO TL_ROOT @deprecated use $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $xdir = TL_ROOT . "/" . $path;
         if (!is_dir($xdir)) {
             mkdir($xdir);
