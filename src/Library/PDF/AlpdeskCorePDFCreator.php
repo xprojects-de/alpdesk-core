@@ -10,6 +10,7 @@ use Contao\Controller;
 use Contao\StringUtil;
 use Contao\File;
 use Contao\Dbafs;
+use Contao\System;
 
 class AlpdeskCorePDFCreator extends \TCPDF
 {
@@ -283,8 +284,8 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->writeHTML($html, true, false, true, false);
         $this->lastPage();
 
-        // @TODO TL_ROOT @deprecated use $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-        $xdir = TL_ROOT . "/" . $path;
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $xdir = $rootDir . "/" . $path;
         if (!is_dir($xdir)) {
             mkdir($xdir);
         }
