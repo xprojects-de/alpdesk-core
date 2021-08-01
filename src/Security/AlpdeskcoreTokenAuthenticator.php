@@ -16,6 +16,8 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
+// @TODO deprecated see https://symfony.com/doc/current/security/guard_authentication.html
+
 class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private static string $prefix = 'Bearer';
