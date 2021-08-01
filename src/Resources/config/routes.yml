@@ -1,14 +1,14 @@
 alpdesk_logs_backend:
   path: /contao/alpdeskcorelogs
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController:endpoint
+    _controller: Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController::endpoint
     _scope: backend
   methods: [ POST, GET ]
 
 alpdesk_auth:
   path: /auth
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:auth
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController::auth
     _scope: frontend
     _token_check: false
   methods: [ POST ]
@@ -16,7 +16,7 @@ alpdesk_auth:
 alpdesk_auth_verify:
   path: /auth/verify
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:verify
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController::verify
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -24,7 +24,7 @@ alpdesk_auth_verify:
 alpdeskcore_auth_refresh:
   path: /auth/refresh
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:refresh
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController::refresh
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -32,7 +32,7 @@ alpdeskcore_auth_refresh:
 alpdesk_auth_member:
   path: /auth/member
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:member
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController::member
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -40,7 +40,7 @@ alpdesk_auth_member:
 alpdesk_auth_logout:
   path: /auth/logout
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:logout
+    _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController::logout
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -48,7 +48,7 @@ alpdesk_auth_logout:
 alpdesk_plugin_call:
   path: /plugin
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Plugin\AlpdeskCorePluginController:call
+    _controller: Alpdesk\AlpdeskCore\Controller\Plugin\AlpdeskCorePluginController::call
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -56,7 +56,7 @@ alpdesk_plugin_call:
 alpdesk_mandant_list:
   path: /mandant
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:list
+    _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController::list
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -64,7 +64,7 @@ alpdesk_mandant_list:
 alpdesk_mandant_edit:
   path: /mandant/edit
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:edit
+    _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController::edit
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -72,7 +72,7 @@ alpdesk_mandant_edit:
 alpdesk_filemanagement_upload:
   path: /upload
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:upload
+    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController::upload
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -80,7 +80,7 @@ alpdesk_filemanagement_upload:
 alpdesk_filemanagement_download:
   path: /download
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:download
+    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController::download
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
@@ -88,7 +88,7 @@ alpdesk_filemanagement_download:
 alpdesk_filemanagement_finder:
   path: /finder
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:finder
+    _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController::finder
     _scope: alpdeskapi
     _token_check: false
   methods: [ POST ]
