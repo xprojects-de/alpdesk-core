@@ -17,7 +17,6 @@ use Symfony\Component\Security\Core\Security;
 
 class AlpdeskcoreLogsController extends AbstractController
 {
-
     private TwigEnvironment $twig;
     private CsrfTokenManagerInterface $csrfTokenManager;
     private string $csrfTokenName;

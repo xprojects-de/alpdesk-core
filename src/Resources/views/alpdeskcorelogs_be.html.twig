@@ -9,40 +9,37 @@
 {% endblock %}
 
 {% block main %}
+
     <div id="alpdeskcorelogs_backendcontainer">
 
-        <table class="tl_listing">
-            <tbody>
+        {% for key,value in logs %}
 
-            {% for key,value in logs %}
+            <div class="alpdeskcorelogfile">
 
-                <tr>
-                    <td colspan="2" class="tl_folder_tlist">
-                        {{ value.logfile }}
-                        <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
-                           onclick="if(!confirm('{{ confirm }}'))return false;"
-                           class="alpdeskcorelogsdelete">
-                            <img src="system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
-                        </a>
-                    </td>
-                </tr>
+                <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
+                   onclick="if(!confirm('{{ confirm }}'))return false;"
+                   class="alpdeskcorelogsdelete">
+                    <img src="system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
+                </a>
 
-                {% for keycontent,valuecontent in value.content %}
+                <span class="logVisible">
+                    <img src="system/themes/flexible/icons/visible.svg" alt="" width="16" height="16">
+                </span>
 
-                    <tr class="hover-row">
-                        <td class="tl_file_list">
-                            <div class="alpdeskcorelogitem">
-                                {{ valuecontent }}
-                            </div>
-                        </td>
-                    </tr>
+                {{ value.logfile }}
 
-                {% endfor %}
+                <div class="alpdeskcorelogitemcontainer">
+                    {% for keycontent,valuecontent in value.content %}
+                        <div class="alpdeskcorelogitem">
+                            <p>{{ valuecontent }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
 
-            {% endfor %}
+            </div>
 
-            </tbody>
-        </table>
+        {% endfor %}
 
     </div>
+
 {% endblock %}
