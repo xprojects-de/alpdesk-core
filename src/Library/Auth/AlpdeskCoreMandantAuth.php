@@ -24,6 +24,7 @@ class AlpdeskCoreMandantAuth
 
             $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
 
+            // @TODO deprecated. use PasswordHasherFactory instead
             $encoder = System::getContainer()->get('security.encoder_factory')->getEncoder(User::class);
 
             if (!$encoder->isPasswordValid($alpdeskUserInstance->getPassword(), $password, null)) {
