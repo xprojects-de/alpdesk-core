@@ -19,24 +19,10 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     private ContaoFramework $framework;
     protected AlpdeskcoreLogger $logger;
 
-    private bool $initialized;
-
     public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger)
     {
         $this->framework = $framework;
         $this->logger = $logger;
-        $this->initialized = false;
-    }
-
-    private function initialize(): void
-    {
-        if ($this->initialized === false) {
-
-            $this->initialized = true;
-            $this->framework->initialize();
-
-        }
-
     }
 
     public static function createJti($username): string
@@ -75,8 +61,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
         $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
 
         if ($validateAndVerify == false) {
-            $msg = 'invalid JWT-Token for username:' . $username;
-            throw new AuthenticationException($msg);
+            throw new AuthenticationException('invalid JWT-Token for username:' . $username);
         }
 
         return AlpdeskcoreInputSecurity::secureValue($username);
@@ -98,9 +83,9 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
      * @return AlpdeskcoreUser
      * @throws AuthenticationException
      */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername(string $username): AlpdeskcoreUser
     {
-        $this->initialize();
+        $this->framework->initialize();
 
         $alpdeskUser = new AlpdeskcoreUser();
         $alpdeskUser->setUsername($username);
@@ -113,6 +98,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
         }
 
         try {
+
             $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
 
             $alpdeskUser->setPassword($alpdeskUserInstance->getPassword());
@@ -143,15 +129,11 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
 
     public function refreshUser(UserInterface $user)
     {
-        $this->initialize();
-
         throw new UnsupportedUserException('Refresh not possible');
     }
 
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
-        $this->initialize();
-
         return $class === AlpdeskcoreUser::class;
     }
 
