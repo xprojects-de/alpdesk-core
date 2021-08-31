@@ -4,6 +4,11 @@ services:
     autoconfigure: true
     autowire: true
 
+  alpdeskcore.routing.scope_matcher:
+    class: Symfony\Component\HttpFoundation\RequestMatcher
+    calls:
+      - [ matchAttribute, [ _scope, alpdeskapi ] ]
+
   alpdeskcore.eventservice:
     class: Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService
     arguments:

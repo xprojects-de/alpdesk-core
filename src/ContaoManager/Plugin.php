@@ -55,87 +55,23 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                     'id' => 'alpdeskcore.security.user_provider'
                 ];
 
-                $guard = [
-                    'authenticators' => [
-                        'alpdeskcore.security.token_authenticator'
-                    ]
-                ];
-
                 $offset = (int)array_search('frontend', array_keys($extensionConfig['firewalls']));
 
                 $extensionConfig['firewalls'] = array_merge(
                     array_slice($extensionConfig['firewalls'], 0, $offset, true),
                     [
-                        'alpdeskcore_auth_verify' => [
-                            'pattern' => '/auth/verify',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
+                        'alpdeskcore_api' => [
+                            'request_matcher' => 'alpdeskcore.routing.scope_matcher',
                             'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_auth_refresh' => [
-                            'pattern' => '/auth/refresh',
                             'anonymous' => true,
+                            'lazy' => true,
                             'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_auth_member' => [
-                            'pattern' => '/auth/member',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_auth_logout' => [
-                            'pattern' => '/auth/logout',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_plugin' => [
-                            'pattern' => '/plugin',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_mandant_list' => [
-                            'pattern' => '/mandant',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_mandant_edit' => [
-                            'pattern' => '/mandant/edit',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_filedownload' => [
-                            'pattern' => '/download',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_fileupload' => [
-                            'pattern' => '/upload',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
-                        'alpdeskcore_finder' => [
-                            'pattern' => '/finder',
-                            'anonymous' => true,
-                            'stateless' => true,
-                            'guard' => $guard,
-                            'provider' => 'alpdeskcore.security.user_provider',
-                        ],
+                            'guard' => [
+                                'authenticators' => [
+                                    'alpdeskcore.security.token_authenticator'
+                                ]
+                            ]
+                        ]
                     ],
                     array_slice($extensionConfig['firewalls'], $offset, null, true)
                 );
