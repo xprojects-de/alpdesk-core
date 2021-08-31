@@ -1,7 +1,10 @@
 {
   "name": "alpdesk/alpdesk-core",
   "description": "Alpdesk-Core for Contao",
-  "keywords": ["contao", "alpdesk"],
+  "keywords": [
+    "contao",
+    "alpdesk"
+  ],
   "type": "contao-bundle",
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
@@ -10,9 +13,10 @@
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
-    "contao/core-bundle": "^4.11.0",
+    "contao/core-bundle": "^4.11",
     "tecnickcom/tcpdf": "^6.3",
-    "lcobucci/jwt": "^4.0"
+    "lcobucci/jwt": "^4.0",
+    "symfony/security-bundle": "^5.2"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
