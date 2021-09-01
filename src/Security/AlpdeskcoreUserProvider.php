@@ -87,44 +87,23 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     {
         $this->framework->initialize();
 
-        $alpdeskUser = new AlpdeskcoreUser();
-        $alpdeskUser->setUsername($username);
-
-        $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
-        if ($sessionModel !== null) {
-            if (self::validateAndVerifyToken($sessionModel->token, $username)) {
-                $alpdeskUser->setToken($sessionModel->token);
-            }
-        }
-
         try {
 
-            $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
+            $alpdeskUser = AlpdeskcoreMandantModel::findByUsername($username);
 
-            $alpdeskUser->setPassword($alpdeskUserInstance->getPassword());
-            $alpdeskUser->setMemberId($alpdeskUserInstance->getMemberId());
-            $alpdeskUser->setFirstname($alpdeskUserInstance->getFirstname());
-            $alpdeskUser->setLastname($alpdeskUserInstance->getLastname());
-            $alpdeskUser->setEmail($alpdeskUserInstance->getEmail());
-            $alpdeskUser->setMandantPid($alpdeskUserInstance->getMandantPid());
-            $alpdeskUser->setIsAdmin($alpdeskUserInstance->getIsAdmin());
-            $alpdeskUser->setMandantWhitelist($alpdeskUserInstance->getMandantWhitelist());
-            $alpdeskUser->setFixToken($alpdeskUserInstance->getFixToken());
-            $alpdeskUser->setInvalidElements($alpdeskUserInstance->getInvalidElements());
-            $alpdeskUser->setHomeDir($alpdeskUserInstance->getHomeDir());
-            $alpdeskUser->setAccessDownload($alpdeskUserInstance->getAccessDownload());
-            $alpdeskUser->setAccessUpload($alpdeskUserInstance->getAccessUpload());
-            $alpdeskUser->setAccessCreate($alpdeskUserInstance->getAccessCreate());
-            $alpdeskUser->setAccessDelete($alpdeskUserInstance->getAccessDelete());
-            $alpdeskUser->setAccessRename($alpdeskUserInstance->getAccessRename());
-            $alpdeskUser->setAccessMove($alpdeskUserInstance->getAccessMove());
-            $alpdeskUser->setAccessCopy($alpdeskUserInstance->getAccessCopy());
+            $sessionModel = AlpdeskcoreSessionsModel::findByUsername($alpdeskUser->getUsername());
+            if ($sessionModel !== null) {
+                if (self::validateAndVerifyToken($sessionModel->token, $alpdeskUser->getUsername())) {
+                    $alpdeskUser->setToken($sessionModel->token);
+                }
+            }
+
+            return $alpdeskUser;
 
         } catch (\Exception $ex) {
-
+            throw new AuthenticationException($ex->getMessage());
         }
 
-        return $alpdeskUser;
     }
 
     public function refreshUser(UserInterface $user)

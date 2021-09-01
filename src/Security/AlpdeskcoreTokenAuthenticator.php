@@ -80,20 +80,26 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
         $this->framework->initialize();
 
         if (!$request->headers->has(self::$name)) {
+
             $this->logger->error(self::$name . ' not found in Header', __METHOD__);
             throw new AuthenticationException(self::$name . ' not found in Header');
+
         }
 
         $authorizationHeader = $request->headers->get(self::$name);
         if (empty($authorizationHeader)) {
+
             $this->logger->error(self::$name . ' empty in Header', __METHOD__);
             throw new AuthenticationException(self::$name . ' empty in Header');
+
         }
 
         $headerParts = explode(' ', $authorizationHeader);
         if (!(2 === count($headerParts) && 0 === strcasecmp($headerParts[0], self::$prefix))) {
+
             $this->logger->error('no valid value for ' . self::$name . ' in Header', __METHOD__);
             throw new AuthenticationException('no valid value for ' . self::$name . ' in Header');
+
         }
 
         return ['token' => $headerParts[1]];
@@ -104,23 +110,31 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
         $this->framework->initialize();
 
         try {
+
             $username = $userProvider->getValidatedUsernameFromToken($credentials['token']);
+            return $userProvider->loadUserByUsername($username);
+
         } catch (\Exception $e) {
             throw new AuthenticationException($e->getMessage(), $e->getCode());
         }
 
-        return $userProvider->loadUserByUsername($username);
     }
 
     public function checkCredentials($credentials, UserInterface $user): bool
     {
-        if ($user->getFixToken() === $credentials['token']) {
-            $user->setFixTokenAuth(true);
-            return ($user->getFixToken() === $credentials['token']);
-        }
+        if ($user instanceof AlpdeskcoreUser) {
 
-        if ($user->getToken() != '') {
-            return ($user->getToken() === $credentials['token']);
+            if ($user->getFixToken() === $credentials['token']) {
+
+                $user->setFixTokenAuth(true);
+                return ($user->getFixToken() === $credentials['token']);
+
+            }
+
+            if ($user->getToken() != '') {
+                return ($user->getToken() === $credentials['token']);
+            }
+
         }
 
         return false;

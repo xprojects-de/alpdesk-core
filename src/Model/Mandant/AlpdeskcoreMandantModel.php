@@ -29,6 +29,20 @@ class AlpdeskcoreMandantModel extends Model
 
         if ($memberObject !== null) {
 
+            $lockedSeconds = (int)$memberObject->locked - \time();
+            if ($lockedSeconds > 0) {
+                throw new AlpdeskCoreModelException('User is locked');
+            }
+
+            $start = (int)$memberObject->start;
+            $stop = (int)$memberObject->stop;
+            $notActiveYet = $start && $start > \time();
+            $notActiveAnymore = $stop && $stop <= \time();
+
+            if ($notActiveYet || $notActiveAnymore) {
+                throw new AlpdeskCoreModelException('The account is not active');
+            }
+
             $mandantId = \intval($memberObject->alpdeskcore_mandant);
             $isAdmin = (\intval($memberObject->alpdeskcore_admin) == 1);
 
@@ -85,31 +99,31 @@ class AlpdeskcoreMandantModel extends Model
                 $alpdeskUser->setHomeDir($memberObject->homeDir);
             }
 
-            if ($memberObject->alpdeskcore_download !== null && $memberObject->alpdeskcore_download == 1) {
+            if ($memberObject->alpdeskcore_download !== null && (int)$memberObject->alpdeskcore_download === 1) {
                 $alpdeskUser->setAccessDownload(false);
             }
 
-            if ($memberObject->alpdeskcore_upload !== null && $memberObject->alpdeskcore_upload == 1) {
+            if ($memberObject->alpdeskcore_upload !== null && (int)$memberObject->alpdeskcore_upload === 1) {
                 $alpdeskUser->setAccessUpload(false);
             }
 
-            if ($memberObject->alpdeskcore_create !== null && $memberObject->alpdeskcore_create == 1) {
+            if ($memberObject->alpdeskcore_create !== null && (int)$memberObject->alpdeskcore_create === 1) {
                 $alpdeskUser->setAccessCreate(false);
             }
 
-            if ($memberObject->alpdeskcore_delete !== null && $memberObject->alpdeskcore_delete == 1) {
+            if ($memberObject->alpdeskcore_delete !== null && (int)$memberObject->alpdeskcore_delete === 1) {
                 $alpdeskUser->setAccessDelete(false);
             }
 
-            if ($memberObject->alpdeskcore_rename !== null && $memberObject->alpdeskcore_rename == 1) {
+            if ($memberObject->alpdeskcore_rename !== null && (int)$memberObject->alpdeskcore_rename === 1) {
                 $alpdeskUser->setAccessRename(false);
             }
 
-            if ($memberObject->alpdeskcore_move !== null && $memberObject->alpdeskcore_move == 1) {
+            if ($memberObject->alpdeskcore_move !== null && (int)$memberObject->alpdeskcore_move === 1) {
                 $alpdeskUser->setAccessMove(false);
             }
 
-            if ($memberObject->alpdeskcore_copy !== null && $memberObject->alpdeskcore_copy == 1) {
+            if ($memberObject->alpdeskcore_copy !== null && (int)$memberObject->alpdeskcore_copy === 1) {
                 $alpdeskUser->setAccessCopy(false);
             }
 
@@ -119,4 +133,5 @@ class AlpdeskcoreMandantModel extends Model
             throw new AlpdeskCoreModelException("invalid member: " . $username, AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
         }
     }
+
 }
