@@ -46,7 +46,7 @@ class AlpdeskCoreAuthController extends AbstractController
             'alpdesk_token' => $data->getAlpdesk_token(),
             'verify' => $data->getVerify(),
             'invalid' => $data->getInvalid(),
-            'expires' => ($data->getInvalid() == true ? 0 : $data->getExp())
+            'expires' => ($data->getInvalid() === true ? 0 : $data->getExp())
         ), $statusCode
         ));
     }
@@ -80,7 +80,7 @@ class AlpdeskCoreAuthController extends AbstractController
                 'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
                 'verify' => $event->getResultData()->getVerify(),
                 'invalid' => $event->getResultData()->getInvalid(),
-                'expires' => ($event->getResultData()->getInvalid() == true ? 0 : $event->getResultData()->getExp())
+                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp())
             ), AlpdeskCoreConstants::$STATUSCODE_OK
             ));
 
@@ -140,7 +140,7 @@ class AlpdeskCoreAuthController extends AbstractController
             return (new JsonResponse(array(
                 'alpdesk_token' => $event->getResultData()->getAlpdesk_token(),
                 'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
-                'expires' => ($event->getResultData()->getInvalid() == true ? 0 : $event->getResultData()->getExp())
+                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp())
             ), AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Exception $exception) {
@@ -167,7 +167,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
                     if ($mandantId !== "") {
 
-                        if ($mandantId == "0") {
+                        if ($mandantId === "0") {
 
                             $memberObject = MemberModel::findByPk($user->getMemberId());
                             if ($memberObject !== null) {
@@ -183,9 +183,9 @@ class AlpdeskCoreAuthController extends AbstractController
 
                             $memberObject = MemberModel::findByPk($user->getMemberId());
                             if ($memberObject !== null) {
-                                $memberObject->alpdeskcore_mandant = \intval($mandantId);
+                                $memberObject->alpdeskcore_mandant = (int)$mandantId;
                                 $memberObject->save();
-                                $user->setMandantPid(\intval($mandantId));
+                                $user->setMandantPid((int)$mandantId);
                             }
                         }
                     }

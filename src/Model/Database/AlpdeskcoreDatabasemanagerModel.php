@@ -57,7 +57,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
         return null;
     }
 
-    public static function destroy(int $id)
+    public static function destroy(int $id): void
     {
         if (\array_key_exists($id, self::$connectionsTable)) {
 
@@ -83,7 +83,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
             throw new \Exception($GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_parameters']);
         }
 
-        if (self::$connectionsTable[$id] == null) {
+        if (self::$connectionsTable[$id] === null) {
             throw new \Exception($GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_parameters']);
         }
 
@@ -119,7 +119,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     $pKey = $table->getPrimaryKey();
                     if ($pKey !== null) {
                         foreach ($pKey->getColumns() as $column) {
-                            array_push($primaryKey, $column);
+                            $primaryKey[] = $column;
                         }
                     }
 
@@ -136,11 +136,11 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
                             $tmpIndexFields = array();
                             foreach ($indexEntry->getColumns() as $column) {
-                                \array_push($tmpIndexFields, $column);
+                                $tmpIndexFields[] = $column;
                             }
 
                             $indexInfo['indexfields'] = \implode(',', $tmpIndexFields);
-                            \array_push($indexes, $indexInfo);
+                            $indexes[] = $indexInfo;
                         }
 
                     }
@@ -148,7 +148,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     $indiciesStringArray = array();
                     if (\is_array($indexes) && \count($indexes) > 0) {
                         foreach ($indexes as $ind) {
-                            \array_push($indiciesStringArray, 'Name: ' . $ind['indexname'] . ', Unique: ' . ($ind['indexunique'] === true ? 'true' : 'false') . ', Fields: ' . $ind['indexfields']);
+                            $indiciesStringArray[] = 'Name: ' . $ind['indexname'] . ', Unique: ' . ($ind['indexunique'] === true ? 'true' : 'false') . ', Fields: ' . $ind['indexfields'];
                         }
                     }
 
@@ -186,7 +186,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                                 }
 
                                 $length = $column->getLength();
-                                if ($length !== null && $length != "") {
+                                if ($length !== null) {
                                     $output .= ' | LENGTH ' . $length;
                                 }
 
@@ -237,7 +237,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
             $decryption = new Cryption(true);
             $result->password = $decryption->safeDecrypt($result->password);
 
-            return self::create($id, $result->host, \intval($result->port), $result->username, $result->password, $result->database);
+            return self::create($id, $result->host, (int)$result->port, $result->username, $result->password, $result->database);
         }
 
         return null;

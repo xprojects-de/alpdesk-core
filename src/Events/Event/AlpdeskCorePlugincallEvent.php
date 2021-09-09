@@ -23,7 +23,7 @@ class AlpdeskCorePlugincallEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(AlpdeskCorePlugincallResponse $resultData)
+    public function setResultData(AlpdeskCorePlugincallResponse $resultData): void
     {
         $this->resultData = $resultData;
     }

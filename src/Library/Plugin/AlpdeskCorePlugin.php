@@ -40,15 +40,15 @@ class AlpdeskCorePlugin
             $validPlugin = false;
 
             foreach ($plugins as $pluginElement) {
-                if ($pluginElement->type == $plugin) {
-                    if (!\in_array($pluginElement->type, $invalidElements)) {
+                if ((string)$pluginElement->type === $plugin) {
+                    if (!\in_array((string)$pluginElement->type, $invalidElements, true)) {
                         $validPlugin = true;
                     }
                     break;
                 }
             }
 
-            if ($validPlugin == false) {
+            if ($validPlugin === false) {
                 $msg = 'error loading plugin: ' . $plugin . ' for username:' . $username;
                 throw new AlpdeskCorePluginException($msg, AlpdeskCoreConstants::$ERROR_INVALID_PLUGIN);
             }
@@ -92,7 +92,7 @@ class AlpdeskCorePlugin
                 }
             }
 
-            $mInfo->setId(\intval($mandantInfo->id));
+            $mInfo->setId((int)$mandantInfo->id);
             $mInfo->setMemberId($user->getMemberId());
             $mInfo->setMandant($mandantInfo->mandant);
             $mInfo->setAccessDownload($user->getAccessDownload());
@@ -106,9 +106,10 @@ class AlpdeskCorePlugin
 
             return $mInfo;
 
-        } else {
-            throw new AlpdeskCorePluginException('cannot get Mandantinformations', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
         }
+
+        throw new AlpdeskCorePluginException('cannot get Mandantinformations', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
+
     }
 
     /**
@@ -144,7 +145,7 @@ class AlpdeskCorePlugin
             $c = new $GLOBALS['TL_ADME'][$plugin]();
             if ($c instanceof AlpdeskCoreElement) {
                 $tmp = $c->execute($mandantInfo, $data);
-                if ($c->getCustomTemplate() == true) {
+                if ($c->getCustomTemplate() === true) {
                     if (!\array_key_exists('ngContent', $tmp) ||
                         !\array_key_exists('ngStylesheetUrl', $tmp) ||
                         !\array_key_exists('ngScriptUrl', $tmp)) {

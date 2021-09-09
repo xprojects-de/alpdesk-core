@@ -43,8 +43,8 @@ class AlpdeskcoreMandantModel extends Model
                 throw new AlpdeskCoreModelException('The account is not active');
             }
 
-            $mandantId = \intval($memberObject->alpdeskcore_mandant);
-            $isAdmin = (\intval($memberObject->alpdeskcore_admin) == 1);
+            $mandantId = (int)$memberObject->alpdeskcore_mandant;
+            $isAdmin = ((int)$memberObject->alpdeskcore_admin === 1);
 
             if ($mandantId <= 0 && $isAdmin === false) {
                 throw new AlpdeskCoreModelException("error auth - member has no mandant", AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
@@ -52,7 +52,7 @@ class AlpdeskcoreMandantModel extends Model
 
             $alpdeskUser = new AlpdeskcoreUser();
 
-            $alpdeskUser->setMemberId(\intval($memberObject->id));
+            $alpdeskUser->setMemberId((int)$memberObject->id);
             $alpdeskUser->setUsername($memberObject->username);
             $alpdeskUser->setPassword($memberObject->password);
             $alpdeskUser->setFirstname($memberObject->firstname);
@@ -66,7 +66,7 @@ class AlpdeskcoreMandantModel extends Model
             if ($alpdeskUser->getIsAdmin()) {
 
                 $mandantWhitelist = $memberObject->alpdeskcore_mandantwhitelist;
-                if ($mandantWhitelist !== null && $mandantWhitelist != '') {
+                if ($mandantWhitelist !== null && $mandantWhitelist !== '') {
 
                     $mandantWhitelistArray = StringUtil::deserialize($mandantWhitelist);
                     if (\is_array($mandantWhitelistArray) && \count($mandantWhitelistArray) > 0) {
@@ -76,7 +76,7 @@ class AlpdeskcoreMandantModel extends Model
                         $mandantenObject = self::findAll();
                         if ($mandantenObject !== null) {
                             foreach ($mandantenObject as $mandant) {
-                                if (\in_array($mandant->id, $mandantWhitelistArray)) {
+                                if (\in_array($mandant->id, $mandantWhitelistArray, true)) {
                                     $finalMandantWhitelistArray[$mandant->id] = $mandant->mandant;
                                 }
                             }
@@ -88,7 +88,7 @@ class AlpdeskcoreMandantModel extends Model
             }
 
             $invalidElements = $memberObject->alpdeskcore_elements;
-            if ($invalidElements !== null && $invalidElements != '') {
+            if ($invalidElements !== null && $invalidElements !== '') {
                 $invalidElementsArray = StringUtil::deserialize($invalidElements);
                 if (\is_array($invalidElementsArray) && \count($invalidElementsArray) > 0) {
                     $alpdeskUser->setInvalidElements($invalidElementsArray);
@@ -129,9 +129,10 @@ class AlpdeskcoreMandantModel extends Model
 
             return $alpdeskUser;
 
-        } else {
-            throw new AlpdeskCoreModelException("invalid member: " . $username, AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
         }
+
+        throw new AlpdeskCoreModelException("invalid member: " . $username, AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
+
     }
 
 }

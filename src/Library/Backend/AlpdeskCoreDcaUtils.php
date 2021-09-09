@@ -25,7 +25,7 @@ class AlpdeskCoreDcaUtils extends Backend
             $validateAndVerify = false;
         }
 
-        $color = ($validateAndVerify == true ? 'green' : 'red');
+        $color = ($validateAndVerify === true ? 'green' : 'red');
 
         $args[0] = '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $args[0];
         $args[1] = substr($args[1], 0, 25) . ' ...';
@@ -35,11 +35,11 @@ class AlpdeskCoreDcaUtils extends Backend
 
     public function generateFixToken($varValue, $dc): string
     {
-        if ($varValue == '') {
+        if ($varValue === '') {
 
             $username = 'invalid';
 
-            if ($dc->activeRecord->username != null && $dc->activeRecord->username != '') {
+            if ($dc->activeRecord->username !== null && $dc->activeRecord->username !== '') {
                 $username = $dc->activeRecord->username;
             }
 
@@ -90,12 +90,12 @@ class AlpdeskCoreDcaUtils extends Backend
         return $varValue;
     }
 
-    public function pdfElementsloadCallback(DataContainer $dc)
+    public function pdfElementsloadCallback(DataContainer $dc): void
     {
-        if (Input::get('act') == 'generatetestpdf') {
+        if (Input::get('act') === 'generatetestpdf') {
 
             try {
-                (new AlpdeskCorePDFCreator())->generateById(intval(Input::get('pdfid')), "files/tmp", time() . ".pdf");
+                (new AlpdeskCorePDFCreator())->generateById((int)Input::get('pdfid'), "files/tmp", time() . ".pdf");
             } catch (\Exception $ex) {
 
             }
@@ -111,6 +111,6 @@ class AlpdeskCoreDcaUtils extends Backend
 
     public function generatetestpdfLinkCallback($row, $href, $label, $title, $icon, $attributes): string
     {
-        return '<a href="' . $this->addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
+        return '<a href="' . self::addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
     }
 }

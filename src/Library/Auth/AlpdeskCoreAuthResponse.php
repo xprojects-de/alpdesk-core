@@ -67,7 +67,7 @@ class AlpdeskCoreAuthResponse
     public function getExp(): int
     {
         $exp = -1;
-        if ($this->alpdesk_token != '') {
+        if ($this->alpdesk_token !== '') {
 
             $expvalue = JwtToken::getClaim($this->alpdesk_token, 'exp');
 

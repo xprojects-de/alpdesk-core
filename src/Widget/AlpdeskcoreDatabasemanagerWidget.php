@@ -29,13 +29,13 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
 
         if ($this->activeRecord !== null) {
 
-            $id = intval($this->activeRecord->id);
+            $id = (int)$this->activeRecord->id;
             $host = $this->activeRecord->host;
-            $port = intval($this->activeRecord->port);
+            $port = (int)$this->activeRecord->port;
             $username = $this->activeRecord->username;
             $password = $this->activeRecord->password;
             $database = $this->activeRecord->database;
-            if ($host != '' && $port != '' && $username != '' && $password != '' && $database != '') {
+            if ($host !== '' && $port !== null && $username !== '' && $password !== '' && $database !== '') {
                 $outputValue = $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_parameters'] . '<br>';
                 $connection = AlpdeskcoreDatabasemanagerModel::connectionById($id);
                 try {
@@ -56,7 +56,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                             if (is_array($value) && count($value) > 0) {
                                 $outputValue .= '<div class="alpdeskcore_widget_databasemanager_tablecolumns">';
                                 foreach ($value as $cKey => $cValue) {
-                                    $outputValue .= '<p' . (($cKey == 'options' || $cKey == 'primary' || $cKey == 'indexes') ? ' class="alpdeskcore_widget_databasemanager_specialtablecolumns"' : '') . '>';
+                                    $outputValue .= '<p' . (($cKey === 'options' || $cKey === 'primary' || $cKey === 'indexes') ? ' class="alpdeskcore_widget_databasemanager_specialtablecolumns"' : '') . '>';
                                     $outputValue .= '<strong>' . $cKey . '</strong><br>';
                                     $outputValue .= $cValue;
                                     $outputValue .= '</p>';
@@ -106,7 +106,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                             if (\count($migrationItems) > 0) {
 
                                 $hasToMigrate = Input::get('alpdeskcore_dbmigration');
-                                if ($hasToMigrate !== null && $hasToMigrate == 1) {
+                                if ($hasToMigrate !== null && (int)$hasToMigrate === 1) {
                                     $dbmigfation->executeMigrations($migrationItems);
                                     return $this->checkMigrations($connection, $modelUuid);
                                 }

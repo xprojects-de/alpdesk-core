@@ -132,7 +132,7 @@ class AlpdeskcoreUser implements UserInterface
 
     public function getUsedToken(): string
     {
-        if ($this->getFixTokenAuth() == true) {
+        if ($this->getFixTokenAuth() === true) {
             return $this->getFixToken();
         }
         return $this->getToken();

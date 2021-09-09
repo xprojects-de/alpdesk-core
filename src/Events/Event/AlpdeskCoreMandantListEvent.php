@@ -23,7 +23,7 @@ class AlpdeskCoreMandantListEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(AlpdeskCoreMandantResponse $resultData)
+    public function setResultData(AlpdeskCoreMandantResponse $resultData): void
     {
         $this->resultData = $resultData;
     }
