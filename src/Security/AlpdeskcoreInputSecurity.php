@@ -15,7 +15,7 @@ class AlpdeskcoreInputSecurity
      * @return array|mixed|null
      * @throws \Exception
      */
-    public static function secureValue($varValue, $blnDecodeEntities = false)
+    public static function secureValue($varValue, bool $blnDecodeEntities = false)
     {
         if ($varValue === null) {
             throw new \Exception('value is null at secureValue');
@@ -38,7 +38,7 @@ class AlpdeskcoreInputSecurity
      * @return array|mixed|null
      * @throws \Exception
      */
-    public static function secureHtmlValue($varValue, $blnDecodeEntities = false)
+    public static function secureHtmlValue($varValue, bool $blnDecodeEntities = false)
     {
         if ($varValue === null) {
             throw new \Exception('value is null at secureValue');
@@ -67,8 +67,7 @@ class AlpdeskcoreInputSecurity
         }
 
         $varValue = Input::preserveBasicEntities($varValue);
-        $varValue = Input::xssClean($varValue);
-
-        return $varValue;
+        
+        return Input::xssClean($varValue);
     }
 }

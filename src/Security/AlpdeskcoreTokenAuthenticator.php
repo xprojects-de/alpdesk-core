@@ -34,11 +34,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request): bool
     {
-        if ('alpdeskapi' === $request->attributes->get('_scope')) {
-            return true;
-        }
-
-        return false;
+        return ('alpdeskapi' === $request->attributes->get('_scope'));
     }
 
     public function start(Request $request, AuthenticationException $authException = null): JsonResponse
@@ -131,7 +127,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator
 
             }
 
-            if ($user->getToken() != '') {
+            if ($user->getToken() !== '') {
                 return ($user->getToken() === $credentials['token']);
             }
 

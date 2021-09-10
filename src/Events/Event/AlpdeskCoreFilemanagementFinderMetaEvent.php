@@ -37,7 +37,7 @@ class AlpdeskCoreFilemanagementFinderMetaEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(array $resultData)
+    public function setResultData(array $resultData): void
     {
         $this->resultData = $resultData;
     }

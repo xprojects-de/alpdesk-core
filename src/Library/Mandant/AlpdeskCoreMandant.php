@@ -49,28 +49,32 @@ class AlpdeskCoreMandant
             foreach ($plugins as $pluginElement) {
 
                 $type = (string)$pluginElement->type;
-                if (!\in_array($type, $invalidElements)) {
+                if (!\in_array($type, $invalidElements, true)) {
 
                     // Legacy Support
                     if (isset($GLOBALS['TL_ADME'][$type])) {
+
                         $c = new $GLOBALS['TL_ADME'][$type]();
                         if ($c instanceof AlpdeskCoreElement) {
                             $customTemplate = false;
-                            if ($c->getCustomTemplate() == true) {
+                            if ($c->getCustomTemplate() === true) {
                                 $customTemplate = true;
                             }
-                            \array_push($data, array(
+                            $data[] = array(
                                 'value' => $pluginElement->type,
                                 'label' => $GLOBALS['TL_LANG']['ADME'][$pluginElement->type],
                                 'customTemplate' => $customTemplate
-                            ));
+                            );
                         }
+
                     } else if (isset($pluginData[$type]) && isset($pluginInfo[$type])) {
-                        \array_push($data, array(
+
+                        $data[] = array(
                             'value' => $pluginElement->type,
                             'label' => $pluginData[$type],
-                            'customTemplate' => (isset($pluginInfo[$type]['customTemplate']) ? $pluginInfo[$type]['customTemplate'] : false)
-                        ));
+                            'customTemplate' => ($pluginInfo[$type]['customTemplate'] ?? false)
+                        );
+
                     }
                 }
             }
@@ -106,7 +110,7 @@ class AlpdeskCoreMandant
             Controller::loadDataContainer('tl_alpdeskcore_mandant');
 
             foreach ($data as $key => $value) {
-                if (isset($GLOBALS['TL_DCA']['tl_alpdeskcore_mandant']['fields'][$key]['eval']['alpdesk_apishow']) && $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant']['fields'][$key]['eval']['alpdesk_apishow'] == true) {
+                if (isset($GLOBALS['TL_DCA']['tl_alpdeskcore_mandant']['fields'][$key]['eval']['alpdesk_apishow']) && $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant']['fields'][$key]['eval']['alpdesk_apishow'] === true) {
                     $returnData[$key] = array(
                         'value' => StringUtil::convertEncoding(StringUtil::deserialize($value), 'UTF-8'),
                         'label' => $GLOBALS['TL_LANG']['tl_alpdeskcore_mandant'][$key][0],
@@ -116,9 +120,10 @@ class AlpdeskCoreMandant
 
             return $returnData;
 
-        } else {
-            throw new AlpdeskCoreMandantException("error loading data for Mandant", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
         }
+
+        throw new AlpdeskCoreMandantException("error loading data for Mandant", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
+
     }
 
     /**

@@ -154,9 +154,9 @@ class AlpdeskcoreMigration
 
             return $schema;
 
-        } else {
-            throw new \Exception('invalid database model');
         }
+
+        throw new \Exception('invalid database model');
 
     }
 
@@ -198,7 +198,7 @@ class AlpdeskcoreMigration
         $default = null;
         if (\array_key_exists('default', $fieldattributes)) {
             $default = $fieldattributes['default'];
-            if ($autoincrement == true || $default == 'NULL') {
+            if ($autoincrement === true || $default === 'NULL') {
                 $default = null;
             }
         }
@@ -215,10 +215,7 @@ class AlpdeskcoreMigration
             $notNull = $fieldattributes['notnull'];
         }
 
-        $comment = null;
-        if (\array_key_exists('comment', $fieldattributes)) {
-            $comment = $fieldattributes['comment'];
-        }
+        $comment = $fieldattributes['comment'] ?? null;
 
         $options = [
             'length' => $length,
@@ -302,7 +299,7 @@ class AlpdeskcoreMigration
      * @param $dbversion
      * @throws \Exception
      */
-    public function hasConfigurationError(&$dbversion)
+    public function hasConfigurationError(&$dbversion): void
     {
         [$version] = \explode('-', $this->connection->fetchOne('SELECT @@version'));
         $dbversion = $version;
