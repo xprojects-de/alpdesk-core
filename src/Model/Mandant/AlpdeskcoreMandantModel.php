@@ -76,8 +76,8 @@ class AlpdeskcoreMandantModel extends Model
                         $mandantenObject = self::findAll();
                         if ($mandantenObject !== null) {
                             foreach ($mandantenObject as $mandant) {
-                                if (\in_array($mandant->id, $mandantWhitelistArray, true)) {
-                                    $finalMandantWhitelistArray[$mandant->id] = $mandant->mandant;
+                                if (\in_array((string)$mandant->id, $mandantWhitelistArray, true)) {
+                                    $finalMandantWhitelistArray[(int)$mandant->id] = $mandant->mandant;
                                 }
                             }
                         }

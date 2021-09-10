@@ -177,7 +177,7 @@ class AlpdeskCoreAuthController extends AbstractController
                             }
                         } else {
 
-                            if (!\array_key_exists($mandantId, $user->getMandantWhitelist())) {
+                            if (!\array_key_exists((int)$mandantId, $user->getMandantWhitelist())) {
                                 throw new AlpdeskCoreAuthException('mandantid not in whitelistarray', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
                             }
 
