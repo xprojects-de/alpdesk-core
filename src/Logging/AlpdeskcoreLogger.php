@@ -40,7 +40,7 @@ class AlpdeskcoreLogger
             $timeZone = Config::get('timeZone');
             $this->logger->setTimezone(new DateTimeZone($timeZone));
 
-            $handler = new RotatingFileHandler($this->rootDir . '/var/logs/' . $this->environment . '-alpdesk.log', 0, ($this->environment == 'dev' ? Logger::DEBUG : Logger::WARNING));
+            $handler = new RotatingFileHandler($this->rootDir . '/var/logs/' . $this->environment . '-alpdesk.log', 0, ($this->environment === 'dev' ? Logger::DEBUG : Logger::WARNING));
 
             $datimFormat = Config::get('datimFormat');
             if ($datimFormat === null || $datimFormat === '') {
@@ -55,25 +55,25 @@ class AlpdeskcoreLogger
 
     }
 
-    public function info($strText, $strFunction)
+    public function info($strText, $strFunction): void
     {
         $this->initialize();
         $this->logger->info($strFunction . ' => ' . $strText);
     }
 
-    public function debug($strText, $strFunction)
+    public function debug($strText, $strFunction): void
     {
         $this->initialize();
         $this->logger->debug($strFunction . ' => ' . $strText);
     }
 
-    public function warning($strText, $strFunction)
+    public function warning($strText, $strFunction): void
     {
         $this->initialize();
         $this->logger->warning($strFunction . ' => ' . $strText);
     }
 
-    public function error($strText, $strFunction)
+    public function error($strText, $strFunction): void
     {
         $this->initialize();
         $this->logger->error($strFunction . ' => ' . $strText);

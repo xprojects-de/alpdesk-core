@@ -71,7 +71,7 @@ class AlpdeskCoreFilemanagement
 
             }
 
-            $mInfo->setId(\intval($mandantInfo->id));
+            $mInfo->setId((int)$mandantInfo->id);
             $mInfo->setMemberId($user->getMemberId());
             $mInfo->setMandant($mandantInfo->mandant);
             $mInfo->setAccessDownload($user->getAccessDownload());
@@ -85,14 +85,15 @@ class AlpdeskCoreFilemanagement
 
             return $mInfo;
 
-        } else {
-            throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
         }
+
+        throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
+
     }
 
     private static function endsWith(string $haystack, string $needle): bool
     {
-        return (\preg_match('#' . $haystack . '$#', $needle) == 1);
+        return (\preg_match('#' . $haystack . '$#', $needle) === 1);
     }
 
     private static function startsWith($startString, $string): bool
@@ -148,7 +149,7 @@ class AlpdeskCoreFilemanagement
         $arrReturn = [];
 
         foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
-            if ($strFile == '.' || $strFile == '..') {
+            if ($strFile === '.' || $strFile === '..') {
                 continue;
             }
 
@@ -190,7 +191,7 @@ class AlpdeskCoreFilemanagement
      */
     private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void
     {
-        if ($mandantInfo->getAccessUpload() == false) {
+        if ($mandantInfo->getAccessUpload() === false) {
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
@@ -224,7 +225,7 @@ class AlpdeskCoreFilemanagement
 
             $fileExt = \strtolower(\substr($fileName, \strrpos($fileName, '.') + 1));
             $allowedFileTypes = StringUtil::trimsplit(',', \strtolower(Config::get('uploadTypes')));
-            if (!\in_array($fileExt, $allowedFileTypes)) {
+            if (!\in_array($fileExt, $allowedFileTypes, true)) {
                 throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.', AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
             }
 
@@ -269,7 +270,7 @@ class AlpdeskCoreFilemanagement
      */
     private function downloadFile(string $target, AlpdescCoreBaseMandantInfo $mandantInfo): BinaryFileResponse
     {
-        if ($mandantInfo->getAccessDownload() == false) {
+        if ($mandantInfo->getAccessDownload() === false) {
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
@@ -297,9 +298,10 @@ class AlpdeskCoreFilemanagement
 
             return $response;
 
-        } else {
-            throw new AlpdeskCoreFilemanagementException("src-File not found on server");
         }
+
+        throw new AlpdeskCoreFilemanagementException("src-File not found on server");
+
     }
 
     /**
@@ -372,7 +374,7 @@ class AlpdeskCoreFilemanagement
                         $isImage = ($tmpFile->isCmykImage || $tmpFile->isGdImage || $tmpFile->isImage || $tmpFile->isRgbImage || $tmpFile->isSvgImage);
                     }
 
-                    array_push($data, array(
+                    $data[] = [
                         'name' => $basename,
                         'path' => $objFileTmp->path,
                         'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileTmp->path),
@@ -383,7 +385,7 @@ class AlpdeskCoreFilemanagement
                         'isFolder' => ($objFileTmp->type === 'folder'),
                         'size' => $size,
                         'isimage' => $isImage
-                    ));
+                    ];
                 }
             }
 
@@ -403,7 +405,7 @@ class AlpdeskCoreFilemanagement
      */
     public static function create(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array
     {
-        if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
+        if ($accessCheck === true && $mandantInfo->getAccessCreate() === false) {
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
@@ -421,7 +423,7 @@ class AlpdeskCoreFilemanagement
 
             $target = self::preparePath(((string)$finderData['target']));
 
-            if ($target == null || $target == "") {
+            if ($target === null || $target === "") {
                 throw new AlpdeskCoreFilemanagementException("No valid mode in target. Must be 'file' or 'dir'");
             }
 
@@ -475,7 +477,7 @@ class AlpdeskCoreFilemanagement
      */
     public static function delete(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): void
     {
-        if ($accessCheck == true && $mandantInfo->getAccessDelete() == false) {
+        if ($accessCheck === true && $mandantInfo->getAccessDelete() === false) {
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
@@ -517,7 +519,7 @@ class AlpdeskCoreFilemanagement
      */
     public static function rename(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $accessCheck = true): array
     {
-        if ($accessCheck == true && $mandantInfo->getAccessRename() == false) {
+        if ($accessCheck === true && $mandantInfo->getAccessRename() === false) {
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
@@ -610,13 +612,13 @@ class AlpdeskCoreFilemanagement
      */
     public static function moveOrCopy(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, bool $copy, bool $accessCheck = true): array
     {
-        if ($copy == true) {
+        if ($copy === true) {
 
-            if ($accessCheck == true && $mandantInfo->getAccessCopy() == false) {
+            if ($accessCheck === true && $mandantInfo->getAccessCopy() === false) {
                 throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
             }
         } else {
-            if ($accessCheck == true && $mandantInfo->getAccessMove() == false) {
+            if ($accessCheck === true && $mandantInfo->getAccessMove() === false) {
                 throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
             }
         }
@@ -780,20 +782,31 @@ class AlpdeskCoreFilemanagement
 
             if (\array_key_exists('meta', $finderData)) {
 
-                if ($accessCheck == true && $mandantInfo->getAccessCreate() == false) {
+                if ($accessCheck === true && $mandantInfo->getAccessCreate() === false) {
                     throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
                 }
 
                 $metaSet = ((array)$finderData['meta']);
 
                 foreach ($metaSet as $key => $value) {
+
                     if ($key !== '' && \is_array($value)) {
+
                         foreach ($value as $valueKey => $valueValue) {
+
                             if ($valueKey === 'title' || $valueKey === 'alt' || $valueKey === 'link' || $valueKey === 'caption') {
+
+                                if(!\array_key_exists($key, $metaData)) {
+                                    $metaData[$key] = [];
+                                }
+
                                 $metaData[$key][$valueKey] = $valueValue;
                             }
+
                         }
+
                     }
+
                 }
 
                 $objFileModelSrc->meta = serialize($metaData);

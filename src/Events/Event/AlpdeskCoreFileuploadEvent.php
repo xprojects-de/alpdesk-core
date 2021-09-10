@@ -23,7 +23,7 @@ class AlpdeskCoreFileuploadEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(AlpdeskCoreFileuploadResponse $resultData)
+    public function setResultData(AlpdeskCoreFileuploadResponse $resultData): void
     {
         $this->resultData = $resultData;
     }

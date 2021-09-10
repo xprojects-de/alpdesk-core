@@ -54,13 +54,13 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     {
         $username = JwtToken::getClaim($jwtToken, 'username');
 
-        if ($username == null || $username == '') {
+        if ($username === null || $username === '') {
             throw new AuthenticationException('invalid username');
         }
 
         $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
 
-        if ($validateAndVerify == false) {
+        if ($validateAndVerify === false) {
             throw new AuthenticationException('invalid JWT-Token for username:' . $username);
         }
 

@@ -23,7 +23,7 @@ class AlpdeskCoreAuthVerifyEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(AlpdeskCoreAuthResponse $resultData)
+    public function setResultData(AlpdeskCoreAuthResponse $resultData): void
     {
         $this->resultData = $resultData;
     }

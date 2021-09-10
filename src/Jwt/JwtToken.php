@@ -103,7 +103,7 @@ class JwtToken
 
             $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
 
-            if ($value == true) {
+            if ($value === true) {
                 $now = (new \DateTimeImmutable())->setTimestamp(time());
                 $value = !$tokenObject->isExpired($now);
             }

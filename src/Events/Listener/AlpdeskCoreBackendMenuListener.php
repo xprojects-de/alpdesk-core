@@ -34,7 +34,7 @@ class AlpdeskCoreBackendMenuListener
 
         Utils::mergeUserGroupPermissions();
 
-        if (!$backendUser->isAdmin && $backendUser->alpdeskcorelogs_enabled != 1) {
+        if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
             return;
         }
 

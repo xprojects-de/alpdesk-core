@@ -53,12 +53,12 @@ class AlpdeskcoreLogsController extends AbstractController
 
         foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
 
-            if ($strFile == '.' || $strFile == '..' || self::startsWith('.', $strFile)) {
+            if ($strFile === '.' || $strFile === '..' || self::startsWith('.', $strFile)) {
                 continue;
             }
 
             $logFile = new File($parseFolder . '/' . $strFile);
-            if ($logFile->exists() && $logFile->extension === 'log') {
+            if ($logFile->extension === 'log' && $logFile->exists()) {
 
                 $content = $logFile->getContentAsArray();
 
@@ -70,7 +70,7 @@ class AlpdeskcoreLogsController extends AbstractController
             }
         }
 
-        \usort($arrReturn, function ($a, $b) {
+        \usort($arrReturn, static function ($a, $b) {
             return $b['logfile'] <=> $a['logfile'];
         });
 
@@ -81,7 +81,7 @@ class AlpdeskcoreLogsController extends AbstractController
      * @param string $parseFolder
      * @throws \Exception
      */
-    private function deleteLog(string $parseFolder)
+    private function deleteLog(string $parseFolder): void
     {
         $deleteLog = Input::get('deleteLog');
         if ($deleteLog !== null && $deleteLog !== '') {

@@ -37,7 +37,7 @@ class AlpdeskCoreFilemanagementFinderDeleteEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(bool $resultData)
+    public function setResultData(bool $resultData): void
     {
         $this->resultData = $resultData;
     }

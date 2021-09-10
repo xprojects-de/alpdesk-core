@@ -23,7 +23,7 @@ class AlpdeskCoreAuthMemberEvent extends Event
         return $this->resultData;
     }
 
-    public function setResultData(AlpdeskCoreMemberResponse $resultData)
+    public function setResultData(AlpdeskCoreMemberResponse $resultData): void
     {
         $this->resultData = $resultData;
     }
