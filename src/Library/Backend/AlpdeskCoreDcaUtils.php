@@ -35,7 +35,7 @@ class AlpdeskCoreDcaUtils extends Backend
 
     public function generateFixToken($varValue, $dc): string
     {
-        if ($varValue === '') {
+        if ($varValue === null || $varValue === '') {
 
             $username = 'invalid';
 
