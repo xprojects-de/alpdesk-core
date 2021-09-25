@@ -92,13 +92,7 @@ class DcaCallbacks
     {
         $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_widget_databasemanager.css';
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_widget_databasemanager.js';
-    }
 
-    /**
-     * @param DataContainer|null $dc
-     */
-    public function onLoadDatabaseManager(DataContainer $dc = null): void
-    {
         $act = $this->requestStack->getCurrentRequest()->query->get('act');
         if ($act === 'backup') {
 
@@ -161,6 +155,7 @@ class DcaCallbacks
             Controller::redirect('/contao?do=alpdeskcore_databasemanager');
 
         }
+
     }
 
 }
