@@ -4,21 +4,39 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Events\Callbacks;
 
+use Alpdesk\AlpdeskCore\Library\Backup\DatabaseBackup;
+use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
+use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
+use Contao\Controller;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\DataContainer;
+use Contao\Folder;
 use Contao\Image;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
+use Contao\StringUtil;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DcaCallbacks
 {
     protected AlpdeskCoreEventService $eventService;
+    protected ?RequestStack $requestStack;
+    protected string $rootDir;
+    protected ?LoggerInterface $logger;
 
     /**
      * @param AlpdeskCoreEventService $eventService
+     * @param RequestStack $requestStack
+     * @param string $rootDir
+     * @param LoggerInterface|null $logger
      */
-    public function __construct(AlpdeskCoreEventService $eventService)
+    public function __construct(AlpdeskCoreEventService $eventService, RequestStack $requestStack, string $rootDir, LoggerInterface $logger = null)
     {
         $this->eventService = $eventService;
+        $this->requestStack = $requestStack;
+        $this->rootDir = $rootDir;
+        $this->logger = $logger;
     }
 
     /**
@@ -74,6 +92,70 @@ class DcaCallbacks
     {
         $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_widget_databasemanager.css';
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_widget_databasemanager.js';
+
+        $act = $this->requestStack->getCurrentRequest()->query->get('act');
+        if ($act === 'backup') {
+
+            $currentId = $this->requestStack->getCurrentRequest()->query->get('id');
+            if ($currentId !== null && $currentId !== '') {
+
+                $backup = new DatabaseBackup($this->rootDir);
+
+                try {
+
+                    $currentObject = AlpdeskcoreDatabasemanagerModel::findByPk((int)$currentId);
+                    if ($currentObject !== null) {
+
+                        $decryption = new Cryption(true);
+                        $password = $decryption->safeDecrypt((string)$currentObject->password);
+
+                        $title = StringUtil::generateAlias((string)$currentObject->title);
+
+                        $backup->setPrefix((new \DateTime())->format('Y-m-d-H_i_s') . '_');
+
+                        $backupFolder = new Folder('files/dbBackup');
+                        if ($backupFolder->isUnprotected()) {
+                            $backupFolder->protect();
+                        }
+
+                        $backup->backupDatabase((string)$currentObject->host, (string)$currentObject->username, $password, (string)$currentObject->database, $backupFolder->path, $title);
+
+                    }
+
+                } catch (\Exception $ex) {
+
+                    if (null !== $this->logger) {
+
+                        $this->logger->error(
+                            $ex->getMessage(),
+                            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
+                        );
+
+                    }
+
+                }
+
+                if ($backup->getBackupFile() !== null) {
+
+                    if (null !== $this->logger) {
+
+                        $this->logger->info(
+                            $backup->getBackupFile()->name . ' created',
+                            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
+                        );
+
+                    }
+
+                    $backup->getBackupFile()->sendToBrowser();
+
+                }
+
+            }
+
+            Controller::redirect('/contao?do=alpdeskcore_databasemanager');
+
+        }
+
     }
 
 }
