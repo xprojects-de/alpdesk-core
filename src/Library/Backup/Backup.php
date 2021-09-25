@@ -4,40 +4,104 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Backup;
 
+use Contao\Dbafs;
 use Contao\File;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
 class Backup
 {
+
+    private string $rootDir;
+    private ?string $prefix = null;
+
+    /**
+     * @param string $rootDir
+     */
+    public function __construct(string $rootDir)
+    {
+        $this->rootDir = $rootDir;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix
+     */
+    public function setPrefix(?string $prefix): void
+    {
+        $this->prefix = $prefix;
+    }
+
+
     /**
      * @param string $hostName
      * @param string $username
      * @param string|null $password
      * @param string $database
+     * @param string $path
      * @param string $fileName
-     * @param int $timeout
+     * @param int $timeoutSeconds
      * @throws \Exception
      */
-    public function backupDatabase(string $hostName, string $username, ?string $password, string $database, string $fileName, int $timeout = 10000): void
+    public function backupDatabase(string $hostName, string $username, ?string $password, string $database, string $path, string $fileName, int $timeoutSeconds = 3600): void
     {
         try {
 
-            // mysqldump -h localhost -u myUsername -pMyPassword myDatabase > backup.sql'
+            $fileName .= '.sql';
+
+            if ($this->getPrefix() !== null) {
+                $fileName = $this->getPrefix() . $fileName;
+            }
+
+            $fullPath = $path . DIRECTORY_SEPARATOR . $fileName;
+
+            $executableFinder = new ExecutableFinder();
+            $mySqlDump = $executableFinder->find('mysqldump', null, ['/Applications/MAMP/Library/bin']);
+
+            if ($mySqlDump === null) {
+                throw new \Exception('error finding mysqldump');
+            }
+
+            $parameters = [
+                'HOSTNAME' => $hostName,
+                'USERNAME' => $username,
+                'DATABASE' => $database,
+                'OUTPUT_FILE' => $this->rootDir . DIRECTORY_SEPARATOR . $fullPath
+            ];
+
+            $command = [
+                $mySqlDump,
+                '--add-drop-table',
+                '--host="${:HOSTNAME}"',
+                '--user="${:USERNAME}"'
+            ];
 
             if ($password !== null && $password !== '') {
-                $process = new Process(['mysqldump', '-h', $hostName, '-u', $username, '-p', $password, $database, '>', $fileName . '.sql']);
-            } else {
-                $process = new Process(['mysqldump', '-h', $hostName, '-u', $username, $database, '>', $fileName . '.sql']);
+
+                $command[] = '--password="${:PASSWORD}"';
+                $parameters['PASSWORD'] = $password;
             }
+
+            $command[] = '"${:DATABASE}"';
+            $command[] = '--result-file="${:OUTPUT_FILE}"';
+
+            $process = Process::fromShellCommandline(\implode(' ', $command));
 
             try {
 
-                $process->setTimeout($timeout);
+                $process->setTimeout($timeoutSeconds);
                 $process->disableOutput();
-                $process->mustRun();
+                $process->run(null, $parameters);
 
-                $fileObject = new File($fileName);
+                $fileObject = new File($fullPath);
                 if (!$fileObject->exists()) {
                     throw new \Exception('error creating backup file');
                 }
@@ -49,7 +113,6 @@ class Backup
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
-
 
     }
 
@@ -100,6 +163,10 @@ class Backup
                 $fileObject = new File($fileName);
                 if (!$fileObject->exists()) {
                     throw new \Exception('error creating backup file');
+                }
+
+                if (Dbafs::shouldBeSynchronized($fileObject->path)) {
+                    Dbafs::addResource($fileObject->path);
                 }
 
             } catch (ProcessFailedException $ex) {
