@@ -74,6 +74,7 @@ services:
       - '@alpdeskcore.eventservice'
       - '@request_stack'
       - '%kernel.project_dir%'
+      - '@?logger'
     tags:
       - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: fields.type.options, method: getMandantElements }
       - { name: contao.callback, table: tl_member, target: fields.alpdeskcore_elements.options, method: getMandantElements }

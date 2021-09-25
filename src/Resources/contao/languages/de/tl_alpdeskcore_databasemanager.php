@@ -24,4 +24,4 @@ $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['nomigrations'] = 'Datenba
 $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] = 'Migration durchführen';
 $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migrateconfirm'] = 'Migration wirklich durchführen?';
 
-$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['backupDatabase'] = 'Datenbank-Backup';
+$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['backupDatabase'] = 'Datenbank-Backup (! mysqldump needed !)';

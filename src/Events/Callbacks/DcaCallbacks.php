@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Events\Callbacks;
 
-use Alpdesk\AlpdeskCore\Library\Backup\Backup;
+use Alpdesk\AlpdeskCore\Library\Backup\DatabaseBackup;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
 use Contao\Controller;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\DataContainer;
 use Contao\Folder;
 use Contao\Image;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
+use Contao\StringUtil;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class DcaCallbacks
@@ -20,17 +23,20 @@ class DcaCallbacks
     protected AlpdeskCoreEventService $eventService;
     protected ?RequestStack $requestStack;
     protected string $rootDir;
+    protected ?LoggerInterface $logger;
 
     /**
      * @param AlpdeskCoreEventService $eventService
      * @param RequestStack $requestStack
      * @param string $rootDir
+     * @param LoggerInterface|null $logger
      */
-    public function __construct(AlpdeskCoreEventService $eventService, RequestStack $requestStack, string $rootDir)
+    public function __construct(AlpdeskCoreEventService $eventService, RequestStack $requestStack, string $rootDir, LoggerInterface $logger = null)
     {
         $this->eventService = $eventService;
         $this->requestStack = $requestStack;
         $this->rootDir = $rootDir;
+        $this->logger = $logger;
     }
 
     /**
@@ -99,6 +105,8 @@ class DcaCallbacks
             $currentId = $this->requestStack->getCurrentRequest()->query->get('id');
             if ($currentId !== null && $currentId !== '') {
 
+                $backup = new DatabaseBackup($this->rootDir);
+
                 try {
 
                     $currentObject = AlpdeskcoreDatabasemanagerModel::findByPk((int)$currentId);
@@ -107,16 +115,44 @@ class DcaCallbacks
                         $decryption = new Cryption(true);
                         $password = $decryption->safeDecrypt((string)$currentObject->password);
 
-                        $backup = new Backup($this->rootDir);
-                        $backup->setPrefix(\time() . '_');
+                        $title = StringUtil::generateAlias((string)$currentObject->title);
+
+                        $backup->setPrefix((new \DateTime())->format('Y-m-d-H_i_s') . '_');
 
                         $backupFolder = new Folder('files/dbBackup');
+                        if ($backupFolder->isUnprotected()) {
+                            $backupFolder->protect();
+                        }
 
-                        $backup->backupDatabase((string)$currentObject->host, (string)$currentObject->username, $password, (string)$currentObject->database, $backupFolder->path, (string)$currentObject->title);
+                        $backup->backupDatabase((string)$currentObject->host, (string)$currentObject->username, $password, (string)$currentObject->database, $backupFolder->path, $title);
 
                     }
 
-                } catch (\Exception $tr) {
+                } catch (\Exception $ex) {
+
+                    if (null !== $this->logger) {
+
+                        $this->logger->error(
+                            $ex->getMessage(),
+                            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
+                        );
+
+                    }
+
+                }
+
+                if ($backup->getBackupFile() !== null) {
+
+                    if (null !== $this->logger) {
+
+                        $this->logger->info(
+                            $backup->getBackupFile()->name . ' created',
+                            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
+                        );
+
+                    }
+
+                    $backup->getBackupFile()->sendToBrowser();
 
                 }
 

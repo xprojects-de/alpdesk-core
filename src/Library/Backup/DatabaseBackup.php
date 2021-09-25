@@ -10,11 +10,12 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
-class Backup
+class DatabaseBackup
 {
 
     private string $rootDir;
     private ?string $prefix = null;
+    private ?File $backupFile = null;
 
     /**
      * @param string $rootDir
@@ -40,6 +41,13 @@ class Backup
         $this->prefix = $prefix;
     }
 
+    /**
+     * @return File|null
+     */
+    public function getBackupFile(): ?File
+    {
+        return $this->backupFile;
+    }
 
     /**
      * @param string $hostName
@@ -64,7 +72,7 @@ class Backup
             $fullPath = $path . DIRECTORY_SEPARATOR . $fileName;
 
             $executableFinder = new ExecutableFinder();
-            $mySqlDump = $executableFinder->find('mysqldump', null, ['/Applications/MAMP/Library/bin']);
+            $mySqlDump = $executableFinder->find('mysqldump', null, ['/usr/bin', '/Applications/MAMP/Library/bin']);
 
             if ($mySqlDump === null) {
                 throw new \Exception('error finding mysqldump');
@@ -80,6 +88,8 @@ class Backup
             $command = [
                 $mySqlDump,
                 '--add-drop-table',
+                '--no-tablespaces',
+                '--default-character-set=utf8mb4',
                 '--host="${:HOSTNAME}"',
                 '--user="${:USERNAME}"'
             ];
@@ -98,12 +108,32 @@ class Backup
             try {
 
                 $process->setTimeout($timeoutSeconds);
-                $process->disableOutput();
                 $process->run(null, $parameters);
 
-                $fileObject = new File($fullPath);
-                if (!$fileObject->exists()) {
+                $this->backupFile = new File($fullPath);
+
+                $errorOutput = $process->getErrorOutput();
+                if (\stripos($errorOutput, 'error') !== false) {
+
+                    if ($this->backupFile->exists()) {
+
+                        $this->backupFile->delete();
+                        $this->backupFile = null;
+
+                    }
+
+                    throw new \Exception($errorOutput);
+                }
+
+                if (!$this->backupFile->exists()) {
+
+                    $this->backupFile = null;
                     throw new \Exception('error creating backup file');
+
+                }
+
+                if (Dbafs::shouldBeSynchronized($this->backupFile->path)) {
+                    Dbafs::addResource($this->backupFile->path);
                 }
 
             } catch (ProcessFailedException $ex) {
@@ -114,68 +144,6 @@ class Backup
             throw new \Exception($tr->getMessage());
         }
 
-    }
-
-    /**
-     * @param string $path
-     * @param string $fileName
-     * @param array $exclude
-     * @param array $additionalFiles
-     * @param int $timeout
-     * @throws \Exception
-     */
-    public function tarGzFileStructure(string $path, string $fileName, array $exclude, array $additionalFiles, int $timeout = 10000): void
-    {
-        try {
-
-            // cd /tmp; tar --exclude=myFile.txt -czf backup.tar.gz * additional.txt;
-
-            $options = ['cd', $path, ';', 'tar'];
-
-            if (\count($exclude) > 0) {
-
-                foreach ($exclude as $item) {
-                    $options[] = '--exclude=' . $item;
-                }
-
-            }
-
-            $options[] = '-czf';
-            $options[] = $fileName . '.tar.gz';
-            $options[] = '*';
-
-            if (\count($additionalFiles) > 0) {
-
-                foreach ($additionalFiles as $item) {
-                    $options[] = $item;
-                }
-
-            }
-
-            $process = new Process($options);
-
-            try {
-
-                $process->setTimeout($timeout);
-                $process->disableOutput();
-                $process->mustRun();
-
-                $fileObject = new File($fileName);
-                if (!$fileObject->exists()) {
-                    throw new \Exception('error creating backup file');
-                }
-
-                if (Dbafs::shouldBeSynchronized($fileObject->path)) {
-                    Dbafs::addResource($fileObject->path);
-                }
-
-            } catch (ProcessFailedException $ex) {
-                throw new \Exception($ex->getMessage());
-            }
-
-        } catch (\Throwable $tr) {
-            throw new \Exception($tr->getMessage());
-        }
     }
 
 }
