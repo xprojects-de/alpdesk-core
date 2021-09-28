@@ -280,15 +280,33 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $this->setLanguageArray($l);
         $this->SetFont($settingsarray['font_family'], $settingsarray['font_style'], $settingsarray['font_size']);
+
         $this->AddPage();
         $html = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($text, false));
-        $this->writeHTML($html, true, false, true, false);
+
+        // Check for pageBreak
+        $pageSplit = \explode("##ad_pagebreak##", $html);
+        $pageCount = \count($pageSplit);
+        if ($pageCount > 1) {
+
+            $this->writeHTML($pageSplit[0], true, false, true, false);
+            for ($i = 1; $i < $pageCount; $i++) {
+
+                $this->AddPage();
+                $this->writeHTML($pageSplit[$i], true, false, true, false);
+
+            }
+
+        } else {
+            $this->writeHTML($html, true, false, true, false);
+        }
+
         $this->lastPage();
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $xdir = $rootDir . "/" . $path;
         if (!is_dir($xdir)) {
-            mkdir($xdir);
+            \mkdir($xdir);
         }
 
         $this->Output($xdir . "/" . $filename, 'F');
