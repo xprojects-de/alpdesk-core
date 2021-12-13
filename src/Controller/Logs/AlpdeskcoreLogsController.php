@@ -34,6 +34,11 @@ class AlpdeskcoreLogsController extends AbstractController
         $this->projectDir = $projectDir;
     }
 
+    /**
+     * @param string $startString
+     * @param string $string
+     * @return bool
+     */
     private static function startsWith(string $startString, string $string): bool
     {
         $len = \strlen($startString);
@@ -43,6 +48,8 @@ class AlpdeskcoreLogsController extends AbstractController
     }
 
     /**
+     * @param string $parseFolder
+     * @return array
      * @throws \Exception
      */
     private function scanDir(string $parseFolder): array
@@ -79,6 +86,7 @@ class AlpdeskcoreLogsController extends AbstractController
 
     /**
      * @param string $parseFolder
+     * @return void
      * @throws \Exception
      */
     private function deleteLog(string $parseFolder): void
@@ -98,6 +106,7 @@ class AlpdeskcoreLogsController extends AbstractController
     }
 
     /**
+     * @return Response
      * @throws \Exception
      */
     public function endpoint(): Response

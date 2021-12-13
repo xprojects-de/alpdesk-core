@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Plugin;
 
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,6 +33,11 @@ class AlpdeskCorePluginController extends AbstractController
         $this->rootDir = $rootDir;
     }
 
+    /**
+     * @param AlpdeskCorePlugincallResponse $data
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function output(AlpdeskCorePlugincallResponse $data, int $statusCode): JsonResponse
     {
         return (new JsonResponse(array(
@@ -43,6 +49,12 @@ class AlpdeskCorePluginController extends AbstractController
         ));
     }
 
+    /**
+     * @param string $data
+     * @param $code
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function outputError(string $data, $code, int $statusCode): JsonResponse
     {
         if ($code === null || $code === 0) {
@@ -52,9 +64,18 @@ class AlpdeskCorePluginController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function call(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 

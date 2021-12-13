@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +34,11 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         $this->rootDir = $rootDir;
     }
 
+    /**
+     * @param AlpdeskCoreFileuploadResponse $data
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function output(AlpdeskCoreFileuploadResponse $data, int $statusCode): JsonResponse
     {
         return (new JsonResponse(array(
@@ -44,6 +50,12 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         ));
     }
 
+    /**
+     * @param string $data
+     * @param $code
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function outputError(string $data, $code, int $statusCode): JsonResponse
     {
         if ($code === null || $code === 0) {
@@ -53,9 +65,18 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function upload(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 
@@ -84,9 +105,18 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|JsonResponse
+     */
     public function download(Request $request, UserInterface $user)
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 
@@ -105,9 +135,18 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function finder(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 
