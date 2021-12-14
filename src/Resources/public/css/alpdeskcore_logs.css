@@ -22,10 +22,23 @@
     margin-top: 10px;
     margin-bottom: 10px;
     border-left: 5px solid #ccc;
-    padding: 5px 0px 5px 15px;
+    padding: 5px 0 5px 15px;
 }
 
 .alpdeskcorelogitem p {
     padding: 0;
     margin: 0;
+}
+
+#alpdeskcorelogs_filter {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+}
+
+#alpdeskcorelogs_filter input.text {
+    width: 50%;
+}
+
+#alpdeskcorelogs_backendcontainer strong.filterMarked {
+    color: #F47C00;
 }

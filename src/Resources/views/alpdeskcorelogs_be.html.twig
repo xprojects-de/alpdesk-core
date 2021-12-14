@@ -12,6 +12,23 @@
 
     <div id="alpdeskcorelogs_backendcontainer">
 
+        <div id="alpdeskcorelogs_filter">
+
+            <form method="post">
+
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ token }}">
+                <input type="hidden" name="setFilter" value="1">
+
+                <input type="text" class="text" name="filterValue" value="{{ filterValue }}" placeholder="filter...">
+                &nbsp;&nbsp;
+                <button title="" id="fullsize" class="tl_submit">
+                    <img width="15" src="system/themes/flexible/icons/filter-apply.svg">
+                </button>
+
+            </form>
+
+        </div>
+
         {% for key,value in logs %}
 
             <div class="alpdeskcorelogfile">
@@ -31,7 +48,7 @@
                 <div class="alpdeskcorelogitemcontainer">
                     {% for keycontent,valuecontent in value.content %}
                         <div class="alpdeskcorelogitem">
-                            <p>{{ valuecontent }}</p>
+                            <p>{{ valuecontent | raw }}</p>
                         </div>
                     {% endfor %}
                 </div>
