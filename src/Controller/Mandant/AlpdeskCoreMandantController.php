@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Mandant;
 
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,6 +31,11 @@ class AlpdeskCoreMandantController extends AbstractController
         $this->logger = $logger;
     }
 
+    /**
+     * @param AlpdeskCoreMandantResponse $data
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function output(AlpdeskCoreMandantResponse $data, int $statusCode): JsonResponse
     {
         return (new JsonResponse(array(
@@ -53,6 +59,12 @@ class AlpdeskCoreMandantController extends AbstractController
         ));
     }
 
+    /**
+     * @param string $data
+     * @param $code
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function outputError(string $data, $code, int $statusCode): JsonResponse
     {
 
@@ -63,9 +75,18 @@ class AlpdeskCoreMandantController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function list(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 
@@ -86,8 +107,18 @@ class AlpdeskCoreMandantController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     * @throws \Exception
+     */
     public function edit(Request $request, UserInterface $user): JsonResponse
     {
+        if (!($user instanceof AlpdeskcoreUser)) {
+            throw new \Exception('invalid user type');
+        }
+
         $this->framework->initialize();
 
         return $this->outputError('Not Supported', AlpdeskCoreConstants::$ERROR_COMMON, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);

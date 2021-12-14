@@ -17,6 +17,13 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
 
 class AlpdeskCoreDcaUtils extends Backend
 {
+    /**
+     * @param $row
+     * @param $label
+     * @param $dc
+     * @param $args
+     * @return array
+     */
     public function showSessionValid($row, $label, $dc, $args): array
     {
         try {
@@ -33,6 +40,11 @@ class AlpdeskCoreDcaUtils extends Backend
         return $args;
     }
 
+    /**
+     * @param $varValue
+     * @param $dc
+     * @return string
+     */
     public function generateFixToken($varValue, $dc): string
     {
         if ($varValue === null || $varValue === '') {
@@ -90,6 +102,10 @@ class AlpdeskCoreDcaUtils extends Backend
         return $varValue;
     }
 
+    /**
+     * @param DataContainer $dc
+     * @return void
+     */
     public function pdfElementsloadCallback(DataContainer $dc): void
     {
         if (Input::get('act') === 'generatetestpdf') {
@@ -104,11 +120,24 @@ class AlpdeskCoreDcaUtils extends Backend
         }
     }
 
+    /**
+     * @param $arrRow
+     * @return string
+     */
     public function listPDFElements($arrRow): string
     {
         return $arrRow['name'];
     }
 
+    /**
+     * @param $row
+     * @param $href
+     * @param $label
+     * @param $title
+     * @param $icon
+     * @param $attributes
+     * @return string
+     */
     public function generatetestpdfLinkCallback($row, $href, $label, $title, $icon, $attributes): string
     {
         return '<a href="' . self::addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';

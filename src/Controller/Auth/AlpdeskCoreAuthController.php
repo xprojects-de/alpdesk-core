@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Controller\Auth;
 
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthRefreshEvent;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,7 +27,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreAuthController extends AbstractController
 {
-
     protected ContaoFramework $framework;
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
@@ -39,6 +39,11 @@ class AlpdeskCoreAuthController extends AbstractController
         $this->logger = $logger;
     }
 
+    /**
+     * @param AlpdeskCoreAuthResponse $data
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function output(AlpdeskCoreAuthResponse $data, int $statusCode): JsonResponse
     {
         return (new JsonResponse(array(
@@ -51,6 +56,12 @@ class AlpdeskCoreAuthController extends AbstractController
         ));
     }
 
+    /**
+     * @param string $data
+     * @param $code
+     * @param int $statusCode
+     * @return JsonResponse
+     */
     private function outputError(string $data, $code, int $statusCode): JsonResponse
     {
         if ($code === null || $code === 0) {
@@ -60,6 +71,10 @@ class AlpdeskCoreAuthController extends AbstractController
         return (new JsonResponse(['type' => $code, 'message' => $data], $statusCode));
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function auth(Request $request): JsonResponse
     {
         try {
@@ -92,9 +107,18 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function verify(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 
@@ -127,6 +151,10 @@ class AlpdeskCoreAuthController extends AbstractController
     {
         try {
 
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
+
             $this->framework->initialize();
 
             $refreshData = (array)\json_decode($request->getContent(), true);
@@ -151,9 +179,18 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function member(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 
@@ -216,9 +253,18 @@ class AlpdeskCoreAuthController extends AbstractController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param UserInterface $user
+     * @return JsonResponse
+     */
     public function logout(Request $request, UserInterface $user): JsonResponse
     {
         try {
+
+            if (!($user instanceof AlpdeskcoreUser)) {
+                throw new \Exception('invalid user type');
+            }
 
             $this->framework->initialize();
 

@@ -12,7 +12,6 @@ use Symfony\Component\Process\Process;
 
 class DatabaseBackup
 {
-
     private string $rootDir;
     private ?string $prefix = null;
     private ?File $backupFile = null;
