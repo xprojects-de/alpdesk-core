@@ -38,8 +38,12 @@ class AlpdeskcoreMigration
      */
     public function showMigrations(): array
     {
-        $fromSchema = $this->connection->getSchemaManager()->createSchema();
+        $schemaManager = $this->connection->createSchemaManager();
+        $fromSchema = $schemaManager->createSchema();
+
+        // @TODO fix deprecations
         return $fromSchema->getMigrateToSql($this->parseSql(), $this->connection->getDatabasePlatform());
+
     }
 
     /**
@@ -309,14 +313,7 @@ class AlpdeskcoreMigration
             throw new \Exception('Error: Version < 5.1.0');
         }
 
-        if ($this->connection === null) {
-            throw new \Exception('invalid connection');
-        }
-
-        $schema = $this->connection->getSchemaManager();
-        if ($schema === null) {
-            throw new \Exception('invalid schema');
-        }
+        $schema = $this->connection->createSchemaManager();
 
         $schemaConfig = $schema->createSchemaConfig();
         if ($schemaConfig === null) {

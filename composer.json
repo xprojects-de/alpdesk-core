@@ -13,11 +13,11 @@
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
-    "contao/core-bundle": "^4.11",
-    "tecnickcom/tcpdf": "^6.3",
-    "lcobucci/jwt": "^4.0",
-    "symfony/security-bundle": "^5.2",
-    "symfony/process": "^5.2"
+    "contao/core-bundle": "4.x-dev",
+    "tecnickcom/tcpdf": "^6.4",
+    "lcobucci/jwt": "^4.1",
+    "symfony/security-bundle": "^5.4",
+    "symfony/process": "^5.4"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
