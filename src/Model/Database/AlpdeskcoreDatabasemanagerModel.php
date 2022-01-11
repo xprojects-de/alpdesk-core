@@ -93,7 +93,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
         try {
 
-            $tables = self::$connectionsTable[$id]->createSchemaManager()->createSchema()->getTables();
+            $tables = self::$connectionsTable[$id]->getSchemaManager()->createSchema()->getTables();
 
             $structure = array();
             foreach ($tables as $table) {
