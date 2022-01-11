@@ -423,7 +423,7 @@ class AlpdeskCoreFilemanagement
 
             $target = self::preparePath(((string)$finderData['target']));
 
-            if ($target === null || $target === "") {
+            if ($target === "") {
                 throw new AlpdeskCoreFilemanagementException("No valid mode in target. Must be 'file' or 'dir'");
             }
 
@@ -796,7 +796,7 @@ class AlpdeskCoreFilemanagement
 
                             if ($valueKey === 'title' || $valueKey === 'alt' || $valueKey === 'link' || $valueKey === 'caption') {
 
-                                if(!\array_key_exists($key, $metaData)) {
+                                if (!\array_key_exists($key, $metaData)) {
                                     $metaData[$key] = [];
                                 }
 
