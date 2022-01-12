@@ -9,7 +9,7 @@ use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 
 class AlpdeskcoreMigration
 {
@@ -132,7 +132,7 @@ class AlpdeskcoreMigration
 
                                             $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
                                             break;
-                                            
+
                                         }
 
                                     }
@@ -267,27 +267,27 @@ class AlpdeskcoreMigration
                 break;
 
             case 'tinytext':
-                $length = MySqlPlatform::LENGTH_LIMIT_TINYTEXT;
+                $length = MySQLPlatform::LENGTH_LIMIT_TINYTEXT;
                 break;
 
             case 'text':
-                $length = MySqlPlatform::LENGTH_LIMIT_TEXT;
+                $length = MySQLPlatform::LENGTH_LIMIT_TEXT;
                 break;
 
             case 'mediumtext':
-                $length = MySqlPlatform::LENGTH_LIMIT_MEDIUMTEXT;
+                $length = MySQLPlatform::LENGTH_LIMIT_MEDIUMTEXT;
                 break;
 
             case 'tinyblob':
-                $length = MySqlPlatform::LENGTH_LIMIT_TINYBLOB;
+                $length = MySQLPlatform::LENGTH_LIMIT_TINYBLOB;
                 break;
 
             case 'blob':
-                $length = MySqlPlatform::LENGTH_LIMIT_BLOB;
+                $length = MySQLPlatform::LENGTH_LIMIT_BLOB;
                 break;
 
             case 'mediumblob':
-                $length = MySqlPlatform::LENGTH_LIMIT_MEDIUMBLOB;
+                $length = MySQLPlatform::LENGTH_LIMIT_MEDIUMBLOB;
                 break;
 
             case 'tinyint':

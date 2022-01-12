@@ -7,7 +7,7 @@ namespace Alpdesk\AlpdeskCore\Elements;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 
 /**
- * @deprecated Deprecated since 1.0, to be removed in Contao 2.0; use the Symfony-Events instead => alpdesk.plugincall
+ * @deprecated Deprecated since 1.0, to be removed in Version 3.0; use the Symfony-Events instead => alpdesk.plugincall
  */
 abstract class AlpdeskCoreElement
 {
