@@ -62,10 +62,14 @@ class AlpdeskcoreDatabasemanagerModel extends Model
         if (\array_key_exists($id, self::$connectionsTable)) {
 
             if (self::$connectionsTable[$id] instanceof Connection) {
+
                 if (self::$connectionsTable[$id] !== null) {
+
                     self::$connectionsTable[$id]->close();
                     self::$connectionsTable[$id] = null;
+
                 }
+
             }
 
         }
@@ -83,13 +87,13 @@ class AlpdeskcoreDatabasemanagerModel extends Model
             throw new \Exception($GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_parameters']);
         }
 
-        if (self::$connectionsTable[$id] === null) {
+        if (self::$connectionsTable[$id] === null || !self::$connectionsTable[$id] instanceof Connection) {
             throw new \Exception($GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_parameters']);
         }
 
         try {
 
-            $tables = self::$connectionsTable[$id]->getSchemaManager()->createSchema()->getTables();
+            $tables = self::$connectionsTable[$id]->createSchemaManager()->createSchema()->getTables();
 
             $structure = array();
             foreach ($tables as $table) {

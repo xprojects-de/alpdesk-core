@@ -13,37 +13,63 @@ class StubContainerInterface implements ContainerInterface
 {
     private array $params = [];
 
-    public function set(string $id, ?object $service)
+    public function set(string $id, ?object $service): void
     {
         // TODO: Implement set() method for stub.
     }
 
+    /**
+     * @param $id
+     * @param int $invalidBehavior
+     * @return object|void|null
+     */
     public function get($id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
     {
         // TODO: Implement get() method.
     }
 
-    public function has($id)
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function has($id): bool
     {
-        // TODO: Implement has() method.
+        return true;
     }
 
-    public function initialized(string $id)
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function initialized(string $id): bool
     {
-        // TODO: Implement initialized() method.
+        return true;
     }
 
+    /**
+     * @param string $name
+     * @return array|bool|float|int|mixed|string|null
+     */
     public function getParameter(string $name)
     {
         return $this->params[$name];
     }
 
-    public function hasParameter(string $name)
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasParameter(string $name): bool
     {
         return \array_key_exists($name, $this->params);
     }
 
-    public function setParameter(string $name, $value)
+    /**
+     * @param string $name
+     * @param $value
+     * @return void
+     */
+    public function setParameter(string $name, $value): void
     {
         $this->params[$name] = $value;
     }
@@ -74,46 +100,52 @@ class JwtTokenTest extends TestCase
 
     }
 
-    public function testNullCheck()
+    /**
+     * @return void
+     */
+    public function testNullCheck(): void
     {
         // InstanceCheck
 
         $z = null;
         $t = ($z instanceof \DateTimeImmutable);
-        $this->assertSame(false, $t);
+        $this->assertFalse($t);
 
         $z = new \DateTimeImmutable();
         $u = ($z instanceof \DateTimeImmutable);
-        $this->assertSame(true, $u);
+        $this->assertTrue($u);
 
         // null-Parameter-test
 
         try {
 
             $this->nullParameter(null);
-            $this->assertSame(true, false);
+            $this->fail();
 
         } catch (\Throwable $ex) {
 
             echo($ex->getMessage());
-            $this->assertSame(true, true);
+            $this->assertTrue(true);
 
         }
 
         try {
 
             $this->nullParameter(new \DateTimeImmutable());
-            $this->assertSame(true, true);
+            $this->assertTrue(true);
 
         } catch (\Throwable $ex) {
 
             echo($ex->getMessage());
-            $this->assertSame(false, true);
+            $this->fail();
 
         }
     }
 
-    public function testJwt()
+    /**
+     * @return void
+     */
+    public function testJwt(): void
     {
         $username = 'test';
         $jti = \base64_encode('alpdesk_' . $username);
@@ -131,11 +163,11 @@ class JwtTokenTest extends TestCase
                 $this->assertTrue(($exp > 0));
             } else {
                 echo('invalid Type' . PHP_EOL);
-                $this->assertTrue(false);
+                $this->fail();
             }
         } else {
             echo('exp == null' . PHP_EOL);
-            $this->assertTrue(false);
+            $this->fail();
         }
 
     }

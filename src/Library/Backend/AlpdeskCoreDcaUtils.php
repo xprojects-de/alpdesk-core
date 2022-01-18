@@ -77,9 +77,7 @@ class AlpdeskCoreDcaUtils extends Backend
             return $varValue;
         }
 
-        $cryption = new Cryption(true);
-
-        return $cryption->safeEncrypt($varValue);
+        return (new Cryption(true))->safeEncrypt($varValue);
     }
 
     /**

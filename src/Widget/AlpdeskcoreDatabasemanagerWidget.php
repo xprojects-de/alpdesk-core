@@ -35,7 +35,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
             $username = $this->activeRecord->username;
             $password = $this->activeRecord->password;
             $database = $this->activeRecord->database;
-            if ($host !== '' && $port !== null && $username !== '' && $password !== '' && $database !== '') {
+            if ($host !== '' && $username !== '' && $password !== '' && $database !== '') {
                 $outputValue = $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_parameters'] . '<br>';
                 $connection = AlpdeskcoreDatabasemanagerModel::connectionById($id);
                 try {

@@ -69,9 +69,7 @@ class JwtToken
             }
         }
 
-        $token = $builder->getToken($config->signer(), $config->signingKey());
-
-        return $token->toString();
+        return $builder->getToken($config->signer(), $config->signingKey())->toString();
     }
 
     /**
@@ -81,9 +79,7 @@ class JwtToken
     public static function parse(string $token): Token
     {
         $config = self::getConfig();
-        $parser = $config->parser();
-
-        return $parser->parse($token);
+        return $config->parser()->parse($token);
     }
 
     /**
