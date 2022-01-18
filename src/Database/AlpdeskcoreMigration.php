@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Database;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
 
 class AlpdeskcoreMigration
 {
@@ -38,8 +39,11 @@ class AlpdeskcoreMigration
      */
     public function showMigrations(): array
     {
-        $fromSchema = $this->connection->getSchemaManager()->createSchema();
-        return $fromSchema->getMigrateToSql($this->parseSql(), $this->connection->getDatabasePlatform());
+        $schemaManager = $this->connection->createSchemaManager();
+        $fromSchema = $schemaManager->createSchema();
+
+        return Comparator::compareSchemas($fromSchema, $this->parseSql())->toSql($this->connection->getDatabasePlatform());
+
     }
 
     /**
@@ -125,8 +129,10 @@ class AlpdeskcoreMigration
 
                                         // Only one per Table // Maybe @TODO
                                         foreach ($columnMatching['constraint'] as $localColumn => $foreignColumn) {
+
                                             $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
                                             break;
+
                                         }
 
                                     }
@@ -261,27 +267,27 @@ class AlpdeskcoreMigration
                 break;
 
             case 'tinytext':
-                $length = MySqlPlatform::LENGTH_LIMIT_TINYTEXT;
+                $length = MySQLPlatform::LENGTH_LIMIT_TINYTEXT;
                 break;
 
             case 'text':
-                $length = MySqlPlatform::LENGTH_LIMIT_TEXT;
+                $length = MySQLPlatform::LENGTH_LIMIT_TEXT;
                 break;
 
             case 'mediumtext':
-                $length = MySqlPlatform::LENGTH_LIMIT_MEDIUMTEXT;
+                $length = MySQLPlatform::LENGTH_LIMIT_MEDIUMTEXT;
                 break;
 
             case 'tinyblob':
-                $length = MySqlPlatform::LENGTH_LIMIT_TINYBLOB;
+                $length = MySQLPlatform::LENGTH_LIMIT_TINYBLOB;
                 break;
 
             case 'blob':
-                $length = MySqlPlatform::LENGTH_LIMIT_BLOB;
+                $length = MySQLPlatform::LENGTH_LIMIT_BLOB;
                 break;
 
             case 'mediumblob':
-                $length = MySqlPlatform::LENGTH_LIMIT_MEDIUMBLOB;
+                $length = MySQLPlatform::LENGTH_LIMIT_MEDIUMBLOB;
                 break;
 
             case 'tinyint':
@@ -292,7 +298,9 @@ class AlpdeskcoreMigration
             case 'bigint':
             case 'year':
                 $length = null;
+                break;
         }
+
     }
 
     /**
@@ -309,14 +317,7 @@ class AlpdeskcoreMigration
             throw new \Exception('Error: Version < 5.1.0');
         }
 
-        if ($this->connection === null) {
-            throw new \Exception('invalid connection');
-        }
-
-        $schema = $this->connection->getSchemaManager();
-        if ($schema === null) {
-            throw new \Exception('invalid schema');
-        }
+        $schema = $this->connection->createSchemaManager();
 
         $schemaConfig = $schema->createSchemaConfig();
         if ($schemaConfig === null) {

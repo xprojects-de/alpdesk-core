@@ -11,9 +11,20 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class AlpdeskCoreAuthToken
 {
+    private PasswordHasherFactoryInterface $passwordHasherFactory;
+
+    /**
+     * @param PasswordHasherFactoryInterface $passwordHasherFactory
+     */
+    public function __construct(PasswordHasherFactoryInterface $passwordHasherFactory)
+    {
+        $this->passwordHasherFactory = $passwordHasherFactory;
+    }
+
     private function setAuthSession(string $username, int $ttl_token = 3600)
     {
         $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
@@ -70,7 +81,7 @@ class AlpdeskCoreAuthToken
         $password = (string)AlpdeskcoreInputSecurity::secureValue($authdata['password']);
 
         try {
-            (new AlpdeskCoreMandantAuth())->login($username, $password);
+            (new AlpdeskCoreMandantAuth($this->passwordHasherFactory))->login($username, $password);
         } catch (AlpdeskCoreAuthException $ex) {
             throw new AlpdeskCoreAuthException($ex->getMessage(), $ex->getCode());
         }

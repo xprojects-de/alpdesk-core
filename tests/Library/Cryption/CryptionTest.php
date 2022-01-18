@@ -11,37 +11,68 @@ class StubContainerInterface implements ContainerInterface
 {
     private array $params = [];
 
-    public function set(string $id, ?object $service)
+    /**
+     * @param string $id
+     * @param object|null $service
+     * @return void
+     */
+    public function set(string $id, ?object $service): void
     {
         // TODO: Implement set() method for stub.
     }
 
+    /**
+     * @param $id
+     * @param int $invalidBehavior
+     * @return object|void|null
+     */
     public function get($id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
     {
         // TODO: Implement get() method.
     }
 
-    public function has($id)
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function has($id): bool
     {
-        // TODO: Implement has() method.
+        return true;
     }
 
-    public function initialized(string $id)
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function initialized(string $id): bool
     {
-        // TODO: Implement initialized() method.
+        return true;
     }
 
+    /**
+     * @param string $name
+     * @return array|bool|float|int|mixed|string|null
+     */
     public function getParameter(string $name)
     {
         return $this->params[$name];
     }
 
-    public function hasParameter(string $name)
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasParameter(string $name): bool
     {
         return \array_key_exists($name, $this->params);
     }
 
-    public function setParameter(string $name, $value)
+    /**
+     * @param string $name
+     * @param $value
+     * @return void
+     */
+    public function setParameter(string $name, $value): void
     {
         $this->params[$name] = $value;
     }
@@ -65,7 +96,7 @@ class CryptionTest extends TestCase
         $this->assertNotEmpty(System::getContainer()->getParameter('kernel.secret'));
     }
 
-    public function testCryptionZeroKey()
+    public function testCryptionZeroKey(): void
     {
         $message = 'Hello AlpdeskCore';
 
@@ -81,12 +112,15 @@ class CryptionTest extends TestCase
 
         } catch (\Exception $e) {
             echo($e . PHP_EOL);
-            $this->assertTrue(false);
+            $this->fail();
         }
 
     }
 
-    public function testCryptionNoneZeroKey()
+    /**
+     * @return void
+     */
+    public function testCryptionNoneZeroKey(): void
     {
         $message = 'Hello AlpdeskCore';
 
@@ -104,12 +138,16 @@ class CryptionTest extends TestCase
 
         } catch (\Exception $e) {
             echo($e . PHP_EOL);
-            $this->assertTrue(false);
+            $this->fail();
         }
 
     }
 
-    public function testCryptionNoneZeroKeyInvavlid()
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function testCryptionNoneZeroKeyInvavlid(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Decryption');

@@ -23,6 +23,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMemberResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Contao\MemberModel;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreAuthController extends AbstractController
@@ -30,13 +31,15 @@ class AlpdeskCoreAuthController extends AbstractController
     protected ContaoFramework $framework;
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
+    protected PasswordHasherFactoryInterface $passwordHasherFactory;
 
-    public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger)
+    public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger, PasswordHasherFactoryInterface $passwordHasherFactory)
     {
         $this->framework = $framework;
 
         $this->eventService = $eventService;
         $this->logger = $logger;
+        $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
     /**
@@ -83,7 +86,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $authdata = (array)\json_decode($request->getContent(), true);
 
-            $response = (new AlpdeskCoreAuthToken())->generateToken($authdata);
+            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->generateToken($authdata);
 
             $event = new AlpdeskCoreAuthSuccessEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthSuccessEvent::NAME);
@@ -159,7 +162,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $refreshData = (array)\json_decode($request->getContent(), true);
 
-            $response = (new AlpdeskCoreAuthToken())->refreshToken($refreshData, $user);
+            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->refreshToken($refreshData, $user);
 
             $event = new AlpdeskCoreAuthRefreshEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthRefreshEvent::NAME);
@@ -194,7 +197,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $memberdata = (array)json_decode($request->getContent(), true);
+            $memberdata = (array)\json_decode($request->getContent(), true);
 
             if ($user->getIsAdmin() === true) {
 
@@ -268,7 +271,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $response = (new AlpdeskCoreAuthToken())->invalidToken($user);
+            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->invalidToken($user);
 
             $event = new AlpdeskCoreAuthInvalidEvent($response);
 
