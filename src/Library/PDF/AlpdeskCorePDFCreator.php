@@ -128,15 +128,15 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $pdfData = AlpdeskcorePdfElementsModel::findById($id);
 
         if ($pdfData === null) {
-            throw new AlpdeskCorePDFException("id for PDF not found");
+            throw new AlpdeskCorePDFException('id for PDF not found');
         }
 
         $font = StringUtil::deserialize($pdfData->font);
 
         $settingsarray = array(
-            'font_family' => ($font[0] !== "" ? $font[0] : 'helvetica'),
-            'font_size' => ($font[1] !== "" ? $font[1] : '12'),
-            'font_style' => ($font[2] !== "" ? $font[2] : ''),
+            'font_family' => ($font[0] !== '' ? $font[0] : 'helvetica'),
+            'font_size' => ($font[1] !== '' ? $font[1] : '12'),
+            'font_style' => ($font[2]),
             'pdfauthor' => $pdfData->pdfauthor,
             'pdftitel' => $pdfData->name
         );
@@ -183,11 +183,11 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->footersesstingsarray = array(
             'valid' => ($pdfData->footer_text !== ''),
             'text' => $pdfData->footer_text,
-            'font' => ($footerglobalfont[0] !== "" ? $footerglobalfont[0] : 'helvetica'),
-            'fontstyle' => ($footerglobalfont[2] !== "" ? $footerglobalfont[2] : ''),
-            'fontsize' => ($footerglobalfont[1] !== "" ? (int)$footerglobalfont[1] : '10'),
+            'font' => ($footerglobalfont[0] !== '' ? $footerglobalfont[0] : 'helvetica'),
+            'fontstyle' => ($footerglobalfont[2]),
+            'fontsize' => ($footerglobalfont[1] !== '' ? (int)$footerglobalfont[1] : '10'),
             'bottomoffset' => 10,
-            'alignment' => ($footerglobalfont[3] !== "" ? $footerglobalfont[3] : ''),
+            'alignment' => ($footerglobalfont[3]),
             'width' => (int)$footerglobalsize[0],
             'height' => (int)$footerglobalsize[1]
         );
@@ -200,13 +200,13 @@ class AlpdeskCorePDFCreator extends \TCPDF
             'text' => $pdfData->header_text,
             'width' => (int)$headerglobalsize[0],
             'height' => (int)$headerglobalsize[1],
-            'font' => ($headerglobalfont[0] !== "" ? $headerglobalfont[0] : 'helvetica'),
-            'fontstyle' => ($headerglobalfont[2] !== "" ? $headerglobalfont[2] : 'B'),
-            'fontsize' => ($headerglobalfont[1] !== "" ? (int)$headerglobalfont[1] : '10'),
-            'alignment' => ($headerglobalfont[3] !== "" ? $headerglobalfont[3] : '')
+            'font' => ($headerglobalfont[0] !== '' ? $headerglobalfont[0] : 'helvetica'),
+            'fontstyle' => ($headerglobalfont[2] !== '' ? $headerglobalfont[2] : 'B'),
+            'fontsize' => ($headerglobalfont[1] !== '' ? (int)$headerglobalfont[1] : '10'),
+            'alignment' => ($headerglobalfont[3])
         );
 
-        $objFile = new File($path . "/" . $pdfname);
+        $objFile = new File($path . '/' . $pdfname);
         if ($objFile->exists()) {
             $objFile->delete();
         }
@@ -233,7 +233,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $locale = System::getContainer()->get('request_stack')->getCurrentRequest()->getLocale();
         $l['a_meta_language'] = $locale;
 
-        $l['w_page'] = "page";
+        $l['w_page'] = 'page';
 
         $this->SetCreator(PDF_CREATOR);
         $this->SetAuthor($settingsarray['pdfauthor']);
@@ -295,7 +295,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $html = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($text, false));
 
         // Check for pageBreak
-        $pageSplit = \explode("##ad_pagebreak##", $html);
+        $pageSplit = \explode('##ad_pagebreak##', $html);
         $pageCount = \count($pageSplit);
         if ($pageCount > 1) {
 
@@ -319,12 +319,11 @@ class AlpdeskCorePDFCreator extends \TCPDF
             \mkdir($xdir);
         }
 
-        $this->Output($xdir . "/" . $filename, 'F');
+        $this->Output($xdir . '/' . $filename, 'F');
+
         ob_end_clean();
 
-        // Sync with Filesystem
-
-        $resultPath = $path . "/" . $filename;
+        $resultPath = $path . '/' . $filename;
 
         $finalResultFile = new File($resultPath);
         if ($finalResultFile->exists()) {

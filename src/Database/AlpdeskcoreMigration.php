@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Database;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
 
 class AlpdeskcoreMigration
 {
