@@ -7,12 +7,22 @@ namespace Alpdesk\AlpdeskCore\Library\Auth;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreModelException;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
-use Contao\System;
 use Contao\User;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class AlpdeskCoreMandantAuth
 {
+    private PasswordHasherFactoryInterface $passwordHasherFactory;
+
+    /**
+     * @param PasswordHasherFactoryInterface $passwordHasherFactory
+     */
+    public function __construct(PasswordHasherFactoryInterface $passwordHasherFactory)
+    {
+        $this->passwordHasherFactory = $passwordHasherFactory;
+    }
+
     /**
      * @param string $username
      * @param string $password
@@ -24,10 +34,7 @@ class AlpdeskCoreMandantAuth
 
             $alpdeskUserInstance = AlpdeskcoreMandantModel::findByUsername($username);
 
-            // @TODO deprecated. use PasswordHasherFactory instead
-            $encoder = System::getContainer()->get('security.encoder_factory')->getEncoder(User::class);
-
-            if (!$encoder->isPasswordValid($alpdeskUserInstance->getPassword(), $password, null)) {
+            if (!$this->passwordHasherFactory->getPasswordHasher(User::class)->verify($alpdeskUserInstance->getPassword(), $password)) {
                 throw new AlpdeskCoreAuthException("error auth - invalid password for username:" . $username, AlpdeskCoreConstants::$ERROR_INVALID_USERNAME_PASSWORD);
             }
 
