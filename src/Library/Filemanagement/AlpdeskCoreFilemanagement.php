@@ -790,7 +790,7 @@ class AlpdeskCoreFilemanagement
 
                 foreach ($metaSet as $key => $value) {
 
-                    if ($key !== '' && \is_array($value)) {
+                    if ($key !== null && $key !== '' && \is_array($value)) {
 
                         foreach ($value as $valueKey => $valueValue) {
 
@@ -801,6 +801,7 @@ class AlpdeskCoreFilemanagement
                                 }
 
                                 $metaData[$key][$valueKey] = $valueValue;
+
                             }
 
                         }
