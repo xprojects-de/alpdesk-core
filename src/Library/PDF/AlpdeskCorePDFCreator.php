@@ -6,8 +6,8 @@ namespace Alpdesk\AlpdeskCore\Library\PDF;
 
 use Alpdesk\AlpdeskCore\Model\PDF\AlpdeskcorePdfElementsModel;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePDFException;
+use Alpdesk\AlpdeskCore\Utils\Utils;
 use Contao\Config;
-use Contao\Controller;
 use Contao\StringUtil;
 use Contao\File;
 use Contao\Dbafs;
@@ -245,7 +245,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         foreach ($this->headersesstingsarray as $key => $value) {
 
             if ($key === 'text') {
-                $value = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($value, false));
+                $value = str_replace($this->search_custom, $this->replace_custom, Utils::replaceInsertTags($value, false));
             }
 
             $this->setHeaderDataItem($key, $value);
@@ -255,7 +255,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         foreach ($this->footersesstingsarray as $key => $value) {
 
             if ($key === 'text') {
-                $value = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($value, false));
+                $value = str_replace($this->search_custom, $this->replace_custom, Utils::replaceInsertTags($value, false));
             }
 
             $this->setFooterDataItem($key, $value);
@@ -292,7 +292,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->SetFont($settingsarray['font_family'], $settingsarray['font_style'], $settingsarray['font_size']);
 
         $this->AddPage();
-        $html = str_replace($this->search_custom, $this->replace_custom, Controller::replaceInsertTags($text, false));
+        $html = str_replace($this->search_custom, $this->replace_custom, Utils::replaceInsertTags($text, false));
 
         // Check for pageBreak
         $pageSplit = \explode('##ad_pagebreak##', $html);
@@ -315,8 +315,11 @@ class AlpdeskCorePDFCreator extends \TCPDF
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $xdir = $rootDir . "/" . $path;
-        if (!is_dir($xdir)) {
-            \mkdir($xdir);
+
+        if (!\is_dir($xdir)) {
+            if (!\mkdir($xdir) && !\is_dir($xdir)) {
+                throw new \Exception(\sprintf('Directory "%s" was not created', $xdir));
+            }
         }
 
         $this->Output($xdir . '/' . $filename, 'F');

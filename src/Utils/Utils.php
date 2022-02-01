@@ -7,9 +7,13 @@ namespace Alpdesk\AlpdeskCore\Utils;
 use Contao\BackendUser;
 use Contao\Database;
 use Contao\Date;
+use Contao\System;
 
 class Utils
 {
+    /**
+     * @return void
+     */
     public static function mergeUserGroupPermissions(): void
     {
         $backendUser = BackendUser::getInstance();
@@ -27,6 +31,29 @@ class Utils
                 }
             }
         }
+    }
+
+    /**
+     * @param $strBuffer
+     * @param bool $blnCache
+     * @return string
+     */
+    public static function replaceInsertTags($strBuffer, bool $blnCache = true): string
+    {
+        try {
+
+            $parser = System::getContainer()->get('contao.insert_tag.parser');
+
+            if ($blnCache) {
+                return $parser->replace((string)$strBuffer);
+            }
+
+            return $parser->replaceInline((string)$strBuffer);
+
+        } catch (\Exception $ex) {
+            return (string)$strBuffer;
+        }
+
     }
 
 }
