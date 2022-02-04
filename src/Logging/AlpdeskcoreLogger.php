@@ -24,7 +24,6 @@ class AlpdeskcoreLogger
         $this->initialized = false;
         $this->rootDir = $rootDir;
         $this->environment = $environment;
-
     }
 
     private function initialize(): void

@@ -106,11 +106,19 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
 
     }
 
-    public function refreshUser(UserInterface $user)
+    /**
+     * @param UserInterface $user
+     * @return UserInterface
+     */
+    public function refreshUser(UserInterface $user): UserInterface
     {
         throw new UnsupportedUserException('Refresh not possible');
     }
 
+    /**
+     * @param $class
+     * @return bool
+     */
     public function supportsClass($class): bool
     {
         return $class === AlpdeskcoreUser::class;

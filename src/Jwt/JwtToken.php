@@ -25,7 +25,7 @@ class JwtToken
     private static function getDefaultKeyString(): string
     {
         $keyString = System::getContainer()->getParameter('kernel.secret');
-        return substr($keyString, 10, 32);
+        return \substr($keyString, 10, 32);
     }
 
     /**
@@ -126,7 +126,7 @@ class JwtToken
             $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
 
             if ($value === true) {
-                $now = (new \DateTimeImmutable())->setTimestamp(time());
+                $now = (new \DateTimeImmutable())->setTimestamp(\time());
                 $value = !$tokenObject->isExpired($now);
             }
 
@@ -136,4 +136,5 @@ class JwtToken
 
         return $value;
     }
+
 }
