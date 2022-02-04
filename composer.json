@@ -13,7 +13,7 @@
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
-    "contao/core-bundle": "4.13.0-RC1",
+    "contao/core-bundle": "^4.13",
     "tecnickcom/tcpdf": "^6.4",
     "lcobucci/jwt": "^4.1",
     "symfony/security-bundle": "^5.4",
@@ -25,6 +25,7 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "contao/manager-plugin": "^2.0",
+    "contao/manager-bundle": "^4.13",
     "phpstan/phpstan": "^0.12.81",
     "vimeo/psalm": "^4.6",
     "phpunit/phpunit": "^9.5",
