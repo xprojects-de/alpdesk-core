@@ -29,7 +29,8 @@
     "phpstan/phpstan": "^0.12.81",
     "vimeo/psalm": "^4.6",
     "phpunit/phpunit": "^9.5",
-    "symfony/phpunit-bridge": "^5.2"
+    "symfony/phpunit-bridge": "^5.2",
+    "doctrine/dbal": "^3.1"
   },
   "authors": [
     {
