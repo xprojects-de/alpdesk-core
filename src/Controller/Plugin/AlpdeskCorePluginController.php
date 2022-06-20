@@ -51,13 +51,13 @@ class AlpdeskCorePluginController extends AbstractController
 
     /**
      * @param string $data
-     * @param $code
+     * @param mixed $code
      * @param int $statusCode
      * @return JsonResponse
      */
-    private function outputError(string $data, $code, int $statusCode): JsonResponse
+    private function outputError(string $data, mixed $code, int $statusCode): JsonResponse
     {
-        if ($code === null || $code === 0) {
+        if ($code === null || $code === 0 || $code === '') {
             $code = AlpdeskCoreConstants::$ERROR_COMMON;
         }
 

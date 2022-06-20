@@ -9,7 +9,7 @@
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
   "require": {
-    "php": ">=7.4",
+    "php": "^8.0",
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
@@ -27,8 +27,10 @@
     "roave/security-advisories": "dev-latest",
     "contao/manager-plugin": "^2.0",
     "contao/manager-bundle": "^4.13",
-    "phpstan/phpstan": "^0.12.81",
-    "vimeo/psalm": "^4.6",
+    "phpstan/phpstan": "^1.0",
+    "phpstan/phpstan-phpunit": "^1.0",
+    "phpstan/phpstan-symfony": "^1.0",
+    "slam/phpstan-extensions": "^6.0",
     "phpunit/phpunit": "^9.5",
     "symfony/phpunit-bridge": "^5.2"
   },

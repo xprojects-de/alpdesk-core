@@ -23,10 +23,10 @@ class AlpdeskcoreMigration
     }
 
     /**
-     * @param $commands
+     * @param array $commands
      * @throws \Doctrine\DBAL\Exception
      */
-    public function executeMigrations($commands): void
+    public function executeMigrations(array $commands): void
     {
         foreach ($commands as $command) {
             $this->connection->executeQuery($command);
@@ -185,7 +185,7 @@ class AlpdeskcoreMigration
         $fixed = false;
         $scale = null;
         $precision = null;
-        $collation = null;
+        // $collation = null;
         $unsigned = false;
 
         if (\array_key_exists('unsigned', $fieldattributes)) {
@@ -240,9 +240,9 @@ class AlpdeskcoreMigration
             $options['precision'] = $precision;
         }
 
-        if (null !== $collation) {
+        /*if (null !== $collation) {
             $options['platformOptions'] = ['collation' => $collation];
-        }
+        }*/
 
         $table->addColumn($field, $type, $options);
     }
@@ -304,10 +304,10 @@ class AlpdeskcoreMigration
     }
 
     /**
-     * @param $dbversion
+     * @param string $dbversion
      * @throws \Exception
      */
-    public function hasConfigurationError(&$dbversion): void
+    public function hasConfigurationError(string &$dbversion): void
     {
         [$version] = \explode('-', $this->connection->fetchOne('SELECT @@version'));
         $dbversion = $version;
@@ -320,10 +320,6 @@ class AlpdeskcoreMigration
         $schema = $this->connection->createSchemaManager();
 
         $schemaConfig = $schema->createSchemaConfig();
-        if ($schemaConfig === null) {
-            throw new \Exception('invalid schemaConfig');
-        }
-
         $options = $schemaConfig->getDefaultTableOptions();
 
         // Check the collation if the user has configured it

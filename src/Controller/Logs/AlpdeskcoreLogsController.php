@@ -78,9 +78,11 @@ class AlpdeskcoreLogsController extends AbstractController
                     $newContent = [];
 
                     foreach ($content as $contentItem) {
-                        if (\strpos((string)$contentItem, $filterValue) !== false) {
+
+                        if (\str_contains((string)$contentItem, $filterValue)) {
                             $newContent[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $contentItem);
                         }
+
                     }
 
                     $content = $newContent;

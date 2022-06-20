@@ -52,13 +52,13 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
     /**
      * @param string $data
-     * @param $code
+     * @param mixed $code
      * @param int $statusCode
      * @return JsonResponse
      */
-    private function outputError(string $data, $code, int $statusCode): JsonResponse
+    private function outputError(string $data, mixed $code, int $statusCode): JsonResponse
     {
-        if ($code === null || $code === 0) {
+        if ($code === null || $code === 0 || $code === '') {
             $code = AlpdeskCoreConstants::$ERROR_COMMON;
         }
 
@@ -127,7 +127,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             return $file;
 
-        } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Exception|AlpdeskCoreFilemanagementException $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -157,7 +157,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
 
-        } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Exception|AlpdeskCoreFilemanagementException $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);

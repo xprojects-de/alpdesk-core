@@ -124,27 +124,19 @@ class DcaCallbacks
 
                 } catch (\Exception $ex) {
 
-                    if (null !== $this->logger) {
-
-                        $this->logger->error(
-                            $ex->getMessage(),
-                            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
-                        );
-
-                    }
+                    $this->logger?->error(
+                        $ex->getMessage(),
+                        ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
+                    );
 
                 }
 
                 if ($backup->getBackupFile() !== null) {
 
-                    if (null !== $this->logger) {
-
-                        $this->logger->info(
-                            $backup->getBackupFile()->name . ' created',
-                            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
-                        );
-
-                    }
+                    $this->logger?->info(
+                        $backup->getBackupFile()->name . ' created',
+                        ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, '')]
+                    );
 
                     $backup->getBackupFile()->sendToBrowser();
 
