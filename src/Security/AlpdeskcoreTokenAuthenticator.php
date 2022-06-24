@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-// @TODO deprecated see https://symfony.com/doc/current/security/guard_authentication.html use https://symfony.com/doc/current/security/authenticator_manager.html instead
+// @TODO deprecated see https://symfony.com/doc/current/security/guard_authentication.html use https://symfony.com/doc/current/security/custom_authenticator.html instead
 
 class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface, InteractiveAuthenticatorInterface
 {
