@@ -4,30 +4,16 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Security;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
-use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 
-class AlpdeskcoreUserProvider implements UserProviderInterface
+class AlpdeskcoreUserProvider
 {
-    private ContaoFramework $framework;
-    protected AlpdeskcoreLogger $logger;
-
-    public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger)
+    public static function createJti(string $username): string
     {
-        $this->framework = $framework;
-        $this->logger = $logger;
-    }
-
-    public static function createJti($username): string
-    {
-        return base64_encode('alpdesk_' . $username);
+        return \base64_encode('alpdesk_' . $username);
     }
 
     public static function createToken(string $username, int $ttl): string
@@ -68,16 +54,6 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     }
 
     /**
-     * @param string $token
-     * @return string
-     * @throws \Exception
-     */
-    public function getValidatedUsernameFromToken(string $token): string
-    {
-        return self::extractUsernameFromToken($token);
-    }
-
-    /**
      * Override from UserProviderInterface
      * @param string $username
      * @return AlpdeskcoreUser
@@ -85,8 +61,6 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername(string $username): AlpdeskcoreUser
     {
-        $this->framework->initialize();
-
         try {
 
             $alpdeskUser = AlpdeskcoreMandantModel::findByUsername($username);
@@ -104,24 +78,6 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
             throw new AuthenticationException($ex->getMessage());
         }
 
-    }
-
-    /**
-     * @param UserInterface $user
-     * @return UserInterface
-     */
-    public function refreshUser(UserInterface $user): UserInterface
-    {
-        throw new UnsupportedUserException('Refresh not possible');
-    }
-
-    /**
-     * @param $class
-     * @return bool
-     */
-    public function supportsClass($class): bool
-    {
-        return $class === AlpdeskcoreUser::class;
     }
 
 }

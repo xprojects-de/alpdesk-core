@@ -51,10 +51,6 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
 
             if (isset($extensionConfig['firewalls'])) {
 
-                $extensionConfig['providers']['alpdeskcore.security.user_provider'] = [
-                    'id' => 'alpdeskcore.security.user_provider'
-                ];
-
                 $offset = (int)array_search('frontend', array_keys($extensionConfig['firewalls']), false);
 
                 $extensionConfig['firewalls'] = array_merge(
@@ -62,15 +58,10 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                     [
                         'alpdeskcore_api' => [
                             'request_matcher' => 'alpdeskcore.routing.scope_matcher',
-                            'provider' => 'alpdeskcore.security.user_provider',
                             'anonymous' => true,
                             'lazy' => true,
                             'stateless' => true,
-                            'guard' => [
-                                'authenticators' => [
-                                    'alpdeskcore.security.token_authenticator'
-                                ]
-                            ]
+                            'custom_authenticators' => 'alpdeskcore.security.token_authenticator'
                         ]
                     ],
                     array_slice($extensionConfig['firewalls'], $offset, null, true)

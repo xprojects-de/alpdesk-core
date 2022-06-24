@@ -16,8 +16,8 @@
     "contao/core-bundle": "^4.13",
     "tecnickcom/tcpdf": "^6.4",
     "lcobucci/jwt": "^4.1",
-    "symfony/security-bundle": "^5.4",
-    "symfony/process": "^5.4",
+    "symfony/security-bundle": "^6.0",
+    "symfony/process": "^5.4 || ^6.0",
     "doctrine/dbal": "^3.1"
   },
   "conflict": {
@@ -32,7 +32,7 @@
     "phpstan/phpstan-symfony": "^1.0",
     "slam/phpstan-extensions": "^6.0",
     "phpunit/phpunit": "^9.5",
-    "symfony/phpunit-bridge": "^5.2"
+    "symfony/phpunit-bridge": "^5.4"
   },
   "authors": [
     {

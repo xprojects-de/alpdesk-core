@@ -23,12 +23,6 @@ services:
       - '%kernel.environment%'
     public: true
 
-  alpdeskcore.security.user_provider:
-    class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider
-    arguments:
-      - '@contao.framework'
-      - '@alpdeskcore.loggingservice'
-
   alpdeskcore.security.token_authenticator:
     class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreTokenAuthenticator
     arguments:
