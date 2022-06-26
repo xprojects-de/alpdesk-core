@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
@@ -27,13 +28,19 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
     private static string $prefix = 'Bearer';
     private static string $name = 'Authorization';
 
-    protected ContaoFramework $framework;
-    protected AlpdeskcoreLogger $logger;
+    private ContaoFramework $framework;
+    private AlpdeskcoreLogger $logger;
+    private UserProviderInterface $userProvider;
 
-    public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger)
+    public function __construct(
+        ContaoFramework       $framework,
+        AlpdeskcoreLogger     $logger,
+        UserProviderInterface $userProvider
+    )
     {
         $this->framework = $framework;
         $this->logger = $logger;
+        $this->userProvider = $userProvider;
     }
 
     public function supports(Request $request): ?bool
@@ -90,9 +97,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
             $username = AlpdeskcoreUserProvider::extractUsernameFromToken($apiToken);
 
             return new Passport(
-                new UserBadge($username, function ($userIdentifier) {
-                    return (new AlpdeskcoreUserProvider())->loadUserByUsername($userIdentifier);
-                }), new CustomCredentials(
+                new UserBadge($username, [$this->userProvider, 'loadUserByIdentifier']), new CustomCredentials(
                     function ($credentials, AlpdeskcoreUser $userObject) {
 
                         if ($userObject->getFixToken() === $credentials) {

@@ -51,6 +51,10 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
 
             if (isset($extensionConfig['firewalls'])) {
 
+                $extensionConfig['providers']['alpdeskcore.security.user_provider'] = [
+                    'id' => 'alpdeskcore.security.user_provider'
+                ];
+
                 $offset = (int)array_search('frontend', array_keys($extensionConfig['firewalls']), false);
 
                 $extensionConfig['firewalls'] = array_merge(
