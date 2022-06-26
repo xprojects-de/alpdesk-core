@@ -62,6 +62,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                     [
                         'alpdeskcore_api' => [
                             'request_matcher' => 'alpdeskcore.routing.scope_matcher',
+                            'provider' => 'alpdeskcore.security.user_provider',
                             'anonymous' => true,
                             'lazy' => true,
                             'stateless' => true,
