@@ -8,10 +8,8 @@ use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePluginException;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantElementsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\FilesModel;
-use Contao\StringUtil;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
-use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 
@@ -74,13 +72,15 @@ class AlpdeskCorePlugin
 
             $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
 
+            $pathRootPath = $rootPath->path ?? '';
+
             $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
-            $mInfo->setFilemountmandant_path($rootPath->path);
-            $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $rootPath->path);
+            $mInfo->setFilemountmandant_path($pathRootPath);
+            $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $pathRootPath);
 
             $mInfo->setFilemount_uuid($mandantInfo->filemount);
-            $mInfo->setFilemount_path($rootPath->path);
-            $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
+            $mInfo->setFilemount_path($pathRootPath);
+            $mInfo->setFilemount_rootpath($this->rootDir . '/' . $pathRootPath);
 
             if ($user->getHomeDir() !== null) {
 
@@ -138,29 +138,7 @@ class AlpdeskCorePlugin
         $response->setPlugin($plugin);
         $response->setRequestData($data);
 
-        /**
-         * @deprecated Deprecated since 1.0, to be removed in Contao 2.0; use the Symfony-Events instead => alpdesk.plugincall
-         */
-        if (isset($GLOBALS['TL_ADME'][$plugin])) {
-            $c = new $GLOBALS['TL_ADME'][$plugin]();
-            if ($c instanceof AlpdeskCoreElement) {
-                $tmp = $c->execute($mandantInfo, $data);
-                if ($c->getCustomTemplate() === true) {
-                    if (!\array_key_exists('ngContent', $tmp) ||
-                        !\array_key_exists('ngStylesheetUrl', $tmp) ||
-                        !\array_key_exists('ngScriptUrl', $tmp)) {
-                        $msg = 'plugin use customTemplate but keys not defined in resultArray for plugin:' . $plugin;
-                        throw new AlpdeskCorePluginException($msg);
-                    }
-                    $tmp['ngContent'] = StringUtil::convertEncoding($tmp['ngContent'], 'UTF-8');
-                }
-                $response->setData($tmp);
-            } else {
-                $msg = 'plugin entrypoint wrong classtype for plugin:' . $plugin . ' and username:' . $user->getUsername();
-                throw new AlpdeskCorePluginException($msg);
-            }
-        }
-
         return $response;
+
     }
 }
