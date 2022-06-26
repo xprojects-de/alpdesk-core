@@ -14,7 +14,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment as TwigEnvironment;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
 
 class AlpdeskcoreLogsController extends AbstractController
 {
@@ -22,49 +21,41 @@ class AlpdeskcoreLogsController extends AbstractController
     private CsrfTokenManagerInterface $csrfTokenManager;
     private string $csrfTokenName;
     protected RouterInterface $router;
-    private Security $security;
     private string $projectDir;
     private SessionInterface $session;
 
-    public function __construct(TwigEnvironment $twig, CsrfTokenManagerInterface $csrfTokenManager, string $csrfTokenName, RouterInterface $router, Security $security, string $projectDir, SessionInterface $session)
+    public function __construct(
+        TwigEnvironment           $twig,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        string                    $csrfTokenName,
+        RouterInterface           $router,
+        string                    $projectDir,
+        SessionInterface          $session
+    )
     {
         $this->twig = $twig;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->csrfTokenName = $csrfTokenName;
         $this->router = $router;
-        $this->security = $security;
         $this->projectDir = $projectDir;
         $this->session = $session;
     }
 
     /**
-     * @param string $startString
-     * @param string $string
-     * @return bool
-     */
-    private static function startsWith(string $startString, string $string): bool
-    {
-        $len = \strlen($startString);
-        $sub = \substr($string, 0, $len);
-
-        return ($sub === $startString);
-    }
-
-    /**
-     * @param string $parseFolder
      * @param string|null $filterValue
      * @return array
      * @throws \Exception
      */
-    private function scanDir(string $parseFolder, ?string $filterValue = null): array
+    private function scanDir(?string $filterValue = null): array
     {
+        $parseFolder = 'var/logs';
         $strFolder = $this->projectDir . '/' . $parseFolder;
 
         $arrReturn = [];
 
         foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
 
-            if ($strFile === '.' || $strFile === '..' || self::startsWith('.', $strFile)) {
+            if ($strFile === '.' || $strFile === '..' || \str_starts_with($strFile, '.')) {
                 continue;
             }
 
@@ -109,12 +100,12 @@ class AlpdeskcoreLogsController extends AbstractController
     }
 
     /**
-     * @param string $parseFolder
      * @return void
      * @throws \Exception
      */
-    private function deleteLog(string $parseFolder): void
+    private function deleteLog(): void
     {
+        $parseFolder = 'var/logs';
         $deleteLog = Input::get('deleteLog');
         if ($deleteLog !== null && $deleteLog !== '') {
 
@@ -156,7 +147,7 @@ class AlpdeskcoreLogsController extends AbstractController
      */
     public function endpoint(): Response
     {
-        $this->deleteLog('var/logs');
+        $this->deleteLog();
         $this->checkFilter();
 
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_logs.js';
@@ -169,7 +160,7 @@ class AlpdeskcoreLogsController extends AbstractController
             $filterValue = '';
         }
 
-        $logFiles = $this->scanDir('var/logs', $filterValue);
+        $logFiles = $this->scanDir($filterValue);
 
         $numberOfLogs = \count($logFiles);
 

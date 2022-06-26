@@ -7,6 +7,7 @@ namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFilemanagement;
@@ -108,9 +109,9 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     /**
      * @param Request $request
      * @param UserInterface $user
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|JsonResponse
+     * @return BinaryFileResponse|JsonResponse
      */
-    public function download(Request $request, UserInterface $user)
+    public function download(Request $request, UserInterface $user): BinaryFileResponse|JsonResponse
     {
         try {
 

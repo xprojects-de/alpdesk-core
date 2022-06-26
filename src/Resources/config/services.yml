@@ -89,7 +89,6 @@ services:
       - '@contao.csrf.token_manager'
       - '%contao.csrf_token_name%'
       - '@router'
-      - '@security.helper'
       - '%kernel.project_dir%'
       - '@session'
     tags:
