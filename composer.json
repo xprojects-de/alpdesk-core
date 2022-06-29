@@ -16,7 +16,8 @@
     "contao/core-bundle": "^4.13",
     "tecnickcom/tcpdf": "^6.4",
     "lcobucci/jwt": "^4.1",
-    "symfony/security-bundle": "^6.0",
+    "symfony/security-bundle": "^6.0.2",
+    "symfony/security-core": "^6.1",
     "symfony/process": "^5.4 || ^6.0",
     "doctrine/dbal": "^3.1"
   },
