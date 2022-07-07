@@ -56,6 +56,12 @@
     "contao-component-dir": "public"
   },
   "config": {
-    "contao-component-dir": "public"
+    "contao-component-dir": "public",
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true,
+      "contao-community-alliance/composer-plugin": true,
+      "contao-components/installer": true,
+      "contao/manager-plugin": true
+    }
   }
 }
