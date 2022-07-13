@@ -54,25 +54,25 @@ class AlpdeskcoreLogger
 
     }
 
-    public function info($strText, $strFunction): void
+    public function info(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->info($strFunction . ' => ' . $strText);
     }
 
-    public function debug($strText, $strFunction): void
+    public function debug(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->debug($strFunction . ' => ' . $strText);
     }
 
-    public function warning($strText, $strFunction): void
+    public function warning(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->warning($strFunction . ' => ' . $strText);
     }
 
-    public function error($strText, $strFunction): void
+    public function error(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->error($strFunction . ' => ' . $strText);

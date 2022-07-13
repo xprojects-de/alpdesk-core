@@ -1,5 +1,7 @@
 <?php
 
+use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+
 $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
 (
     'config' => array
@@ -41,7 +43,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
             ),
             'backupDatabase' => array
             (
@@ -121,11 +123,11 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
             'eval' => array('mandatory' => true, 'maxlength' => 250, 'tl_class' => 'w50', 'hideInput' => false),
             'save_callback' => array
             (
-                array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'generateEncryptPassword')
+                array(AlpdeskCoreDcaUtils::class, 'generateEncryptPassword')
             ),
             'load_callback' => array
             (
-                array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'regenerateEncryptPassword')
+                array(AlpdeskCoreDcaUtils::class, 'regenerateEncryptPassword')
             ),
             'sql' => "varchar(250) NOT NULL default ''"
         ),

@@ -1,5 +1,7 @@
 <?php
 
+use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+
 $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
 (
     'config' => array
@@ -28,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
         (
             'fields' => array('username', 'token'),
             'showColumns' => true,
-            'label_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'showSessionValid')
+            'label_callback' => array(AlpdeskCoreDcaUtils::class, 'showSessionValid')
         ),
         'global_operations' => array
         (
@@ -53,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_sessions']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
             )
         )
     ),

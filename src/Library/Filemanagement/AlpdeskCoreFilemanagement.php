@@ -50,15 +50,17 @@ class AlpdeskCoreFilemanagement
 
             $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
 
+            $pathRootPath = $rootPath->path ?? '';
+
             $mInfo->setRootDir($this->rootDir);
 
             $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
-            $mInfo->setFilemountmandant_path($rootPath->path);
-            $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $rootPath->path);
+            $mInfo->setFilemountmandant_path($pathRootPath);
+            $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $pathRootPath);
 
             $mInfo->setFilemount_uuid($mandantInfo->filemount);
-            $mInfo->setFilemount_path($rootPath->path);
-            $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPath->path);
+            $mInfo->setFilemount_path($pathRootPath);
+            $mInfo->setFilemount_rootpath($this->rootDir . '/' . $pathRootPath);
 
             if ($user->getHomeDir() !== null) {
 
@@ -66,7 +68,7 @@ class AlpdeskCoreFilemanagement
                 if ($rootPathMember !== null) {
                     $mInfo->setFilemount_uuid($rootPathMember->uuid);
                     $mInfo->setFilemount_path($rootPathMember->path);
-                    $mInfo->setFilemount_rootpath($this->rootDir . '/' . $rootPathMember->path);
+                    $mInfo->setFilemount_rootpath($this->rootDir . '/' . $pathRootPath);
                 }
 
             }
@@ -130,7 +132,7 @@ class AlpdeskCoreFilemanagement
         }
 
         if (self::endsWith('/', $src)) {
-            $src = \substr($src, 0, \strlen($src) - 1);
+            $src = \substr($src, 0, -1);
         }
 
         if ($src === null) {

@@ -20,7 +20,7 @@ class AlpdeskcoreUser implements UserInterface
     private string $fixToken = '';
     private bool $fixTokenAuth = false;
     private array $invalidElements = [];
-    private $homeDir = null;
+    private mixed $homeDir = null;
     private array $mandantWhitelist = [];
     private bool $accessDownload = true;
     private bool $accessUpload = true;
@@ -163,12 +163,12 @@ class AlpdeskcoreUser implements UserInterface
         $this->invalidElements = $invalidElements;
     }
 
-    public function getHomeDir()
+    public function getHomeDir(): mixed
     {
         return $this->homeDir;
     }
 
-    public function setHomeDir($homeDir): void
+    public function setHomeDir(mixed $homeDir): void
     {
         $this->homeDir = $homeDir;
     }
@@ -253,13 +253,21 @@ class AlpdeskcoreUser implements UserInterface
         $this->accessCopy = $accessCopy;
     }
 
-    public function getSalt()
+    /**
+     * {@inheritdoc}
+     */
+    public function eraseCredentials(): void
     {
 
     }
 
-    public function eraseCredentials()
+    /**
+     * {@inheritdoc}
+     * @throws \Exception
+     */
+    public function getUserIdentifier(): string
     {
-
+        return $this->username;
     }
+
 }

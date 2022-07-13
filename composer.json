@@ -6,14 +6,15 @@
     "alpdesk"
   ],
   "type": "contao-bundle",
+  "version": "3.0.0-RC0",
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
   "require": {
-    "php": "^8.0",
+    "php": "^8.1",
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
-    "contao/core-bundle": "^4.13",
+    "contao/core-bundle": "5.x-dev",
     "tecnickcom/tcpdf": "^6.4",
     "lcobucci/jwt": "^4.1",
     "symfony/security-bundle": "^6.0.2",
@@ -27,7 +28,7 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "contao/manager-plugin": "^2.0",
-    "contao/manager-bundle": "^4.13",
+    "contao/manager-bundle": "5.x-dev",
     "phpstan/phpstan": "^1.0",
     "phpstan/phpstan-phpunit": "^1.0",
     "phpstan/phpstan-symfony": "^1.0",

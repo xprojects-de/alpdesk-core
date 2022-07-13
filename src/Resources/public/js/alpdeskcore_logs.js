@@ -5,12 +5,6 @@
             callback();
         } else if (document.addEventListener) {
             document.addEventListener('DOMContentLoaded', callback);
-        } else {
-            document.attachEvent('onreadystatechange', function () {
-                if (document.readyState === 'complete') {
-                    callback();
-                }
-            });
         }
     }
 
@@ -28,7 +22,7 @@
                     const visible = children[1];
                     const container = children[2];
 
-                    visible.addEventListener('click', function (event) {
+                    visible.addEventListener('click', function () {
 
                         if (container.style.display === 'none' || container.style.display === '') {
                             container.style.display = 'block';

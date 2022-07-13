@@ -11,6 +11,7 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
+use Contao\Model;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class AlpdeskCoreAuthToken
@@ -25,7 +26,7 @@ class AlpdeskCoreAuthToken
         $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
-    private function setAuthSession(string $username, int $ttl_token = 3600)
+    private function setAuthSession(string $username, int $ttl_token = 3600): Model
     {
         $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
 
@@ -126,7 +127,7 @@ class AlpdeskCoreAuthToken
 
             // Check if it´s a refresh-Token
             $isRefreshToken = JwtToken::getClaim($refreshToken, 'isRefreshToken');
-            if ($isRefreshToken === null || !$isRefreshToken) {
+            if (!$isRefreshToken) {
                 throw new AlpdeskCoreAuthException('invalid refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
@@ -146,7 +147,7 @@ class AlpdeskCoreAuthToken
 
             // Check if it´s a refresh-Token
             $isSessionRefreshToken = JwtToken::getClaim($sessionRefreshToken, 'isRefreshToken');
-            if ($isSessionRefreshToken === null || !$isSessionRefreshToken) {
+            if (!$isSessionRefreshToken) {
                 throw new AlpdeskCoreAuthException('invalid session_refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 

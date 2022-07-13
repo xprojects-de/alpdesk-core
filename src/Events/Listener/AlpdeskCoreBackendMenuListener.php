@@ -41,7 +41,7 @@ class AlpdeskCoreBackendMenuListener
         $factory = $event->getFactory();
         $tree = $event->getTree();
 
-        if ('mainMenu' === $tree->getName()) {
+        if ('mainMenu' === $tree->getName() && $this->requestStack->getCurrentRequest() !== null) {
 
             $contentNode = $tree->getChild('alpdeskcore');
             if ($contentNode === null) {
