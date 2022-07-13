@@ -6,7 +6,7 @@
     "alpdesk"
   ],
   "type": "contao-bundle",
-  "version": "3.0.0-RC0",
+  "version": "3.0.0-RC1",
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
   "require": {
