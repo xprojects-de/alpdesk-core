@@ -82,8 +82,8 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
 
         }
 
-        $headerParts = explode(' ', $authorizationHeader);
-        if (!(2 === count($headerParts) && 0 === strcasecmp($headerParts[0], self::$prefix))) {
+        $headerParts = \explode(' ', $authorizationHeader);
+        if (!(2 === \count($headerParts) && 0 === \strcasecmp($headerParts[0], self::$prefix))) {
 
             $this->logger->error('no valid value for ' . self::$name . ' in Header', __METHOD__);
             throw new CustomUserMessageAuthenticationException('no valid value for ' . self::$name . ' in Header');
@@ -122,12 +122,6 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
             throw new CustomUserMessageAuthenticationException($e->getMessage());
         }
 
-    }
-
-    public function createToken(Passport $passport, string $firewallName): TokenInterface
-    {
-        // @TODO Remove method after debugging
-        return parent::createToken($passport, $firewallName);
     }
 
     public function start(Request $request, AuthenticationException $authException = null): JsonResponse

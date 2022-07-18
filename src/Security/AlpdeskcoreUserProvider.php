@@ -28,7 +28,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
 
     public static function createJti(string $username): string
     {
-        return base64_encode('alpdesk_' . $username);
+        return \base64_encode('alpdesk_' . $username);
     }
 
     public static function createToken(string $username, int $ttl): string

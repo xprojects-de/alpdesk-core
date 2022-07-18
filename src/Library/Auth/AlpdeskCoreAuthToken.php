@@ -11,7 +11,6 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
-use Contao\Model;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class AlpdeskCoreAuthToken
@@ -26,7 +25,7 @@ class AlpdeskCoreAuthToken
         $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
-    private function setAuthSession(string $username, int $ttl_token = 3600): Model
+    private function setAuthSession(string $username, int $ttl_token = 3600): mixed
     {
         $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
 
