@@ -85,7 +85,6 @@ services:
 
   Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController:
     arguments:
-      - '@twig'
       - '@contao.csrf.token_manager'
       - '%contao.csrf_token_name%'
       - '@router'

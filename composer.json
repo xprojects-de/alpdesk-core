@@ -9,6 +9,7 @@
   "version": "3.0.0-RC1",
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
+  "minimum-stability": "dev",
   "require": {
     "php": "^8.1",
     "ext-json": "*",

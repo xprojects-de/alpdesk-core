@@ -78,7 +78,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
         return $migrationOutput . '<div class="alpdeskcore_widget_databasemanager_container">' . $outputValue . '</div>';
     }
 
-    private function checkMigrations(Connection $connection, $modelUuid): string
+    private function checkMigrations(Connection $connection, mixed $modelUuid): string
     {
         $migrations = '';
 

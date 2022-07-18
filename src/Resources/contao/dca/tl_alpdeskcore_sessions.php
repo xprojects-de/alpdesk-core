@@ -1,12 +1,14 @@
 <?php
 
 use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\DC_Table;
+use Contao\DataContainer;
 
 $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
 (
     'config' => array
     (
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'enableVersioning' => false,
         'sql' => array
         (
@@ -21,9 +23,9 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
     (
         'sorting' => array
         (
-            'mode' => 2,
+            'mode' => DataContainer::MODE_SORTABLE,
             'fields' => array('username ASC'),
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter;sort,search,limit'
         ),
         'label' => array

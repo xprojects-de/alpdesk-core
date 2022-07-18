@@ -8,16 +8,14 @@ use Contao\Controller;
 use Contao\File;
 use Contao\Input;
 use Contao\System;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Twig\Environment as TwigEnvironment;
 use Symfony\Component\Routing\RouterInterface;
+use Contao\CoreBundle\Controller\AbstractBackendController;
 
-class AlpdeskcoreLogsController extends AbstractController
+class AlpdeskcoreLogsController extends AbstractBackendController
 {
-    private TwigEnvironment $twig;
     private CsrfTokenManagerInterface $csrfTokenManager;
     private string $csrfTokenName;
     protected RouterInterface $router;
@@ -25,7 +23,6 @@ class AlpdeskcoreLogsController extends AbstractController
     private SessionInterface $session;
 
     public function __construct(
-        TwigEnvironment           $twig,
         CsrfTokenManagerInterface $csrfTokenManager,
         string                    $csrfTokenName,
         RouterInterface           $router,
@@ -33,7 +30,6 @@ class AlpdeskcoreLogsController extends AbstractController
         SessionInterface          $session
     )
     {
-        $this->twig = $twig;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->csrfTokenName = $csrfTokenName;
         $this->router = $router;
@@ -164,7 +160,7 @@ class AlpdeskcoreLogsController extends AbstractController
 
         $numberOfLogs = \count($logFiles);
 
-        $outputTwig = $this->twig->render('@AlpdeskCore/alpdeskcorelogs_be.html.twig', [
+        return $this->render('@AlpdeskCore/alpdeskcorelogs_be.html.twig', [
             'token' => $this->csrfTokenManager->getToken($this->csrfTokenName)->getValue(),
             'route' => $this->router->generate('alpdesk_logs_backend'),
             'confirm' => $GLOBALS['TL_LANG']['MOD']['alpdeskcorelogs_confirm'],
@@ -173,7 +169,7 @@ class AlpdeskcoreLogsController extends AbstractController
             'logs' => $logFiles
         ]);
 
-        return new Response($outputTwig);
+
     }
 
 }

@@ -1,12 +1,14 @@
 <?php
 
 use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\DataContainer;
+use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
 (
     'config' => array
     (
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ptable' => 'tl_alpdeskcore_pdf',
         'enableVersioning' => true,
         'sql' => array
@@ -26,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
     (
         'sorting' => array
         (
-            'mode' => 4,
+            'mode' => DataContainer::MODE_PARENT,
             'fields' => array('sorting'),
             'headerFields' => array('title'),
             'panelLayout' => 'filter;search,limit',
@@ -61,7 +63,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if (!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null). '\')) return false;Backend.getScrollOffset();"'
+                'attributes' => 'onclick="if (!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\')) return false;Backend.getScrollOffset();"'
             ),
             'generatetestpdf' => array
             (
