@@ -59,6 +59,7 @@ services:
       - '@contao.framework'
       - '@alpdeskcore.eventservice'
       - '@alpdeskcore.loggingservice'
+      - '@contao.filesystem.virtual.files'
       - '%kernel.project_dir%'
     tags:
       - controller.service_arguments
