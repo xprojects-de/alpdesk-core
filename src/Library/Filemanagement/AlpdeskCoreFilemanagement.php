@@ -15,7 +15,6 @@ use Contao\FilesModel;
 use Contao\File;
 use Contao\Folder;
 use Contao\StringUtil;
-use Contao\System;
 use Contao\Environment;
 use Contao\Config;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
@@ -25,6 +24,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Symfony\Component\Uid\Uuid;
 
 class AlpdeskCoreFilemanagement
 {
@@ -135,25 +135,6 @@ class AlpdeskCoreFilemanagement
         }
 
         return $src;
-    }
-
-    private static function scanDir(string $strFolder): array
-    {
-        $strRootDir = System::getContainer()->getParameter('kernel.project_dir');
-
-        $strFolder = $strRootDir . '/' . $strFolder;
-
-        $arrReturn = [];
-
-        foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
-            if ($strFile === '.' || $strFile === '..') {
-                continue;
-            }
-
-            $arrReturn[] = $strFile;
-        }
-
-        return $arrReturn;
     }
 
     /**
@@ -308,10 +289,11 @@ class AlpdeskCoreFilemanagement
     /**
      * @param array $finderData
      * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param VirtualFilesystem $filesStorage
      * @return array
      * @throws AlpdeskCoreFilemanagementException
      */
-    public static function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array
+    public static function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, VirtualFilesystem $filesStorage): array
     {
         try {
 
@@ -323,34 +305,32 @@ class AlpdeskCoreFilemanagement
 
             $data = [];
 
-            $objTargetBase = FilesModel::findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
-            if ($objTargetBase === null) {
-                throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
+            $pathObject = $filesStorage->get(Uuid::fromBinary($mandantInfo->getFilemount_uuid()));
+            if ($pathObject === null) {
+                throw new \Exception('invalid path');
             }
 
-            $path = $objTargetBase->path;
+            $path = $pathObject->getPath();
 
             if ($src !== '' && $src !== '/') {
 
-                $objTargetSrc = FilesModel::findByUuid($src);
-                if ($objTargetSrc === null) {
-                    throw new AlpdeskCoreFilemanagementException("invalid src filemount");
-                }
+                $targetPathObject = $filesStorage->get(new Uuid($src));
 
-                self::checkFilemountPermission($objTargetBase->path, $objTargetSrc->path, $mandantInfo);
-
-                $path = $objTargetSrc->path;
-
-                if ($objTargetSrc->type !== 'folder') {
+                if ($targetPathObject === null || $targetPathObject->isFile()) {
                     throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
                 }
+
+                self::checkFilemountPermission($path, $targetPathObject->getPath(), $mandantInfo);
+
+                $path = $targetPathObject->getPath();
+
             }
 
-            $files = self::scanDir($path);
+            $files = $filesStorage->listContents($path)->toArray();
 
             foreach ($files as $file) {
 
-                $objFileTmp = FilesModel::findByPath($path . '/' . $file);
+                $objFileTmp = FilesModel::findByPath('files/' . $file->getPath());
 
                 if ($objFileTmp !== null) {
 
@@ -906,7 +886,7 @@ class AlpdeskCoreFilemanagement
         switch ($mode) {
             case 'list':
             {
-                $finderResponseData = self::listFolder($finderData, $mandantInfo);
+                $finderResponseData = self::listFolder($finderData, $mandantInfo, $this->filesStorage);
 
                 $event = new AlpdeskCoreFilemanagementFinderListEvent($finderData, $finderResponseData, $mandantInfo);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderListEvent::NAME);
