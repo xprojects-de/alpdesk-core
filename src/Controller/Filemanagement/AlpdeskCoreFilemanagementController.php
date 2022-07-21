@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
-use Contao\CoreBundle\Filesystem\VirtualFilesystem;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -26,19 +25,16 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     protected ContaoFramework $framework;
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
-    protected VirtualFilesystem $filesStorage;
 
     public function __construct(
         ContaoFramework         $framework,
         AlpdeskCoreEventService $eventService,
         AlpdeskcoreLogger       $logger,
-        VirtualFilesystem       $filesStorage,
         string                  $rootDir)
     {
         $this->framework = $framework;
         $this->eventService = $eventService;
         $this->logger = $logger;
-        $this->filesStorage = $filesStorage;
         $this->rootDir = $rootDir;
     }
 
@@ -93,7 +89,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             if ($uploadFile !== null && $target !== null) {
 
-                $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService, $this->filesStorage))->upload($uploadFile, $target, $user);
+                $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->upload($uploadFile, $target, $user);
 
                 $event = new AlpdeskCoreFileuploadEvent($response);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFileuploadEvent::NAME);
@@ -130,7 +126,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $downloadData = (array)\json_decode($request->getContent(), true);
 
-            $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService, $this->filesStorage))->download($user, $downloadData);
+            $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->download($user, $downloadData);
             $this->logger->info('Download successfully', __METHOD__);
 
             return $file;
@@ -160,7 +156,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $finderData = (array)\json_decode($request->getContent(), true);
 
-            $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService, $this->filesStorage))->finder($user, $finderData);
+            $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->finder($user, $finderData);
             $this->logger->info('Finder successfully', __METHOD__);
 
             return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));

@@ -10,7 +10,6 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderListEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderMetaEvent;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
-use Contao\CoreBundle\Filesystem\VirtualFilesystem;
 use Contao\FilesModel;
 use Contao\File;
 use Contao\Folder;
@@ -30,17 +29,14 @@ class AlpdeskCoreFilemanagement
 {
     protected string $rootDir;
     private AlpdeskCoreEventService $eventService;
-    protected VirtualFilesystem $filesStorage;
 
     public function __construct(
         string                  $rootDir,
-        AlpdeskCoreEventService $eventService,
-        VirtualFilesystem       $filesStorage,
+        AlpdeskCoreEventService $eventService
     )
     {
         $this->rootDir = $rootDir;
         $this->eventService = $eventService;
-        $this->filesStorage = $filesStorage;
     }
 
     /**
@@ -135,6 +131,21 @@ class AlpdeskCoreFilemanagement
         }
 
         return $src;
+    }
+
+    private static function scanDir(string $strFolder): array
+    {
+        $arrReturn = [];
+
+        foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
+            if ($strFile === '.' || $strFile === '..') {
+                continue;
+            }
+
+            $arrReturn[] = $strFile;
+        }
+
+        return $arrReturn;
     }
 
     /**
@@ -289,11 +300,11 @@ class AlpdeskCoreFilemanagement
     /**
      * @param array $finderData
      * @param AlpdescCoreBaseMandantInfo $mandantInfo
-     * @param VirtualFilesystem $filesStorage
+     * @param string|null $rootDir
      * @return array
      * @throws AlpdeskCoreFilemanagementException
      */
-    public static function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, VirtualFilesystem $filesStorage): array
+    public static function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, ?string $rootDir = null): array
     {
         try {
 
@@ -305,68 +316,83 @@ class AlpdeskCoreFilemanagement
 
             $data = [];
 
-            $pathObject = $filesStorage->get(Uuid::fromBinary($mandantInfo->getFilemount_uuid()));
-            if ($pathObject === null) {
-                throw new \Exception('invalid path');
+            $objTargetBase = FilesModel::findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+            if ($objTargetBase === null) {
+                throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
             }
 
-            $path = $pathObject->getPath();
+            $path = $objTargetBase->path;
 
             if ($src !== '' && $src !== '/') {
 
-                $targetPathObject = $filesStorage->get(new Uuid($src));
-
-                if ($targetPathObject === null || $targetPathObject->isFile()) {
-                    throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
+                $objTargetSrc = FilesModel::findByUuid($src);
+                if ($objTargetSrc === null) {
+                    throw new AlpdeskCoreFilemanagementException("invalid src filemount");
                 }
 
-                self::checkFilemountPermission($path, $targetPathObject->getPath(), $mandantInfo);
+                self::checkFilemountPermission($objTargetBase->path, $objTargetSrc->path, $mandantInfo);
 
-                $path = $targetPathObject->getPath();
+                $path = $objTargetSrc->path;
 
+                if ($objTargetSrc->type !== 'folder') {
+                    throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
+                }
             }
 
-            $files = $filesStorage->listContents($path)->toArray();
+            $listPath = $path;
+            if ($rootDir !== null) {
+                $listPath = $rootDir . '/' . $path;
+            }
+
+            $files = self::scanDir($listPath);
 
             foreach ($files as $file) {
 
-                $objFileTmp = FilesModel::findByPath('files/' . $file->getPath());
+                $objFileTmp = FilesModel::findByPath($path . '/' . $file);
 
                 if ($objFileTmp !== null) {
 
-                    $public = false;
-                    $basename = $objFileTmp->path;
-                    $url = '';
-                    $size = '';
-                    $isImage = false;
-
                     if ($objFileTmp->type === 'folder') {
+
                         $tmpFolder = new Folder($objFileTmp->path);
-                        $basename = $tmpFolder->basename;
-                        $public = $tmpFolder->isUnprotected();
+
+                        $data[] = [
+                            'name' => $tmpFolder->basename,
+                            'path' => $tmpFolder->path,
+                            'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $tmpFolder->path),
+                            'uuid' => Uuid::fromBinary($objFileTmp->uuid),
+                            'extention' => '',
+                            'public' => $tmpFolder->isUnprotected(),
+                            'url' => '',
+                            'isFolder' => true,
+                            'size' => '',
+                            'isimage' => false
+                        ];
+
                     } else if ($objFileTmp->type === 'file') {
+
                         $tmpFile = new File($objFileTmp->path);
-                        $basename = $tmpFile->basename;
-                        $public = $tmpFile->isUnprotected();
-                        if ($public === true) {
+
+                        $url = '';
+                        if ($tmpFile->isUnprotected() === true) {
                             $url = Environment::get('base') . $tmpFile->path;
                         }
-                        $size = $tmpFile->size;
-                        $isImage = ($tmpFile->isCmykImage || $tmpFile->isGdImage || $tmpFile->isImage || $tmpFile->isRgbImage || $tmpFile->isSvgImage);
+
+                        $data[] = [
+                            'name' => $tmpFile->basename,
+                            'path' => $tmpFile->path,
+                            'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $tmpFile->path),
+                            'uuid' => Uuid::fromBinary($objFileTmp->uuid),
+                            'extention' => $tmpFile->extension,
+                            'public' => $tmpFile->isUnprotected(),
+                            'url' => $url,
+                            'isFolder' => false,
+                            'size' => $tmpFile->size,
+                            'isimage' => ($tmpFile->isCmykImage || $tmpFile->isGdImage || $tmpFile->isImage || $tmpFile->isRgbImage || $tmpFile->isSvgImage)
+                        ];
+
                     }
 
-                    $data[] = [
-                        'name' => $basename,
-                        'path' => $objFileTmp->path,
-                        'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileTmp->path),
-                        'uuid' => StringUtil::binToUuid($objFileTmp->uuid),
-                        'extention' => $objFileTmp->extension,
-                        'public' => $public,
-                        'url' => $url,
-                        'isFolder' => ($objFileTmp->type === 'folder'),
-                        'size' => $size,
-                        'isimage' => $isImage
-                    ];
                 }
             }
 
@@ -886,7 +912,7 @@ class AlpdeskCoreFilemanagement
         switch ($mode) {
             case 'list':
             {
-                $finderResponseData = self::listFolder($finderData, $mandantInfo, $this->filesStorage);
+                $finderResponseData = self::listFolder($finderData, $mandantInfo, $this->rootDir);
 
                 $event = new AlpdeskCoreFilemanagementFinderListEvent($finderData, $finderResponseData, $mandantInfo);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderListEvent::NAME);
