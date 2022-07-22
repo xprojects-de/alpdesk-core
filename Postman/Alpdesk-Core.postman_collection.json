@@ -271,7 +271,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"fetch\",\n        \"select\": [\n            \"id\",\n            \"pid\",\n            \"title\"\n        ],\n        \"limit\": 1,\n        \"offset\": 1\n    }\n}",
+					"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"schema\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -289,6 +289,102 @@
 				}
 			},
 			"response": [
+				{
+					"name": "schema",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"schema\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 22 Jul 2022 04:43:55 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "d06754"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/d06754"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODQ2MTQ2NiwibmJmIjoxNjU4NDYxNDY2LCJleHAiOjE2NTg0ODE0NjYsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.tF7I06BouERuPTzRa3C77UnaoqlPssyg2H1r9TMvkB4\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"id\": \"integer\",\n        \"pid\": \"integer\",\n        \"sorting\": \"integer\",\n        \"tstamp\": \"integer\",\n        \"title\": \"string\",\n        \"alias\": \"string\",\n        \"type\": \"string\",\n        \"pageTitle\": \"string\",\n        \"language\": \"string\",\n        \"robots\": \"string\",\n        \"description\": \"text\",\n        \"redirect\": \"string\",\n        \"jumpTo\": \"integer\",\n        \"redirectBack\": \"string\",\n        \"url\": \"string\",\n        \"target\": \"string\",\n        \"dns\": \"string\",\n        \"staticFiles\": \"string\",\n        \"staticPlugins\": \"string\",\n        \"fallback\": \"string\",\n        \"disableLanguageRedirect\": \"string\",\n        \"favicon\": \"binary\",\n        \"robotsTxt\": \"text\",\n        \"mailerTransport\": \"string\",\n        \"adminEmail\": \"string\",\n        \"dateFormat\": \"string\",\n        \"timeFormat\": \"string\",\n        \"datimFormat\": \"string\",\n        \"validAliasCharacters\": \"string\",\n        \"useFolderUrl\": \"string\",\n        \"urlPrefix\": \"string\",\n        \"urlSuffix\": \"string\",\n        \"useSSL\": \"string\",\n        \"autoforward\": \"string\",\n        \"protected\": \"string\",\n        \"groups\": \"blob\",\n        \"includeLayout\": \"string\",\n        \"layout\": \"integer\",\n        \"includeCache\": \"string\",\n        \"cache\": \"integer\",\n        \"alwaysLoadFromCache\": \"string\",\n        \"clientCache\": \"integer\",\n        \"includeChmod\": \"string\",\n        \"cuser\": \"integer\",\n        \"cgroup\": \"integer\",\n        \"chmod\": \"string\",\n        \"noSearch\": \"string\",\n        \"requireItem\": \"string\",\n        \"cssClass\": \"string\",\n        \"sitemap\": \"string\",\n        \"hide\": \"string\",\n        \"guests\": \"string\",\n        \"tabindex\": \"smallint\",\n        \"accesskey\": \"string\",\n        \"published\": \"string\",\n        \"start\": \"string\",\n        \"stop\": \"string\",\n        \"enforceTwoFactor\": \"string\",\n        \"twoFactorJumpTo\": \"integer\",\n        \"subpageLayout\": \"integer\",\n        \"canonicalKeepParams\": \"string\",\n        \"canonicalLink\": \"string\",\n        \"enableCanonical\": \"string\",\n        \"maintenanceMode\": \"string\",\n        \"routePriority\": \"integer\"\n    }\n}"
+				},
 				{
 					"name": "fetch",
 					"originalRequest": {
