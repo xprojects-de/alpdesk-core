@@ -54,3 +54,10 @@
 #alpdeskcorelogs_backendcontainer strong.filterMarked {
     color: #F47C00;
 }
+
+@media (max-width: 991px) {
+    #alpdeskcorelogs_backendcontainer {
+        float: none;
+        width: auto;
+    }
+}

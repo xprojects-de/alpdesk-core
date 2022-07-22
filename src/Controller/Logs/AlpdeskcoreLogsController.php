@@ -169,7 +169,6 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             'logs' => $logFiles
         ]);
 
-
     }
 
 }
