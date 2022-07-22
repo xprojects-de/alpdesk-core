@@ -12,7 +12,7 @@ use Doctrine\DBAL\Connection;
 class AlpdeskCoreElementContao
 {
     private static array $CRUD_OPERATIONS = [
-        'fetch'
+        'schema', 'fetch'
     ];
     private Connection $connection;
 
@@ -72,10 +72,13 @@ class AlpdeskCoreElementContao
      */
     private function runCrud(CrudModel $crudModel, string $crudOperation, array $requestData): array
     {
-        $data = [];
-
         switch ($crudOperation) {
 
+            case 'schema':
+            {
+                $data = $crudModel->getFields();
+                break;
+            }
             case 'fetch':
             {
                 $select = ['*'];
