@@ -29,6 +29,8 @@ class AlpdeskcoreUser implements UserInterface
     private bool $accessRename = true;
     private bool $accessMove = true;
     private bool $accessCopy = true;
+    private ?array $crudOperations = null;
+    private ?array $crudTables = null;
 
     public function getMemberId(): int
     {
@@ -251,6 +253,38 @@ class AlpdeskcoreUser implements UserInterface
     public function setAccessCopy(bool $accessCopy): void
     {
         $this->accessCopy = $accessCopy;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getCrudOperations(): ?array
+    {
+        return $this->crudOperations;
+    }
+
+    /**
+     * @param array|null $crudOperations
+     */
+    public function setCrudOperations(?array $crudOperations): void
+    {
+        $this->crudOperations = $crudOperations;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getCrudTables(): ?array
+    {
+        return $this->crudTables;
+    }
+
+    /**
+     * @param array|null $crudTables
+     */
+    public function setCrudTables(?array $crudTables): void
+    {
+        $this->crudTables = $crudTables;
     }
 
     /**

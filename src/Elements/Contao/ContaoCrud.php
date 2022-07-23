@@ -10,9 +10,12 @@ use Doctrine\DBAL\Connection;
 
 class ContaoCrud
 {
-    private static array $CRUD_OPERATIONS = [
+    private array $crudOperations = [
         'schema', 'fetch', 'insert', 'update', 'delete'
     ];
+
+    private bool $useCrudTablePermission = false;
+    private ?array $crudTables = null;
 
     private Connection $connection;
     private array $requestData;
@@ -21,6 +24,34 @@ class ContaoCrud
     {
         $this->connection = $connection;
         $this->requestData = $requestData;
+    }
+
+    /**
+     * @param array|null $crudOperations
+     * @return ContaoCrud
+     * @throws \Exception
+     */
+    public function setCrudOperations(?array $crudOperations): ContaoCrud
+    {
+        if (!\is_array($crudOperations)) {
+            throw new \Exception('invalid crudOperations - no permission');
+        }
+
+        $this->crudOperations = $crudOperations;
+        return $this;
+    }
+
+    /**
+     * @param array|null $crudTables
+     * @return ContaoCrud
+     * @throws \Exception
+     */
+    public function setCrudTables(?array $crudTables): ContaoCrud
+    {
+        $this->crudTables = $crudTables;
+        $this->useCrudTablePermission = true;
+
+        return $this;
     }
 
     /**
@@ -47,8 +78,16 @@ class ContaoCrud
             $table = 'tl_' . $table;
         }
 
-        if (!\in_array($crud, self::$CRUD_OPERATIONS, true)) {
-            throw new \Exception('invalid crud operation');
+        if ($this->useCrudTablePermission === true) {
+
+            if (!\is_array($this->crudTables) || !\in_array($table, $this->crudTables, true)) {
+                throw new \Exception('invalid table - permission denied');
+            }
+
+        }
+
+        if (!\in_array($crud, $this->crudOperations, true)) {
+            throw new \Exception('invalid crud operation - permission denied');
         }
 
         $crudModel = new CrudModel();

@@ -127,6 +127,24 @@ class AlpdeskcoreMandantModel extends Model
                 $alpdeskUser->setAccessCopy(false);
             }
 
+            if ($memberObject->alpdeskcore_crudOperations !== null && $memberObject->alpdeskcore_crudOperations !== '') {
+
+                $memberCrudOperations = StringUtil::deserialize($memberObject->alpdeskcore_crudOperations);
+                if (\is_array($memberCrudOperations) && \count($memberCrudOperations) > 0) {
+                    $alpdeskUser->setCrudOperations($memberCrudOperations);
+                }
+
+            }
+
+            if ($memberObject->alpdeskcore_crudTables !== null && $memberObject->alpdeskcore_crudTables !== '') {
+
+                $memberCrudTables = StringUtil::deserialize($memberObject->alpdeskcore_crudTables);
+                if (\is_array($memberCrudTables) && \count($memberCrudTables) > 0) {
+                    $alpdeskUser->setCrudTables($memberCrudTables);
+                }
+
+            }
+
             return $alpdeskUser;
 
         }

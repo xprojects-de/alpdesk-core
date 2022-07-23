@@ -15,6 +15,8 @@ use Contao\Image;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
 use Contao\StringUtil;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Table;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -24,6 +26,7 @@ class DcaCallbacks
     protected ?RequestStack $requestStack;
     protected string $rootDir;
     protected ?LoggerInterface $logger;
+    private Connection $connection;
 
     /**
      * @param AlpdeskCoreEventService $eventService
@@ -31,11 +34,18 @@ class DcaCallbacks
      * @param string $rootDir
      * @param LoggerInterface|null $logger
      */
-    public function __construct(AlpdeskCoreEventService $eventService, RequestStack $requestStack, string $rootDir, LoggerInterface $logger = null)
+    public function __construct(
+        AlpdeskCoreEventService $eventService,
+        RequestStack            $requestStack,
+        string                  $rootDir,
+        Connection              $connection,
+        LoggerInterface         $logger = null
+    )
     {
         $this->eventService = $eventService;
         $this->requestStack = $requestStack;
         $this->rootDir = $rootDir;
+        $this->connection = $connection;
         $this->logger = $logger;
     }
 
@@ -146,6 +156,35 @@ class DcaCallbacks
 
             Controller::redirect('/contao?do=alpdeskcore_databasemanager');
 
+        }
+
+    }
+
+    /**
+     * @param DataContainer|null $dc
+     * @return array
+     */
+    public function getCrudTables(?DataContainer $dc): array
+    {
+        try {
+
+            $schemaManager = $this->connection->createSchemaManager();
+            $tables = $schemaManager->createSchema()->getTables();
+
+            $preparedTables = [];
+            foreach ($tables as $table) {
+
+                if ($table instanceof Table) {
+                    $preparedTables[$table->getName()] = $table->getName();
+                }
+
+            }
+
+            return $preparedTables;
+
+
+        } catch (\Throwable $tr) {
+            return [];
         }
 
     }

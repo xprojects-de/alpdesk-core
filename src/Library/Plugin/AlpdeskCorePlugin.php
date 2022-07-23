@@ -102,6 +102,8 @@ class AlpdeskCorePlugin
             $mInfo->setAccessRename($user->getAccessRename());
             $mInfo->setAccessMove($user->getAccessMove());
             $mInfo->setAccessCopy($user->getAccessCopy());
+            $mInfo->setCrudOperations($user->getCrudOperations());
+            $mInfo->setCrudTables($user->getCrudTables());
             $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
 
             return $mInfo;

@@ -28,7 +28,10 @@ class AlpdeskCoreElementContao
         }
 
         $event->getResultData()->setData(
-            (new ContaoCrud($this->connection, $event->getResultData()->getRequestData()))->run()
+            (new ContaoCrud($this->connection, $event->getResultData()->getRequestData()))
+                ->setCrudOperations($event->getResultData()->getMandantInfo()->getCrudOperations())
+                ->setCrudTables($event->getResultData()->getMandantInfo()->getCrudTables())
+                ->run()
         );
 
     }

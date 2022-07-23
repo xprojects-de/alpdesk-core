@@ -76,12 +76,14 @@ services:
       - '@alpdeskcore.eventservice'
       - '@request_stack'
       - '%kernel.project_dir%'
+      - '@database_connection'
       - '@?logger'
     tags:
       - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: fields.type.options, method: getMandantElements }
       - { name: contao.callback, table: tl_member, target: fields.alpdeskcore_elements.options, method: getMandantElements }
       - { name: contao.callback, table: tl_alpdeskcore_mandant_elements, target: list.sorting.child_record, method: addMandantElementType }
       - { name: contao.callback, table: tl_alpdeskcore_databasemanager, target: config.onload, method: databaseManagerOnLoad }
+      - { name: contao.callback, table: tl_member, target: fields.alpdeskcore_crudTables.options, method: getCrudTables }
 
   Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController:
     arguments:
