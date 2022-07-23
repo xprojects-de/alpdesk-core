@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Database;
 
-use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
@@ -153,10 +152,11 @@ class CrudModel
             }
 
         } catch (\Exception $ex) {
-            $message = 'invalid statement';
+
         }
 
         return \trim($message);
+
     }
 
     /**
@@ -174,7 +174,6 @@ class CrudModel
             throw new \Exception('invalid table for CrudModel');
         }
 
-        // SQL-Injection and ErrorHandling . Only fields form Schema are allowed
         $selectParam = '*';
         if (\count($select) > 0) {
             foreach ($select as $selectfield) {
@@ -186,20 +185,24 @@ class CrudModel
         $qb = $this->getQueryBuilder()->select($selectParam)->from($this->table);
 
         if (\count($whereparams) > 0) {
-            $finalWhere = '(' . $whereparams[0] . ')';
-            $qb->where($finalWhere);
+
+            $qb->where($whereparams[0]);
             \array_shift($whereparams);
+
             $counter = 0;
             foreach ($whereparams as $wparam) {
                 $qb->setParameter($counter, $wparam);
                 $counter++;
             }
+
         }
 
         if (\count($orderBy)) {
+
             foreach ($orderBy as $key => $value) {
                 $qb->addOrderBy($key, ($value !== '' ? $value : 'ASC'));
             }
+
         }
 
         if ($limit !== null && $limit > 0) {
@@ -216,39 +219,8 @@ class CrudModel
             throw new \Exception($this->getSQLErrorMessage($ex->getMessage()));
         }
 
-        return $data;
-    }
-
-
-    /**
-     * @param string $id
-     * @param array $select
-     * @return array
-     * @throws \Exception
-     */
-    public function fetchById(string $id, array $select = []): array
-    {
-        if ($this->table === '') {
-            throw new \Exception('invalid table for CrudModel');
-        }
-
-        $selectParam = '*';
-        if (\count($select) > 0) {
-            foreach ($select as $selectfield) {
-                $this->checkField($selectfield);
-            }
-            $selectParam = \implode(',', $select);
-        }
-
-        $qb = $this->getQueryBuilder()->select($selectParam)->from($this->table);
-
-        $qb->where('(uniqueId=?)');
-        $qb->setParameter(0, $id);
-
-        try {
-            $data = $qb->executeQuery()->fetchAllAssociative();
-        } catch (\Exception $ex) {
-            throw new \Exception($this->getSQLErrorMessage($ex->getMessage()));
+        if (\count($data) === 1) {
+            return $data[0];
         }
 
         return $data;
@@ -265,7 +237,6 @@ class CrudModel
             throw new \Exception('invalid table for CrudModel');
         }
 
-        // Remove id if present
         if (\array_key_exists('id', $values)) {
             unset($values['id']);
         }
@@ -288,13 +259,17 @@ class CrudModel
         }
 
         if (\count($whereparams) > 0) {
-            $finalWhere = '(' . $whereparams[0] . ')';
-            $qb->where($finalWhere);
+
+            $qb->where($whereparams[0]);
             \array_shift($whereparams);
+
             foreach ($whereparams as $wparam) {
+
                 $qb->setParameter($counter, $wparam);
                 $counter++;
+
             }
+
         }
 
         try {
@@ -316,7 +291,6 @@ class CrudModel
             throw new \Exception('invalid table for CrudModel');
         }
 
-        // Remove uniqueId if present
         if (\array_key_exists('id', $values)) {
             unset($values['id']);
         }
@@ -362,13 +336,17 @@ class CrudModel
 
         $counter = 0;
         if (\count($whereparams) > 0) {
-            $finalWhere = '(' . $whereparams[0] . ')';
-            $qb->where($finalWhere);
+
+            $qb->where($whereparams[0]);
             \array_shift($whereparams);
+
             foreach ($whereparams as $wparam) {
+
                 $qb->setParameter($counter, $wparam);
                 $counter++;
+
             }
+
         } else {
             throw new \Exception('delete must have a where-Clause');
         }
