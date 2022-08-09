@@ -6,7 +6,7 @@
     "alpdesk"
   ],
   "type": "contao-bundle",
-  "version": "3.0.0-RC1",
+  "version": "3.0.0-RC2",
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
   "minimum-stability": "RC",
@@ -15,14 +15,14 @@
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
-    "contao/core-bundle": "5.0.0-RC1",
+    "contao/core-bundle": "5.0.0-RC2",
     "tecnickcom/tcpdf": "^6.4",
     "lcobucci/jwt": "^4.1",
     "symfony/security-bundle": "^6.0.2",
     "symfony/security-core": "^6.1",
     "symfony/process": "^5.4 || ^6.0",
     "symfony/filesystem": "^5.4 || ^6.0",
-    "doctrine/dbal": "^3.1"
+    "doctrine/dbal": "^3.3"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
@@ -30,13 +30,13 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "contao/manager-plugin": "^2.0",
-    "contao/manager-bundle": "5.0.0-RC1",
+    "contao/manager-bundle": "5.0.0-RC2",
     "phpstan/phpstan": "^1.0",
     "phpstan/phpstan-phpunit": "^1.0",
     "phpstan/phpstan-symfony": "^1.0",
     "slam/phpstan-extensions": "^6.0",
     "phpunit/phpunit": "^9.5",
-    "symfony/phpunit-bridge": "^5.4"
+    "symfony/phpunit-bridge": "^5.4 | ^6.0"
   },
   "authors": [
     {
