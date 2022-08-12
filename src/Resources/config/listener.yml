@@ -18,3 +18,10 @@ services:
     class: Alpdesk\AlpdeskCore\Elements\Hello\AlpdeskCoreElementHello
     tags:
       - { name: kernel.event_listener, event: alpdesk.plugincall }
+
+  alpdeskcore.listener.contaocrud:
+    class: Alpdesk\AlpdeskCore\Elements\Contao\AlpdeskCoreElementContao
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.plugincall }
+    arguments:
+      - '@database_connection'

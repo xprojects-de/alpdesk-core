@@ -1,10 +1,14 @@
 <?php
 
+use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\DC_Table;
+use Contao\DataContainer;
+
 $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
 (
     'config' => array
     (
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'enableVersioning' => false,
         'sql' => array
         (
@@ -19,16 +23,16 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
     (
         'sorting' => array
         (
-            'mode' => 2,
+            'mode' => DataContainer::MODE_SORTABLE,
             'fields' => array('username ASC'),
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter;sort,search,limit'
         ),
         'label' => array
         (
             'fields' => array('username', 'token'),
             'showColumns' => true,
-            'label_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'showSessionValid')
+            'label_callback' => array(AlpdeskCoreDcaUtils::class, 'showSessionValid')
         ),
         'global_operations' => array
         (
@@ -53,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_sessions']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
             )
         )
     ),

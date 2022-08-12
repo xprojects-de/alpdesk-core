@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Alpdesk-Core" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" is_https="true" browser="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" server_name="Alpdesk-Core" start_url="https://alpdesk-core:8890">
+    <method v="2" />
+  </configuration>
+</component>

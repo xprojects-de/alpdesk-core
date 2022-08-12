@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "cbf7de0e-cb94-4ee9-b7f4-f3119eef7eed",
 		"name": "Alpdesk-Core",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11672125"
 	},
 	"item": [
 		{
@@ -218,7 +219,7 @@
 			"response": []
 		},
 		{
-			"name": "Plugin",
+			"name": "Plugin Hello",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -234,7 +235,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plugin\":\"hello\",\n\"data\":{\n        \"method\":\"list\",\n        \"params\": \"\"\n    }\n}",
+					"raw": "{\n    \"plugin\": \"hello\",\n    \"data\": {}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -252,6 +253,715 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Plugin ContaoCRUD",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"fetch\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/plugin",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"plugin"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "schema",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"schema\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 22 Jul 2022 04:43:55 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "d06754"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/d06754"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODQ2MTQ2NiwibmJmIjoxNjU4NDYxNDY2LCJleHAiOjE2NTg0ODE0NjYsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.tF7I06BouERuPTzRa3C77UnaoqlPssyg2H1r9TMvkB4\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"id\": \"integer\",\n        \"pid\": \"integer\",\n        \"sorting\": \"integer\",\n        \"tstamp\": \"integer\",\n        \"title\": \"string\",\n        \"alias\": \"string\",\n        \"type\": \"string\",\n        \"pageTitle\": \"string\",\n        \"language\": \"string\",\n        \"robots\": \"string\",\n        \"description\": \"text\",\n        \"redirect\": \"string\",\n        \"jumpTo\": \"integer\",\n        \"redirectBack\": \"string\",\n        \"url\": \"string\",\n        \"target\": \"string\",\n        \"dns\": \"string\",\n        \"staticFiles\": \"string\",\n        \"staticPlugins\": \"string\",\n        \"fallback\": \"string\",\n        \"disableLanguageRedirect\": \"string\",\n        \"favicon\": \"binary\",\n        \"robotsTxt\": \"text\",\n        \"mailerTransport\": \"string\",\n        \"adminEmail\": \"string\",\n        \"dateFormat\": \"string\",\n        \"timeFormat\": \"string\",\n        \"datimFormat\": \"string\",\n        \"validAliasCharacters\": \"string\",\n        \"useFolderUrl\": \"string\",\n        \"urlPrefix\": \"string\",\n        \"urlSuffix\": \"string\",\n        \"useSSL\": \"string\",\n        \"autoforward\": \"string\",\n        \"protected\": \"string\",\n        \"groups\": \"blob\",\n        \"includeLayout\": \"string\",\n        \"layout\": \"integer\",\n        \"includeCache\": \"string\",\n        \"cache\": \"integer\",\n        \"alwaysLoadFromCache\": \"string\",\n        \"clientCache\": \"integer\",\n        \"includeChmod\": \"string\",\n        \"cuser\": \"integer\",\n        \"cgroup\": \"integer\",\n        \"chmod\": \"string\",\n        \"noSearch\": \"string\",\n        \"requireItem\": \"string\",\n        \"cssClass\": \"string\",\n        \"sitemap\": \"string\",\n        \"hide\": \"string\",\n        \"guests\": \"string\",\n        \"tabindex\": \"smallint\",\n        \"accesskey\": \"string\",\n        \"published\": \"string\",\n        \"start\": \"string\",\n        \"stop\": \"string\",\n        \"enforceTwoFactor\": \"string\",\n        \"twoFactorJumpTo\": \"integer\",\n        \"subpageLayout\": \"integer\",\n        \"canonicalKeepParams\": \"string\",\n        \"canonicalLink\": \"string\",\n        \"enableCanonical\": \"string\",\n        \"maintenanceMode\": \"string\",\n        \"routePriority\": \"integer\"\n    }\n}"
+				},
+				{
+					"name": "fetch",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"fetch\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 22 Jul 2022 04:31:33 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "ee5a71"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/ee5a71"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODQ2MTQ2NiwibmJmIjoxNjU4NDYxNDY2LCJleHAiOjE2NTg0ODE0NjYsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.tF7I06BouERuPTzRa3C77UnaoqlPssyg2H1r9TMvkB4\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"pid\": 0,\n            \"sorting\": 128,\n            \"tstamp\": 1658464260,\n            \"title\": \"Test\",\n            \"alias\": \"\",\n            \"type\": \"root\",\n            \"pageTitle\": \"\",\n            \"language\": \"\",\n            \"robots\": \"\",\n            \"description\": null,\n            \"redirect\": \"permanent\",\n            \"jumpTo\": 0,\n            \"redirectBack\": \"\",\n            \"url\": \"\",\n            \"target\": \"\",\n            \"dns\": \"\",\n            \"staticFiles\": \"\",\n            \"staticPlugins\": \"\",\n            \"fallback\": \"1\",\n            \"disableLanguageRedirect\": \"\",\n            \"favicon\": null,\n            \"robotsTxt\": null,\n            \"mailerTransport\": \"\",\n            \"adminEmail\": \"\",\n            \"dateFormat\": \"\",\n            \"timeFormat\": \"\",\n            \"datimFormat\": \"\",\n            \"validAliasCharacters\": \"\",\n            \"useFolderUrl\": \"\",\n            \"urlPrefix\": \"\",\n            \"urlSuffix\": \"\",\n            \"useSSL\": \"1\",\n            \"autoforward\": \"\",\n            \"protected\": \"\",\n            \"groups\": null,\n            \"includeLayout\": \"\",\n            \"layout\": 0,\n            \"includeCache\": \"\",\n            \"cache\": 0,\n            \"alwaysLoadFromCache\": \"\",\n            \"clientCache\": 0,\n            \"includeChmod\": \"\",\n            \"cuser\": 0,\n            \"cgroup\": 0,\n            \"chmod\": \"a:9:{i:0;s:2:\\\"u1\\\";i:1;s:2:\\\"u2\\\";i:2;s:2:\\\"u3\\\";i:3;s:2:\\\"u4\\\";i:4;s:2:\\\"u5\\\";i:5;s:2:\\\"u6\\\";i:6;s:2:\\\"g4\\\";i:7;s:2:\\\"g5\\\";i:8;s:2:\\\"g6\\\";}\",\n            \"noSearch\": \"\",\n            \"requireItem\": \"\",\n            \"cssClass\": \"\",\n            \"sitemap\": \"\",\n            \"hide\": \"\",\n            \"guests\": \"\",\n            \"tabindex\": 0,\n            \"accesskey\": \"\",\n            \"published\": \"1\",\n            \"start\": \"\",\n            \"stop\": \"\",\n            \"enforceTwoFactor\": \"\",\n            \"twoFactorJumpTo\": 0,\n            \"subpageLayout\": 0,\n            \"canonicalKeepParams\": \"\",\n            \"canonicalLink\": \"\",\n            \"enableCanonical\": \"1\",\n            \"maintenanceMode\": \"\",\n            \"routePriority\": 0\n        },\n        {\n            \"id\": 2,\n            \"pid\": 1,\n            \"sorting\": 128,\n            \"tstamp\": 1658464280,\n            \"title\": \"Test1\",\n            \"alias\": \"\",\n            \"type\": \"regular\",\n            \"pageTitle\": \"\",\n            \"language\": \"\",\n            \"robots\": \"index,follow\",\n            \"description\": null,\n            \"redirect\": \"permanent\",\n            \"jumpTo\": 0,\n            \"redirectBack\": \"\",\n            \"url\": \"\",\n            \"target\": \"\",\n            \"dns\": \"\",\n            \"staticFiles\": \"\",\n            \"staticPlugins\": \"\",\n            \"fallback\": \"\",\n            \"disableLanguageRedirect\": \"\",\n            \"favicon\": null,\n            \"robotsTxt\": null,\n            \"mailerTransport\": \"\",\n            \"adminEmail\": \"\",\n            \"dateFormat\": \"\",\n            \"timeFormat\": \"\",\n            \"datimFormat\": \"\",\n            \"validAliasCharacters\": \"\",\n            \"useFolderUrl\": \"\",\n            \"urlPrefix\": \"\",\n            \"urlSuffix\": \"\",\n            \"useSSL\": \"1\",\n            \"autoforward\": \"\",\n            \"protected\": \"\",\n            \"groups\": null,\n            \"includeLayout\": \"\",\n            \"layout\": 0,\n            \"includeCache\": \"\",\n            \"cache\": 0,\n            \"alwaysLoadFromCache\": \"\",\n            \"clientCache\": 0,\n            \"includeChmod\": \"\",\n            \"cuser\": 0,\n            \"cgroup\": 0,\n            \"chmod\": \"a:9:{i:0;s:2:\\\"u1\\\";i:1;s:2:\\\"u2\\\";i:2;s:2:\\\"u3\\\";i:3;s:2:\\\"u4\\\";i:4;s:2:\\\"u5\\\";i:5;s:2:\\\"u6\\\";i:6;s:2:\\\"g4\\\";i:7;s:2:\\\"g5\\\";i:8;s:2:\\\"g6\\\";}\",\n            \"noSearch\": \"\",\n            \"requireItem\": \"\",\n            \"cssClass\": \"\",\n            \"sitemap\": \"map_default\",\n            \"hide\": \"\",\n            \"guests\": \"\",\n            \"tabindex\": 0,\n            \"accesskey\": \"\",\n            \"published\": \"1\",\n            \"start\": \"\",\n            \"stop\": \"\",\n            \"enforceTwoFactor\": \"\",\n            \"twoFactorJumpTo\": 0,\n            \"subpageLayout\": 0,\n            \"canonicalKeepParams\": \"\",\n            \"canonicalLink\": \"\",\n            \"enableCanonical\": \"1\",\n            \"maintenanceMode\": \"\",\n            \"routePriority\": 0\n        }\n    ]\n}"
+				},
+				{
+					"name": "fetch (select, limit, offset)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"fetch\",\n        \"select\": [\n            \"id\",\n            \"pid\",\n            \"title\"\n        ],\n        \"limit\": 1,\n        \"offset\": 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 22 Jul 2022 04:38:08 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "4f4290"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/4f4290"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODQ2MTQ2NiwibmJmIjoxNjU4NDYxNDY2LCJleHAiOjE2NTg0ODE0NjYsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.tF7I06BouERuPTzRa3C77UnaoqlPssyg2H1r9TMvkB4\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": [\n        {\n            \"id\": 2,\n            \"pid\": 1,\n            \"title\": \"Test1\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "fetch (where)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"fetch\",\n        \"select\": [\n            \"id\",\n            \"pid\",\n            \"title\"\n        ],\n        \"where\": [\n            \"id=? AND title=?\",\n            1,\n            \"Test\"\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 23 Jul 2022 07:43:43 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "c70fde"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/c70fde"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODU2MTUwOCwibmJmIjoxNjU4NTYxNTA4LCJleHAiOjE2NTg1ODE1MDgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.1hNW7hk3DUW_yy7cSY8Cv3wOcbBEDtC-mRFdOMpyGdk\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"id\": 1,\n        \"pid\": 0,\n        \"title\": \"Test\"\n    }\n}"
+				},
+				{
+					"name": "insert",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"insert\",\n        \"values\": {\n            \"pid\": 1,\n            \"tstamp\": 1658464280,\n            \"title\": \"Test3\",            \n            \"published\": \"1\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 23 Jul 2022 07:54:06 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "b0b3a4"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/b0b3a4"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODU2MTUwOCwibmJmIjoxNjU4NTYxNTA4LCJleHAiOjE2NTg1ODE1MDgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.1hNW7hk3DUW_yy7cSY8Cv3wOcbBEDtC-mRFdOMpyGdk\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"id\": 4\n    }\n}"
+				},
+				{
+					"name": "update",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"update\",\n        \"values\": {\n            \"tstamp\": 1658464281,\n            \"title\": \"Test333\"\n        },\n        \"where\": [\n            \"id=?\",\n            3\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 23 Jul 2022 08:12:08 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "1fab02"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/1fab02"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODU2MTUwOCwibmJmIjoxNjU4NTYxNTA4LCJleHAiOjE2NTg1ODE1MDgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.1hNW7hk3DUW_yy7cSY8Cv3wOcbBEDtC-mRFdOMpyGdk\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": []\n}"
+				},
+				{
+					"name": "delete",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"delete\",\n        \"where\": [\n            \"id=?\",\n            5\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/plugin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"plugin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 23 Jul 2022 08:13:53 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.46 (Unix) OpenSSL/1.0.2u mod_fastcgi/mod_fastcgi-SNAP-0910052141 mod_wsgi/3.5 Python/2.7.13 mod_perl/2.0.11 Perl/v5.30.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "X-Cache-Debug",
+							"value": "1"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer-when-downgrade, strict-origin-when-cross-origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Debug-Token",
+							"value": "a85534"
+						},
+						{
+							"key": "X-Debug-Token-Link",
+							"value": "https://alpdesk-core:8890/_profiler/a85534"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "noindex"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"testmandant\",\n    \"alpdesk_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBbHBkZXNrIiwiYXVkIjoiaHR0cHM6Ly9hbHBkZXNrLmRlIiwianRpIjoiWVd4d1pHVnphMTkwWlhOMGJXRnVaR0Z1ZEE9PSIsImlhdCI6MTY1ODU2MTUwOCwibmJmIjoxNjU4NTYxNTA4LCJleHAiOjE2NTg1ODE1MDgsInVzZXJuYW1lIjoidGVzdG1hbmRhbnQifQ.1hNW7hk3DUW_yy7cSY8Cv3wOcbBEDtC-mRFdOMpyGdk\",\n    \"plugin\": \"contaoCrud\",\n    \"data\": []\n}"
+				}
+			]
 		},
 		{
 			"name": "Upload File",
@@ -324,7 +1034,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"target\": \"842df139-7eb3-11eb-b7fd-da45c81e3bcc\"\n}",
+					"raw": "{\n    \"target\": \"44d39dd8-0105-11ec-ae37-59b27225627d\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -360,7 +1070,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"f51ef76b-7f5e-11eb-bd15-bf9bca265e63\"\n}",
+					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"e226302e-783c-11ec-abf3-89ee0d762867\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -432,7 +1142,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"delete\", \n    \"src\": \"2d6343b9-7eb7-11eb-b7fd-da45c81e3bcc\"\n}",
+					"raw": "{\n    \"mode\": \"delete\", \n    \"src\": \"8806251c-0105-11ec-ae37-59b27225627d\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -468,7 +1178,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"meta\", \n    \"src\": \"e3bbc284-7f2a-11eb-8f05-2505a738240d\",\n    \"meta\": {\n        \"de\": {\n            \"title\": \"Ich bin der Titel NEU\",\n            \"alt\": \"Ich bin der Alternativer Text NEU\",\n            \"link\": \"Ich bin der Link NEU\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU\"\n        },\n        \"en\": {\n            \"title\": \"Ich bin der Titel NEU EN\",\n            \"alt\": \"\",\n            \"link\": \"Ich bin der Link NEU EN\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU EN\"\n        }\n    } \n}",
+					"raw": "{\n    \"mode\": \"meta\", \n    \"src\": \"44d39dd8-0105-11ec-ae37-59b27225627d\",\n    \"meta\": {\n        \"de\": {\n            \"title\": \"Ich bin der Titel NEU\",\n            \"alt\": \"Ich bin der Alternativer Text NEU\",\n            \"link\": \"Ich bin der Link NEU\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU\"\n        },\n        \"en\": {\n            \"title\": \"Ich bin der Titel NEU EN\",\n            \"alt\": \"\",\n            \"link\": \"Ich bin der Link NEU EN\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU EN\"\n        }\n    } \n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -576,7 +1286,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"copy\", \n    \"src\": \"574dbe3c-7f5d-11eb-bd15-bf9bca265e63\", \n    \"target\": \"c8d95b8e-7eb2-11eb-b7fd-da45c81e3bcc\"\n}",
+					"raw": "{\n    \"mode\": \"copy\", \n    \"src\": \"44d39dd8-0105-11ec-ae37-59b27225627d\", \n    \"target\": \"8063f960-0105-11ec-ae37-59b27225627d\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

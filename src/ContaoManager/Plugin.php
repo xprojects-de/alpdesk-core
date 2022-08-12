@@ -63,14 +63,9 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                         'alpdeskcore_api' => [
                             'request_matcher' => 'alpdeskcore.routing.scope_matcher',
                             'provider' => 'alpdeskcore.security.user_provider',
-                            'anonymous' => true,
                             'lazy' => true,
                             'stateless' => true,
-                            'guard' => [
-                                'authenticators' => [
-                                    'alpdeskcore.security.token_authenticator'
-                                ]
-                            ]
+                            'custom_authenticators' => ['alpdeskcore.security.token_authenticator']
                         ]
                     ],
                     array_slice($extensionConfig['firewalls'], $offset, null, true)

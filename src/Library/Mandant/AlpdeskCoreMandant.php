@@ -10,7 +10,6 @@ use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Controller;
-use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreRegisterPlugin;
@@ -51,23 +50,7 @@ class AlpdeskCoreMandant
                 $type = (string)$pluginElement->type;
                 if (!\in_array($type, $invalidElements, true)) {
 
-                    // Legacy Support
-                    if (isset($GLOBALS['TL_ADME'][$type])) {
-
-                        $c = new $GLOBALS['TL_ADME'][$type]();
-                        if ($c instanceof AlpdeskCoreElement) {
-                            $customTemplate = false;
-                            if ($c->getCustomTemplate() === true) {
-                                $customTemplate = true;
-                            }
-                            $data[] = array(
-                                'value' => $pluginElement->type,
-                                'label' => $GLOBALS['TL_LANG']['ADME'][$pluginElement->type],
-                                'customTemplate' => $customTemplate
-                            );
-                        }
-
-                    } else if (isset($pluginData[$type]) && isset($pluginInfo[$type])) {
+                    if (isset($pluginData[$type]) && isset($pluginInfo[$type])) {
 
                         $data[] = array(
                             'value' => $pluginElement->type,
@@ -76,6 +59,7 @@ class AlpdeskCoreMandant
                         );
 
                     }
+
                 }
             }
 

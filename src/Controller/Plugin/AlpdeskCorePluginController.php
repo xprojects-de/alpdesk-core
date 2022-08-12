@@ -24,7 +24,12 @@ class AlpdeskCorePluginController extends AbstractController
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
 
-    public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger, string $rootDir)
+    public function __construct(
+        ContaoFramework         $framework,
+        AlpdeskCoreEventService $eventService,
+        AlpdeskcoreLogger       $logger,
+        string                  $rootDir
+    )
     {
         $this->framework = $framework;
 
@@ -51,13 +56,13 @@ class AlpdeskCorePluginController extends AbstractController
 
     /**
      * @param string $data
-     * @param $code
+     * @param mixed $code
      * @param int $statusCode
      * @return JsonResponse
      */
-    private function outputError(string $data, $code, int $statusCode): JsonResponse
+    private function outputError(string $data, mixed $code, int $statusCode): JsonResponse
     {
-        if ($code === null || $code === 0) {
+        if ($code === null || $code === 0 || $code === '') {
             $code = AlpdeskCoreConstants::$ERROR_COMMON;
         }
 

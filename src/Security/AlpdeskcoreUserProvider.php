@@ -7,6 +7,7 @@ namespace Alpdesk\AlpdeskCore\Security;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
@@ -25,9 +26,9 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
         $this->logger = $logger;
     }
 
-    public static function createJti($username): string
+    public static function createJti(string $username): string
     {
-        return base64_encode('alpdesk_' . $username);
+        return \base64_encode('alpdesk_' . $username);
     }
 
     public static function createToken(string $username, int $ttl): string
@@ -68,16 +69,6 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     }
 
     /**
-     * @param string $token
-     * @return string
-     * @throws \Exception
-     */
-    public function getValidatedUsernameFromToken(string $token): string
-    {
-        return self::extractUsernameFromToken($token);
-    }
-
-    /**
      * Override from UserProviderInterface
      * @param string $username
      * @return AlpdeskcoreUser
@@ -107,6 +98,20 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     }
 
     /**
+     * @param string $identifier
+     * @return UserInterface
+     */
+    public function loadUserByIdentifier(string $identifier): UserInterface
+    {
+        try {
+            return $this->loadUserByUsername($identifier);
+        } catch (\Throwable $tr) {
+            throw new UserNotFoundException($tr->getMessage());
+        }
+
+    }
+
+    /**
      * @param UserInterface $user
      * @return UserInterface
      */
@@ -116,10 +121,10 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
     }
 
     /**
-     * @param $class
+     * @param mixed $class
      * @return bool
      */
-    public function supportsClass($class): bool
+    public function supportsClass(mixed $class): bool
     {
         return $class === AlpdeskcoreUser::class;
     }

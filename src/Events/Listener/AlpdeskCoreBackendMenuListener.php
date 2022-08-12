@@ -32,7 +32,7 @@ class AlpdeskCoreBackendMenuListener
             return;
         }
 
-        Utils::mergeUserGroupPermissions();
+        Utils::mergeUserGroupPermissions($backendUser);
 
         if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
             return;
@@ -41,11 +41,11 @@ class AlpdeskCoreBackendMenuListener
         $factory = $event->getFactory();
         $tree = $event->getTree();
 
-        if ('mainMenu' === $tree->getName()) {
+        if ('mainMenu' === $tree->getName() && $this->requestStack->getCurrentRequest() !== null) {
 
             $contentNode = $tree->getChild('alpdeskcore');
             if ($contentNode === null) {
-                $contentNode = $tree->getChild('content');
+                $contentNode = $tree->getChild('system');
             }
 
             $node = $factory
@@ -56,7 +56,8 @@ class AlpdeskCoreBackendMenuListener
                 ->setLinkAttribute('class', 'alpdesk_logs_backend')
                 ->setCurrent($this->requestStack->getCurrentRequest()->get('_route') === 'alpdesk_logs_backend');
 
-            $contentNode->addChild($node);
+            $contentNode?->addChild($node);
+
         }
     }
 

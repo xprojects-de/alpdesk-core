@@ -1,5 +1,6 @@
 <?php
 
+use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
@@ -8,6 +9,8 @@ PaletteManipulator::create()
     ->addField('alpdeskcore_elements', 'login_legend', PaletteManipulator::POSITION_APPEND)
     ->addField('alpdeskcore_admin', 'login_legend', PaletteManipulator::POSITION_APPEND)
     ->addField('alpdeskcore_mandantwhitelist', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_crudOperations', 'login_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('alpdeskcore_crudTables', 'login_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToSubpalette('login', 'tl_member');
 
 PaletteManipulator::create()
@@ -39,7 +42,7 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_fixtoken'] = [
     'inputType' => 'text',
     'eval' => ['unique' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
     'save_callback' => [
-        ['Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'generateFixToken']
+        [AlpdeskCoreDcaUtils::class, 'generateFixToken']
     ],
     'sql' => "text NULL"
 ];
@@ -49,7 +52,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
     'exclude' => true,
     'filter' => true,
     'inputType' => 'checkbox',
-    //'options_callback' => Done using contao.callback event
     'reference' => &$GLOBALS['TL_LANG']['ADME'],
     'eval' => ['tl_class' => 'clr', 'multiple' => true],
     'sql' => "blob NULL"
@@ -134,4 +136,29 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_copy'] = [
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50', 'mandantory' => false, 'multiple' => false],
     'sql' => "int(10) unsigned NOT NULL default '0'"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_crudOperations'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_crudOperations'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'checkbox',
+    'options' => [
+        'schema' => 'Schema',
+        'insert' => 'Create',
+        'fetch' => 'Read',
+        'update' => 'Update',
+        'delete' => 'Delete'
+    ],
+    'eval' => ['tl_class' => 'clr', 'multiple' => true],
+    'sql' => "blob NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_crudTables'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_crudTables'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'clr', 'multiple' => true],
+    'sql' => "blob NULL"
 ];

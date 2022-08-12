@@ -20,7 +20,7 @@ class AlpdeskcoreUser implements UserInterface
     private string $fixToken = '';
     private bool $fixTokenAuth = false;
     private array $invalidElements = [];
-    private $homeDir = null;
+    private mixed $homeDir = null;
     private array $mandantWhitelist = [];
     private bool $accessDownload = true;
     private bool $accessUpload = true;
@@ -29,6 +29,8 @@ class AlpdeskcoreUser implements UserInterface
     private bool $accessRename = true;
     private bool $accessMove = true;
     private bool $accessCopy = true;
+    private ?array $crudOperations = null;
+    private ?array $crudTables = null;
 
     public function getMemberId(): int
     {
@@ -163,12 +165,12 @@ class AlpdeskcoreUser implements UserInterface
         $this->invalidElements = $invalidElements;
     }
 
-    public function getHomeDir()
+    public function getHomeDir(): mixed
     {
         return $this->homeDir;
     }
 
-    public function setHomeDir($homeDir): void
+    public function setHomeDir(mixed $homeDir): void
     {
         $this->homeDir = $homeDir;
     }
@@ -253,13 +255,53 @@ class AlpdeskcoreUser implements UserInterface
         $this->accessCopy = $accessCopy;
     }
 
-    public function getSalt()
+    /**
+     * @return array|null
+     */
+    public function getCrudOperations(): ?array
+    {
+        return $this->crudOperations;
+    }
+
+    /**
+     * @param array|null $crudOperations
+     */
+    public function setCrudOperations(?array $crudOperations): void
+    {
+        $this->crudOperations = $crudOperations;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getCrudTables(): ?array
+    {
+        return $this->crudTables;
+    }
+
+    /**
+     * @param array|null $crudTables
+     */
+    public function setCrudTables(?array $crudTables): void
+    {
+        $this->crudTables = $crudTables;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function eraseCredentials(): void
     {
 
     }
 
-    public function eraseCredentials()
+    /**
+     * {@inheritdoc}
+     * @throws \Exception
+     */
+    public function getUserIdentifier(): string
     {
-
+        return $this->username;
     }
+
 }
