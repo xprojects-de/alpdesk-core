@@ -32,6 +32,7 @@ class DcaCallbacks
      * @param AlpdeskCoreEventService $eventService
      * @param RequestStack $requestStack
      * @param string $rootDir
+     * @param Connection $connection
      * @param LoggerInterface|null $logger
      */
     public function __construct(
