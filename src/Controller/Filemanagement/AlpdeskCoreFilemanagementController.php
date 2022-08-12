@@ -30,7 +30,8 @@ class AlpdeskCoreFilemanagementController extends AbstractController
         ContaoFramework         $framework,
         AlpdeskCoreEventService $eventService,
         AlpdeskcoreLogger       $logger,
-        string                  $rootDir)
+        string                  $rootDir
+    )
     {
         $this->framework = $framework;
         $this->eventService = $eventService;

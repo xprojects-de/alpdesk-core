@@ -33,7 +33,12 @@ class AlpdeskCoreAuthController extends AbstractController
     protected AlpdeskcoreLogger $logger;
     protected PasswordHasherFactoryInterface $passwordHasherFactory;
 
-    public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger, PasswordHasherFactoryInterface $passwordHasherFactory)
+    public function __construct(
+        ContaoFramework                $framework,
+        AlpdeskCoreEventService        $eventService,
+        AlpdeskcoreLogger              $logger,
+        PasswordHasherFactoryInterface $passwordHasherFactory
+    )
     {
         $this->framework = $framework;
 

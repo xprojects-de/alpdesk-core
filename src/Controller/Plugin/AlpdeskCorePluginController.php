@@ -24,7 +24,12 @@ class AlpdeskCorePluginController extends AbstractController
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
 
-    public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger, string $rootDir)
+    public function __construct(
+        ContaoFramework         $framework,
+        AlpdeskCoreEventService $eventService,
+        AlpdeskcoreLogger       $logger,
+        string                  $rootDir
+    )
     {
         $this->framework = $framework;
 

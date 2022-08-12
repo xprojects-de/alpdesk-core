@@ -23,7 +23,11 @@ class AlpdeskCoreMandantController extends AbstractController
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
 
-    public function __construct(ContaoFramework $framework, AlpdeskCoreEventService $eventService, AlpdeskcoreLogger $logger)
+    public function __construct(
+        ContaoFramework         $framework,
+        AlpdeskCoreEventService $eventService,
+        AlpdeskcoreLogger       $logger
+    )
     {
         $this->framework = $framework;
 
