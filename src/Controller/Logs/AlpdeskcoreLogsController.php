@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Logs;
 
+use Alpdesk\AlpdeskCore\Utils\Utils;
+use Contao\BackendUser;
 use Contao\Controller;
 use Contao\File;
 use Contao\Input;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -21,13 +24,15 @@ class AlpdeskcoreLogsController extends AbstractBackendController
     protected RouterInterface $router;
     private string $projectDir;
     private SessionInterface $session;
+    private Security $security;
 
     public function __construct(
         CsrfTokenManagerInterface $csrfTokenManager,
         string                    $csrfTokenName,
         RouterInterface           $router,
         string                    $projectDir,
-        SessionInterface          $session
+        SessionInterface          $session,
+        Security                  $security
     )
     {
         $this->csrfTokenManager = $csrfTokenManager;
@@ -35,6 +40,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         $this->router = $router;
         $this->projectDir = $projectDir;
         $this->session = $session;
+        $this->security = $security;
     }
 
     /**
@@ -143,11 +149,32 @@ class AlpdeskcoreLogsController extends AbstractBackendController
      */
     public function endpoint(): Response
     {
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_logs.css';
+
+        $backendUser = $this->security->getUser();
+
+        if (!$backendUser instanceof BackendUser) {
+
+            return $this->render('@AlpdeskCore/alpdeskcorelogs_error.html.twig', [
+                'errorMessage' => 'invalid access'
+            ]);
+
+        }
+
+        Utils::mergeUserGroupPermissions($backendUser);
+
+        if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
+
+            return $this->render('@AlpdeskCore/alpdeskcorelogs_error.html.twig', [
+                'errorMessage' => 'invalid access'
+            ]);
+
+        }
+
         $this->deleteLog();
         $this->checkFilter();
 
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_logs.js';
-        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_logs.css';
 
         System::loadLanguageFile('default');
 
