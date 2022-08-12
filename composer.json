@@ -9,16 +9,18 @@
   "homepage": "https://github.com/xprojects-de/alpdesk-core",
   "license": "MIT",
   "require": {
-    "php": ">=7.4",
+    "php": "^8.1",
     "ext-json": "*",
     "ext-sodium": "*",
     "ext-curl": "*",
-    "contao/core-bundle": "^4.13",
+    "contao/core-bundle": "^5.0",
     "tecnickcom/tcpdf": "^6.4",
     "lcobucci/jwt": "^4.1",
-    "symfony/security-bundle": "^5.4",
-    "symfony/process": "^5.4",
-    "doctrine/dbal": "^3.1"
+    "symfony/security-bundle": "^6.0.2",
+    "symfony/security-core": "^6.1",
+    "symfony/process": "^5.4 || ^6.0",
+    "symfony/filesystem": "^5.4 || ^6.0",
+    "doctrine/dbal": "^3.3"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
@@ -26,11 +28,13 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "contao/manager-plugin": "^2.0",
-    "contao/manager-bundle": "^4.13",
-    "phpstan/phpstan": "^0.12.81",
-    "vimeo/psalm": "^4.6",
+    "contao/manager-bundle": "^5.0",
+    "phpstan/phpstan": "^1.0",
+    "phpstan/phpstan-phpunit": "^1.0",
+    "phpstan/phpstan-symfony": "^1.0",
+    "slam/phpstan-extensions": "^6.0",
     "phpunit/phpunit": "^9.5",
-    "symfony/phpunit-bridge": "^5.2"
+    "symfony/phpunit-bridge": "^5.4 | ^6.0"
   },
   "authors": [
     {
@@ -53,6 +57,12 @@
     "contao-component-dir": "public"
   },
   "config": {
-    "contao-component-dir": "public"
+    "contao-component-dir": "public",
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true,
+      "contao-community-alliance/composer-plugin": true,
+      "contao-components/installer": true,
+      "contao/manager-plugin": true
+    }
   }
 }

@@ -1,4 +1,11 @@
 
+#alpdeskcorelogs_backendcontainer {
+    float: left;
+    width: calc(100% - 225px);
+    min-height: calc(100vh - 40px);
+    background: #eaeaec;
+}
+
 .alpdeskcorelogfile {
     border-bottom: 1px solid #ccc;
     padding: 15px;
@@ -35,10 +42,22 @@
     border-bottom: 1px solid #ccc;
 }
 
+#alpdeskcorelogs_logInfo {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+}
+
 #alpdeskcorelogs_filter input.text {
     width: 50%;
 }
 
 #alpdeskcorelogs_backendcontainer strong.filterMarked {
     color: #F47C00;
+}
+
+@media (max-width: 991px) {
+    #alpdeskcorelogs_backendcontainer {
+        float: none;
+        width: auto;
+    }
 }

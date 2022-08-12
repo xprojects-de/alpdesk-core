@@ -245,5 +245,6 @@ class AlpdeskcoreDatabasemanagerModel extends Model
         }
 
         return null;
+
     }
 }

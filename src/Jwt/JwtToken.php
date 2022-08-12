@@ -8,6 +8,7 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Validation\Constraint\IdentifiedBy;
@@ -87,11 +88,16 @@ class JwtToken
      * @param string $name
      * @return mixed|null
      */
-    public static function getClaim(string $token, string $name)
+    public static function getClaim(string $token, string $name): mixed
     {
         try {
 
             $tokenObject = self::parse($token);
+            
+            if (!$tokenObject instanceof UnencryptedToken) {
+                throw new \Exception('invalid token instance');
+            }
+
             $value = $tokenObject->claims()->get($name);
 
         } catch (\Exception $ex) {

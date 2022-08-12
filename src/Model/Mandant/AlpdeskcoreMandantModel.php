@@ -19,11 +19,11 @@ class AlpdeskcoreMandantModel extends Model
     protected static $strTable = 'tl_alpdeskcore_mandant';
 
     /**
-     * @param $username
+     * @param string $username
      * @return AlpdeskcoreUser
      * @throws AlpdeskCoreModelException
      */
-    public static function findByUsername($username): AlpdeskcoreUser
+    public static function findByUsername(string $username): AlpdeskcoreUser
     {
         $memberObject = MemberModel::findBy(['tl_member.disable!=?', 'tl_member.login=?', 'tl_member.username=?'], [1, 1, $username]);
 
@@ -125,6 +125,24 @@ class AlpdeskcoreMandantModel extends Model
 
             if ($memberObject->alpdeskcore_copy !== null && (int)$memberObject->alpdeskcore_copy === 1) {
                 $alpdeskUser->setAccessCopy(false);
+            }
+
+            if ($memberObject->alpdeskcore_crudOperations !== null && $memberObject->alpdeskcore_crudOperations !== '') {
+
+                $memberCrudOperations = StringUtil::deserialize($memberObject->alpdeskcore_crudOperations);
+                if (\is_array($memberCrudOperations) && \count($memberCrudOperations) > 0) {
+                    $alpdeskUser->setCrudOperations($memberCrudOperations);
+                }
+
+            }
+
+            if ($memberObject->alpdeskcore_crudTables !== null && $memberObject->alpdeskcore_crudTables !== '') {
+
+                $memberCrudTables = StringUtil::deserialize($memberObject->alpdeskcore_crudTables);
+                if (\is_array($memberCrudTables) && \count($memberCrudTables) > 0) {
+                    $alpdeskUser->setCrudTables($memberCrudTables);
+                }
+
             }
 
             return $alpdeskUser;

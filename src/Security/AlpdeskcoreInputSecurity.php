@@ -10,12 +10,12 @@ use Contao\Config;
 class AlpdeskcoreInputSecurity
 {
     /**
-     * @param $varValue
+     * @param mixed $varValue
      * @param false $blnDecodeEntities
-     * @return array|mixed|null
+     * @return mixed
      * @throws \Exception
      */
-    public static function secureValue($varValue, bool $blnDecodeEntities = false)
+    public static function secureValue(mixed $varValue, bool $blnDecodeEntities = false): mixed
     {
         if ($varValue === null) {
             throw new \Exception('value is null at secureValue');
@@ -33,12 +33,12 @@ class AlpdeskcoreInputSecurity
     }
 
     /**
-     * @param $varValue
+     * @param mixed $varValue
      * @param false $blnDecodeEntities
-     * @return array|mixed|null
+     * @return mixed
      * @throws \Exception
      */
-    public static function secureHtmlValue($varValue, bool $blnDecodeEntities = false)
+    public static function secureHtmlValue(mixed $varValue, bool $blnDecodeEntities = false): mixed
     {
         if ($varValue === null) {
             throw new \Exception('value is null at secureValue');
@@ -56,18 +56,18 @@ class AlpdeskcoreInputSecurity
     }
 
     /**
-     * @param $varValue
-     * @return array|bool|int|mixed|string|null
+     * @param mixed $varValue
+     * @return mixed
      * @throws \Exception
      */
-    public static function secureRawValue($varValue)
+    public static function secureRawValue(mixed $varValue): mixed
     {
         if ($varValue === null) {
             throw new \Exception('value is null at secureValue');
         }
 
         $varValue = Input::preserveBasicEntities($varValue);
-        
+
         return Input::xssClean($varValue);
     }
 }

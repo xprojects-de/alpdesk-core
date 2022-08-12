@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="9d20b48e-0e8c-4c21-98a1-f6b5b2d3dd65" name="Alpdesk-Core" url="https://alpdesk-core:8890">
+        <fileTransfer mountedRoot="$PROJECT_DIR$/../../MAMPP/alpdesk-core/vendor/alpdesk" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>

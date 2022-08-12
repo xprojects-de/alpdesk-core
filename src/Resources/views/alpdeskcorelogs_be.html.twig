@@ -1,12 +1,4 @@
-{% extends "@ContaoCore/Backend/be_page.html.twig" %}
-
-{% block headline %}
-    Logs
-{% endblock %}
-
-{% block error %}
-    {{ numberOfLogs }}
-{% endblock %}
+{% extends "@Contao/be_main" %}
 
 {% block main %}
 
@@ -22,12 +14,14 @@
                 <input type="text" class="text" name="filterValue" value="{{ filterValue }}" placeholder="filter...">
                 &nbsp;&nbsp;
                 <button title="" id="fullsize" class="tl_submit">
-                    <img width="15" src="system/themes/flexible/icons/filter-apply.svg">
+                    <img width="15" src="/system/themes/flexible/icons/filter-apply.svg">
                 </button>
 
             </form>
 
         </div>
+
+        <div id="alpdeskcorelogs_logInfo">{{ numberOfLogs }}</div>
 
         {% for key,value in logs %}
 
@@ -36,11 +30,11 @@
                 <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
                    onclick="if(!confirm('{{ confirm }}'))return false;"
                    class="alpdeskcorelogsdelete">
-                    <img src="system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
+                    <img src="/system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
                 </a>
 
                 <span class="logVisible">
-                    <img src="system/themes/flexible/icons/visible.svg" alt="" width="16" height="16">
+                    <img src="/system/themes/flexible/icons/visible.svg" alt="" width="16" height="16">
                 </span>
 
                 {{ value.logfile }}

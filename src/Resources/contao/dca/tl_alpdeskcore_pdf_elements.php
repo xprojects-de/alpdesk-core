@@ -1,10 +1,14 @@
 <?php
 
+use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\DataContainer;
+use Contao\DC_Table;
+
 $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
 (
     'config' => array
     (
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ptable' => 'tl_alpdeskcore_pdf',
         'enableVersioning' => true,
         'sql' => array
@@ -17,18 +21,18 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'onload_callback' => array
         (
-            array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'pdfElementsloadCallback')
+            array(AlpdeskCoreDcaUtils::class, 'pdfElementsloadCallback')
         ),
     ),
     'list' => array
     (
         'sorting' => array
         (
-            'mode' => 4,
+            'mode' => DataContainer::MODE_PARENT,
             'fields' => array('sorting'),
             'headerFields' => array('title'),
             'panelLayout' => 'filter;search,limit',
-            'child_record_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'listPDFElements')
+            'child_record_callback' => array(AlpdeskCoreDcaUtils::class, 'listPDFElements')
         ),
         'global_operations' => array
         (
@@ -59,14 +63,14 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if (!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\')) return false;Backend.getScrollOffset();"'
+                'attributes' => 'onclick="if (!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\')) return false;Backend.getScrollOffset();"'
             ),
             'generatetestpdf' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['generatetestpdf'],
                 'icon' => 'redirect.gif',
                 'href' => 'act=generatetestpdf',
-                'button_callback' => array('Alpdesk\\AlpdeskCore\\Library\\Backend\\AlpdeskCoreDcaUtils', 'generatetestpdfLinkCallback')
+                'button_callback' => array(AlpdeskCoreDcaUtils::class, 'generatetestpdfLinkCallback')
             ),
         )
     ),

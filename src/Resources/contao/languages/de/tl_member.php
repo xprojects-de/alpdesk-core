@@ -12,3 +12,5 @@ $GLOBALS['TL_LANG']['tl_member']['alpdeskcore_delete'] = ['Alpdesk Dateien/Ordne
 $GLOBALS['TL_LANG']['tl_member']['alpdeskcore_rename'] = ['Alpdesk Dateien/Ordner umbenennen DEAKTIVIEREN', 'Option um Datei-/Ordner Operationen zu beschränken'];
 $GLOBALS['TL_LANG']['tl_member']['alpdeskcore_move'] = ['Alpdesk Dateien/Ordner verschieben DEAKTIVIEREN', 'Option um Datei-/Ordner Operationen zu beschränken'];
 $GLOBALS['TL_LANG']['tl_member']['alpdeskcore_copy'] = ['Alpdesk Dateien/Ordner kopieren DEAKTIVIEREN', 'Option um Datei-/Ordner Operationen zu beschränken'];
+$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_crudOperations'] = ['Alpdesk Contao CRUD Operationen', 'Option um CRUD Operationen zu erlauben'];
+$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_crudTables'] = ['Alpdesk Contao CRUD Tabellen', 'Option um CRUD Tabellen zu erlauben'];
