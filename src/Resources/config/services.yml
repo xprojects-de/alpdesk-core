@@ -91,7 +91,7 @@ services:
       - '%contao.csrf_token_name%'
       - '@router'
       - '%kernel.project_dir%'
-      - '@session'
+      - '@request_stack'
       - '@security.helper'
     tags:
       - controller.service_arguments

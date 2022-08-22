@@ -10,6 +10,7 @@ use Contao\Controller;
 use Contao\File;
 use Contao\Input;
 use Contao\System;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -23,7 +24,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
     private string $csrfTokenName;
     protected RouterInterface $router;
     private string $projectDir;
-    private SessionInterface $session;
+    private RequestStack $requestStack;
     private Security $security;
 
     public function __construct(
@@ -31,7 +32,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         string                    $csrfTokenName,
         RouterInterface           $router,
         string                    $projectDir,
-        SessionInterface          $session,
+        RequestStack              $requestStack,
         Security                  $security
     )
     {
@@ -39,8 +40,13 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         $this->csrfTokenName = $csrfTokenName;
         $this->router = $router;
         $this->projectDir = $projectDir;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->security = $security;
+    }
+
+    private function getCurrentSession(): SessionInterface
+    {
+        return $this->requestStack->getCurrentRequest()->getSession();
     }
 
     /**
@@ -132,9 +138,9 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             $filterValue = Input::postRaw('filterValue');
 
             if ($filterValue !== null) {
-                $this->session->set('alpdeskcore_logsfilter', $filterValue);
+                $this->getCurrentSession()->set('alpdeskcore_logsfilter', $filterValue);
             } else {
-                $this->session->set('alpdeskcore_logsfilter', null);
+                $this->getCurrentSession()->set('alpdeskcore_logsfilter', null);
             }
 
             Controller::redirect($this->router->generate('alpdesk_logs_backend'));
@@ -178,7 +184,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
 
         System::loadLanguageFile('default');
 
-        $filterValue = $this->session->get('alpdeskcore_logsfilter');
+        $filterValue = $this->getCurrentSession()->get('alpdeskcore_logsfilter');
         if ($filterValue === null) {
             $filterValue = '';
         }
