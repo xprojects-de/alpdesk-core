@@ -46,14 +46,13 @@
         },
         "longtitle": {
           "type": "text",
-          "notnull": true,
-          "default": ""
+          "notnull": false,
+          "default": "NULL"
         },
         "mediumtitle": {
           "type": "mediumtext",
           "notnull": false,
-          "notnull": true,
-          "default": ""
+          "default": "NULL"
         },
         "blobfield1": {
           "type": "blob",
@@ -168,7 +167,6 @@
         "mydouble": {
           "type": "double",
           "notnull": true,
-          "notnull": true,
           "default": "0"
         },
         "mydate": {
@@ -203,6 +201,22 @@
           "unsigned": true,
           "notnull": true,
           "default": "10"
+        },
+        "varcharBinary1": {
+          "type": "string",
+          "length": "2048",
+          "notnull": false,
+          "default": "NULL",
+          "charset": "utf8mb4",
+          "collation": "utf8mb4_bin"
+        },
+        "varcharBinary2": {
+          "type": "string",
+          "length": "2048",
+          "notnull": true,
+          "default": "",
+          "charset": "utf8mb4",
+          "collation": "utf8mb4_bin"
         }
       }
     }
