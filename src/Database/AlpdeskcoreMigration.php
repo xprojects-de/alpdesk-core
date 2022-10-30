@@ -185,7 +185,6 @@ class AlpdeskcoreMigration
         $fixed = false;
         $scale = null;
         $precision = null;
-        // $collation = null;
         $unsigned = false;
 
         if (\array_key_exists('unsigned', $fieldattributes)) {
@@ -240,9 +239,22 @@ class AlpdeskcoreMigration
             $options['precision'] = $precision;
         }
 
-        /*if (null !== $collation) {
-            $options['platformOptions'] = ['collation' => $collation];
-        }*/
+        $platformOptions = [];
+
+        $collation = $fieldattributes['collation'] ?? null;
+        $charset = $fieldattributes['charset'] ?? null;
+
+        if (null !== $charset) {
+            $platformOptions['charset'] = $charset;
+        }
+
+        if (null !== $collation) {
+            $platformOptions['collation'] = $collation;
+        }
+
+        if (!empty($platformOptions)) {
+            $options['platformOptions'] = $platformOptions;
+        }
 
         $table->addColumn($field, $type, $options);
     }
