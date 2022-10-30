@@ -81,6 +81,10 @@ class Cryption
      */
     public function safeDecrypt(string $encrypted, bool $zeroKey = true): string
     {
+        if ($encrypted === '') {
+            return '';
+        }
+
         $decoded = base64_decode($encrypted);
         $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
         $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
