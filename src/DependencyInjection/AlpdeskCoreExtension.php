@@ -18,9 +18,30 @@ class AlpdeskCoreExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('listener.yml');
         $loader->load('services.yml');
+
+        /**
+         * e.g. in config.xml
+         * alpdesk_core:
+         *   storage:
+         *     awss3:
+         *       key: "myKey"
+         *       secret: "mySecret"
+         *       region: "eu-central-1"
+         *       bucket: "bucketName"
+         */
+
+        if (!isset($config['storage']) || !\is_array($config['storage'])) {
+            $config['storage'] = [];
+        }
+
+        $container->setParameter('alpdesk_core.storage', $config['storage']);
+
     }
 
 }

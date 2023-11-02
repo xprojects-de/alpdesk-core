@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
+use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFilemanagement;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
-use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadEvent;
@@ -25,18 +25,21 @@ class AlpdeskCoreFilemanagementController extends AbstractController
     protected ContaoFramework $framework;
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
+    protected StorageAdapter $storageAdapter;
 
     public function __construct(
         ContaoFramework         $framework,
         AlpdeskCoreEventService $eventService,
         AlpdeskcoreLogger       $logger,
-        string                  $rootDir
+        string                  $rootDir,
+        StorageAdapter          $storageAdapter
     )
     {
         $this->framework = $framework;
         $this->eventService = $eventService;
         $this->logger = $logger;
         $this->rootDir = $rootDir;
+        $this->storageAdapter = $storageAdapter;
     }
 
     /**
@@ -90,7 +93,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             if ($uploadFile !== null && $target !== null) {
 
-                $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->upload($uploadFile, $target, $user);
+                $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService, $this->storageAdapter))->upload($uploadFile, $target, $user);
 
                 $event = new AlpdeskCoreFileuploadEvent($response);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFileuploadEvent::NAME);
@@ -125,14 +128,14 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
-            $downloadData = (array)\json_decode($request->getContent(), true);
+            $downloadData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->download($user, $downloadData);
+            $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService, $this->storageAdapter))->download($user, $downloadData);
             $this->logger->info('Download successfully', __METHOD__);
 
             return $file;
 
-        } catch (\Exception|AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -155,14 +158,14 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
-            $finderData = (array)\json_decode($request->getContent(), true);
+            $finderData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->finder($user, $finderData);
+            $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService, $this->storageAdapter))->finder($user, $finderData);
             $this->logger->info('Finder successfully', __METHOD__);
 
             return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
 
-        } catch (\Exception|AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);

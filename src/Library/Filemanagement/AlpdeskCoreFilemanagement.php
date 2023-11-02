@@ -9,6 +9,7 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderDeleteEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderListEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFilemanagementFinderMetaEvent;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
+use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\FilesModel;
 use Contao\File;
@@ -29,14 +30,17 @@ class AlpdeskCoreFilemanagement
 {
     protected string $rootDir;
     private AlpdeskCoreEventService $eventService;
+    private StorageAdapter $storageAdapter;
 
     public function __construct(
         string                  $rootDir,
-        AlpdeskCoreEventService $eventService
+        AlpdeskCoreEventService $eventService,
+        StorageAdapter          $storageAdapter
     )
     {
         $this->rootDir = $rootDir;
         $this->eventService = $eventService;
+        $this->storageAdapter = $storageAdapter;
     }
 
     /**

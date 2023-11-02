@@ -36,6 +36,13 @@ services:
       - '@alpdeskcore.loggingservice'
       - '@alpdeskcore.security.user_provider'
 
+  alpdeskcore.storageservice:
+    class: Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter
+    arguments:
+      - '@contao.filesystem.virtual.files'
+      - '%kernel.project_dir%'
+    public: true
+
   Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:
     arguments:
       - '@contao.framework'
@@ -60,6 +67,7 @@ services:
       - '@alpdeskcore.eventservice'
       - '@alpdeskcore.loggingservice'
       - '%kernel.project_dir%'
+      - '@alpdeskcore.storageservice'
     tags:
       - controller.service_arguments
 

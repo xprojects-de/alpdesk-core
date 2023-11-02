@@ -20,7 +20,8 @@
     "symfony/security-core": "^6.1",
     "symfony/process": "^5.4 || ^6.0",
     "symfony/filesystem": "^5.4 || ^6.0",
-    "doctrine/dbal": "^3.3"
+    "doctrine/dbal": "^3.3",
+    "league/flysystem-aws-s3-v3": "^3.10.0"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
