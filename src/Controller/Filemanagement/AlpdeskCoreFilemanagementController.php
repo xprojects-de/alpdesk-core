@@ -125,7 +125,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
-            $downloadData = (array)\json_decode($request->getContent(), true);
+            $downloadData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
             $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->download($user, $downloadData);
             $this->logger->info('Download successfully', __METHOD__);
@@ -155,7 +155,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
-            $finderData = (array)\json_decode($request->getContent(), true);
+            $finderData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
             $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->finder($user, $finderData);
             $this->logger->info('Finder successfully', __METHOD__);
