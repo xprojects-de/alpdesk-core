@@ -180,7 +180,7 @@ class AlpdeskCoreAuthToken
         try {
             $this->invalidTokenData($response->getUsername(), $response->getAlpdesk_token());
             $response->setInvalid(true);
-        } catch (AlpdeskCoreAuthException $ex) {
+        } catch (AlpdeskCoreAuthException) {
             $response->setInvalid(false);
         }
 

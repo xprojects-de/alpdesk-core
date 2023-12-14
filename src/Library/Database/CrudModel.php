@@ -51,7 +51,7 @@ class CrudModel
     public function getSchema(): Schema
     {
         if ($this->schema === null) {
-            $this->schema = $this->getSchemaManager()->createSchema();
+            $this->schema = $this->getSchemaManager()->introspectSchema();
         }
 
         return $this->schema;
@@ -151,8 +151,7 @@ class CrudModel
                 $message = \end($lastMessage);
             }
 
-        } catch (\Exception $ex) {
-
+        } catch (\Exception) {
         }
 
         return \trim($message);

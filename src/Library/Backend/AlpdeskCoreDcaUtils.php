@@ -28,7 +28,7 @@ class AlpdeskCoreDcaUtils extends Backend
     {
         try {
             $validateAndVerify = JwtToken::validateAndVerify($args[1], AlpdeskcoreUserProvider::createJti($args[0]));
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             $validateAndVerify = false;
         }
 
@@ -110,12 +110,12 @@ class AlpdeskCoreDcaUtils extends Backend
 
             try {
                 (new AlpdeskCorePDFCreator())->generateById((int)Input::get('pdfid'), "files/tmp", time() . ".pdf");
-            } catch (\Exception $ex) {
-
+            } catch (\Exception) {
             }
 
             Controller::redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
         }
+
     }
 
     /**

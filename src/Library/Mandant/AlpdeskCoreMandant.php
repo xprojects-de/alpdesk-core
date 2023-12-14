@@ -48,17 +48,16 @@ class AlpdeskCoreMandant
             foreach ($plugins as $pluginElement) {
 
                 $type = (string)$pluginElement->type;
-                if (!\in_array($type, $invalidElements, true)) {
+                if (
+                    isset($pluginData[$type], $pluginInfo[$type]) &&
+                    !\in_array($type, $invalidElements, true)
+                ) {
 
-                    if (isset($pluginData[$type]) && isset($pluginInfo[$type])) {
-
-                        $data[] = array(
-                            'value' => $pluginElement->type,
-                            'label' => $pluginData[$type],
-                            'customTemplate' => ($pluginInfo[$type]['customTemplate'] ?? false)
-                        );
-
-                    }
+                    $data[] = array(
+                        'value' => $pluginElement->type,
+                        'label' => $pluginData[$type],
+                        'customTemplate' => ($pluginInfo[$type]['customTemplate'] ?? false)
+                    );
 
                 }
             }
@@ -83,8 +82,7 @@ class AlpdeskCoreMandant
 
             $data = $mData->row();
 
-            unset($data['id']);
-            unset($data['tstamp']);
+            unset($data['id'], $data['tstamp']);
 
             $returnData = array();
 
