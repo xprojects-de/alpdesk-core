@@ -80,20 +80,17 @@ class AlpdeskCoreAuthToken
         $username = (string)AlpdeskcoreInputSecurity::secureValue($authdata['username']);
         $password = (string)AlpdeskcoreInputSecurity::secureValue($authdata['password']);
 
-        // Trim username because of trailing and leading whitespace
-        $username = \trim($username);
-
         try {
-            (new AlpdeskCoreMandantAuth($this->passwordHasherFactory))->login($username, $password);
+            $alpdeskCoreUser = (new AlpdeskCoreMandantAuth($this->passwordHasherFactory))->login($username, $password);
         } catch (AlpdeskCoreAuthException $ex) {
             throw new AlpdeskCoreAuthException($ex->getMessage(), $ex->getCode());
         }
 
         $response = new AlpdeskCoreAuthResponse();
-        $response->setUsername($username);
+        $response->setUsername($alpdeskCoreUser->getUsername());
         $response->setInvalid(false);
         $response->setVerify(true);
-        $tokenData = $this->setAuthSession($username, $ttlToken);
+        $tokenData = $this->setAuthSession($alpdeskCoreUser->getUsername(), $ttlToken);
         $response->setAlpdesk_token($tokenData->token);
         $response->setAlpdeskRefreshToken($tokenData->refresh_token);
 
