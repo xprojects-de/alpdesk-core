@@ -10,9 +10,9 @@ use Contao\Controller;
 use Contao\File;
 use Contao\Input;
 use Contao\System;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -44,9 +44,12 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         $this->security = $security;
     }
 
-    private function getCurrentSession(): SessionInterface
+    /**
+     * @return SessionInterface|null
+     */
+    private function getCurrentSession(): ?SessionInterface
     {
-        return $this->requestStack->getCurrentRequest()->getSession();
+        return $this->requestStack->getCurrentRequest()?->getSession();
     }
 
     /**
@@ -138,9 +141,9 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             $filterValue = Input::postRaw('filterValue');
 
             if ($filterValue !== null) {
-                $this->getCurrentSession()->set('alpdeskcore_logsfilter', $filterValue);
+                $this->getCurrentSession()?->set('alpdeskcore_logsfilter', $filterValue);
             } else {
-                $this->getCurrentSession()->set('alpdeskcore_logsfilter', null);
+                $this->getCurrentSession()?->set('alpdeskcore_logsfilter', null);
             }
 
             Controller::redirect($this->router->generate('alpdesk_logs_backend'));
@@ -184,7 +187,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
 
         System::loadLanguageFile('default');
 
-        $filterValue = $this->getCurrentSession()->get('alpdeskcore_logsfilter');
+        $filterValue = $this->getCurrentSession()?->get('alpdeskcore_logsfilter');
         if ($filterValue === null) {
             $filterValue = '';
         }
