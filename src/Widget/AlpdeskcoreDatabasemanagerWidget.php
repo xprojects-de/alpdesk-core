@@ -113,6 +113,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                     $jsonFile = new File($jsonModelFile->path);
                     if ($jsonFile->exists()) {
 
+                        // $jsonFile->getContent() must always be a valid JSON
                         $jsonModel = \json_decode($jsonFile->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
                         if (\count($jsonModel) > 0) {
