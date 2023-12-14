@@ -170,7 +170,7 @@ class DcaCallbacks
         try {
 
             $schemaManager = $this->connection->createSchemaManager();
-            $tables = $schemaManager->createSchema()->getTables();
+            $tables = $schemaManager->introspectSchema()->getTables();
 
             $preparedTables = [];
             foreach ($tables as $table) {
@@ -183,8 +183,7 @@ class DcaCallbacks
 
             return $preparedTables;
 
-
-        } catch (\Throwable $tr) {
+        } catch (\Throwable) {
             return [];
         }
 
