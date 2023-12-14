@@ -80,6 +80,9 @@ class AlpdeskCoreAuthToken
         $username = (string)AlpdeskcoreInputSecurity::secureValue($authdata['username']);
         $password = (string)AlpdeskcoreInputSecurity::secureValue($authdata['password']);
 
+        // Trim username because of trailing and leading whitespace
+        $username = \trim($username);
+
         try {
             (new AlpdeskCoreMandantAuth($this->passwordHasherFactory))->login($username, $password);
         } catch (AlpdeskCoreAuthException $ex) {
