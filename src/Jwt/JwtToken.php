@@ -93,14 +93,14 @@ class JwtToken
         try {
 
             $tokenObject = self::parse($token);
-            
+
             if (!$tokenObject instanceof UnencryptedToken) {
                 throw new \Exception('invalid token instance');
             }
 
             $value = $tokenObject->claims()->get($name);
 
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             $value = null;
         }
 
@@ -136,7 +136,7 @@ class JwtToken
                 $value = !$tokenObject->isExpired($now);
             }
 
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             $value = false;
         }
 
