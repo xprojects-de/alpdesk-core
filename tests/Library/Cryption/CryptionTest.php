@@ -53,7 +53,7 @@ class StubContainerInterface implements ContainerInterface
      * @param string $name
      * @return array|bool|float|int|mixed|string|null
      */
-    public function getParameter(string $name)
+    public function getParameter(string $name): mixed
     {
         return $this->params[$name];
     }
