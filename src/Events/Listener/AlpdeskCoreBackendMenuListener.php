@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Events\Listener;
 
 use Alpdesk\AlpdeskCore\Utils\Utils;
-use Symfony\Component\Security\Core\Security;
 use Contao\CoreBundle\Event\MenuEvent;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Contao\BackendUser;
