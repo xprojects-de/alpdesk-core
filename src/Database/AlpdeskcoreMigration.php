@@ -40,7 +40,7 @@ class AlpdeskcoreMigration
     public function showMigrations(): array
     {
         $schemaManager = $this->connection->createSchemaManager();
-        $fromSchema = $schemaManager->createSchema();
+        $fromSchema = $schemaManager->introspectSchema();
 
         return (new Comparator())->compareSchemas($fromSchema, $this->parseSql())->toSql($this->connection->getDatabasePlatform());
 
