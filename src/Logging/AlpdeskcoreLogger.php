@@ -25,10 +25,6 @@ class AlpdeskcoreLogger
         $this->environment = $environment;
     }
 
-    /**
-     * @return void
-     * @throws \Exception
-     */
     private function initialize(): void
     {
         if ($this->initialized === false) {
@@ -61,7 +57,6 @@ class AlpdeskcoreLogger
      * @param mixed $strText
      * @param mixed $strFunction
      * @return void
-     * @throws \Exception
      */
     public function info(mixed $strText, mixed $strFunction): void
     {
@@ -73,7 +68,6 @@ class AlpdeskcoreLogger
      * @param mixed $strText
      * @param mixed $strFunction
      * @return void
-     * @throws \Exception
      */
     public function debug(mixed $strText, mixed $strFunction): void
     {
@@ -85,7 +79,6 @@ class AlpdeskcoreLogger
      * @param mixed $strText
      * @param mixed $strFunction
      * @return void
-     * @throws \Exception
      */
     public function warning(mixed $strText, mixed $strFunction): void
     {
@@ -97,7 +90,6 @@ class AlpdeskcoreLogger
      * @param mixed $strText
      * @param mixed $strFunction
      * @return void
-     * @throws \Exception
      */
     public function error(mixed $strText, mixed $strFunction): void
     {
