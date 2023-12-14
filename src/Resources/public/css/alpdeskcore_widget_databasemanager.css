@@ -43,4 +43,17 @@ p.alpdeskcore_widget_databasemanager_specialtablecolumns {
     border: 2px solid #3f51b5;
 }
 
+html[data-color-scheme="dark"] {
+
+    .alpdeskcore_widget_databasemanager_container p {
+        background: #333;
+    }
+
+    .alpdeskcore_widget_databasemanager_container {
+        background-color: #121416;
+        color: #fff;
+    }
+
+}
+
 

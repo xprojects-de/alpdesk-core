@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Alpdesk\AlpdeskCoreTest\Jwt;
+namespace Jwt;
 
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Contao\System;
@@ -19,13 +19,13 @@ class StubContainerInterface implements ContainerInterface
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @param int $invalidBehavior
-     * @return object|void|null
+     * @return object|null
      */
-    public function get($id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
+    public function get(string $id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE): ?object
     {
-        // TODO: Implement get() method.
+        return null;
     }
 
     /**
@@ -50,7 +50,7 @@ class StubContainerInterface implements ContainerInterface
      * @param string $name
      * @return array|bool|float|int|mixed|string|null
      */
-    public function getParameter(string $name)
+    public function getParameter(string $name): mixed
     {
         return $this->params[$name];
     }
@@ -95,7 +95,7 @@ class JwtTokenTest extends TestCase
         $this->assertNotEmpty(System::getContainer()->getParameter('kernel.secret'));
     }
 
-    private function nullParameter(\DateTimeImmutable $d): void
+    private function nullParameter(?\DateTimeImmutable $d): void
     {
 
     }

@@ -3,7 +3,6 @@
 namespace Alpdesk\AlpdeskCore\Logging;
 
 use Contao\Config;
-use DateTimeZone;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -37,7 +36,7 @@ class AlpdeskcoreLogger
             $this->logger = new Logger('alpdeskcorelogger');
 
             $timeZone = Config::get('timeZone');
-            $this->logger->setTimezone(new DateTimeZone($timeZone));
+            $this->logger->setTimezone(new \DateTimeZone($timeZone));
 
             $handler = new RotatingFileHandler($this->rootDir . '/var/logs/' . $this->environment . '-alpdesk.log', 0, ($this->environment === 'dev' ? Logger::DEBUG : Logger::WARNING));
 
@@ -54,27 +53,48 @@ class AlpdeskcoreLogger
 
     }
 
+    /**
+     * @param mixed $strText
+     * @param mixed $strFunction
+     * @return void
+     */
     public function info(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->info($strFunction . ' => ' . $strText);
     }
 
+    /**
+     * @param mixed $strText
+     * @param mixed $strFunction
+     * @return void
+     */
     public function debug(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->debug($strFunction . ' => ' . $strText);
     }
 
+    /**
+     * @param mixed $strText
+     * @param mixed $strFunction
+     * @return void
+     */
     public function warning(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->warning($strFunction . ' => ' . $strText);
     }
 
+    /**
+     * @param mixed $strText
+     * @param mixed $strFunction
+     * @return void
+     */
     public function error(mixed $strText, mixed $strFunction): void
     {
         $this->initialize();
         $this->logger->error($strFunction . ' => ' . $strText);
     }
+
 }

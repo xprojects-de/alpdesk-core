@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskCore\Database;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaConfig;
@@ -24,7 +25,7 @@ class AlpdeskcoreMigration
 
     /**
      * @param array $commands
-     * @throws \Doctrine\DBAL\Exception
+     * @throws \Exception
      */
     public function executeMigrations(array $commands): void
     {
@@ -40,9 +41,15 @@ class AlpdeskcoreMigration
     public function showMigrations(): array
     {
         $schemaManager = $this->connection->createSchemaManager();
-        $fromSchema = $schemaManager->createSchema();
+        $fromSchema = $schemaManager->introspectSchema();
 
-        return (new Comparator())->compareSchemas($fromSchema, $this->parseSql())->toSql($this->connection->getDatabasePlatform());
+        $databasePlatForm = $this->connection->getDatabasePlatform();
+
+        if (!$databasePlatForm instanceof AbstractPlatform) {
+            throw new \Exception('invalid DatabasePlatform');
+        }
+
+        return $databasePlatForm->getAlterSchemaSQL((new Comparator())->compareSchemas($fromSchema, $this->parseSql()));
 
     }
 
@@ -79,83 +86,93 @@ class AlpdeskcoreMigration
                     $table = $schema->createTable($currentTable['table']);
 
                     if (\array_key_exists('fields', $currentTable)) {
+
                         foreach ($currentTable['fields'] as $field => $fieldattributes) {
 
                             if (\is_array($fieldattributes)) {
                                 $this->parseField($table, $field, $fieldattributes);
                             }
                         }
+
                     }
 
-                    if (\array_key_exists('primary', $currentTable)) {
-                        if (\is_array($currentTable['primary'])) {
-                            $table->setPrimaryKey($currentTable['primary']);
-                        }
+                    if (\array_key_exists('primary', $currentTable) && \is_array($currentTable['primary'])) {
+                        $table->setPrimaryKey($currentTable['primary']);
                     }
 
-                    if (\array_key_exists('index', $currentTable)) {
-                        if (\is_array($currentTable['index'])) {
-                            foreach ($currentTable['index'] as $indexname => $indexfields) {
+                    if (\array_key_exists('index', $currentTable) && \is_array($currentTable['index'])) {
 
-                                if (\is_array($indexfields)) {
-                                    $table->addIndex($indexfields, $indexname);
-                                }
+                        foreach ($currentTable['index'] as $indexname => $indexfields) {
+
+                            if (\is_array($indexfields)) {
+                                $table->addIndex($indexfields, $indexname);
                             }
+
                         }
+
                     }
 
-                    if (\array_key_exists('foreignKeys', $currentTable)) {
-                        if (\is_array($currentTable['foreignKeys'])) {
+                    if (\array_key_exists('foreignKeys', $currentTable) && \is_array($currentTable['foreignKeys'])) {
 
-                            foreach ($currentTable['foreignKeys'] as $foreignTable => $columnMatching) {
+                        foreach ($currentTable['foreignKeys'] as $foreignTable => $columnMatching) {
 
-                                if (\is_array($columnMatching) && \count($columnMatching) > 0) {
+                            if (\is_array($columnMatching) && \count($columnMatching) > 0) {
 
-                                    // avalible RESTRICT, CASCADE, NO ACTION
-                                    $options = [
-                                        'onDelete' => 'RESTRICT',
-                                        'onUpdate' => 'RESTRICT'
-                                    ];
+                                // avalible RESTRICT, CASCADE, NO ACTION
+                                $options = [
+                                    'onDelete' => 'RESTRICT',
+                                    'onUpdate' => 'RESTRICT'
+                                ];
 
-                                    if (\array_key_exists('onDelete', $columnMatching)) {
-                                        $options['onDelete'] = $columnMatching['onDelete'];
-                                    }
+                                if (\array_key_exists('onDelete', $columnMatching)) {
+                                    $options['onDelete'] = $columnMatching['onDelete'];
+                                }
 
-                                    if (\array_key_exists('onUpdate', $columnMatching)) {
-                                        $options['onUpdate'] = $columnMatching['onUpdate'];
-                                    }
+                                if (\array_key_exists('onUpdate', $columnMatching)) {
+                                    $options['onUpdate'] = $columnMatching['onUpdate'];
+                                }
 
-                                    if (\array_key_exists('constraint', $columnMatching) && \is_array($columnMatching['constraint']) && \count($columnMatching['constraint']) > 0) {
+                                if (
+                                    \array_key_exists('constraint', $columnMatching) &&
+                                    \is_array($columnMatching['constraint']) && \count($columnMatching['constraint']) > 0
+                                ) {
 
-                                        // Only one per Table // Maybe @TODO
-                                        foreach ($columnMatching['constraint'] as $localColumn => $foreignColumn) {
+                                    // Only one per Table // Maybe @TODO
+                                    $cCounter = 0;
+                                    foreach ($columnMatching['constraint'] as $localColumn => $foreignColumn) {
 
-                                            $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
+                                        $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
+                                        $cCounter++;
+
+                                        if ($cCounter > 0) {
                                             break;
-
                                         }
 
                                     }
 
                                 }
-                            }
-                        }
-                    }
 
-                    if (\array_key_exists('unique', $currentTable)) {
-                        if (\is_array($currentTable['unique'])) {
-
-                            $uniqueValueArray = $currentTable['unique'];
-                            foreach ($uniqueValueArray as $uValue) {
-
-                                if (\is_array($uValue)) {
-                                    $table->addUniqueIndex($uValue);
-                                }
                             }
 
                         }
+
                     }
+
+                    if (\array_key_exists('unique', $currentTable) && \is_array($currentTable['unique'])) {
+
+                        $uniqueValueArray = $currentTable['unique'];
+                        foreach ($uniqueValueArray as $uValue) {
+
+                            if (\is_array($uValue)) {
+                                $table->addUniqueIndex($uValue);
+                            }
+
+                        }
+
+                    }
+
                 }
+
             }
 
             return $schema;
@@ -170,7 +187,7 @@ class AlpdeskcoreMigration
      * @param Table $table
      * @param string $field
      * @param array $fieldattributes
-     * @throws \Doctrine\DBAL\Exception
+     * @throws \Exception
      */
     private function parseField(Table $table, string $field, array $fieldattributes): void
     {
@@ -187,30 +204,36 @@ class AlpdeskcoreMigration
         $precision = null;
         $unsigned = false;
 
-        if (\array_key_exists('unsigned', $fieldattributes)) {
-            if ($fieldattributes['unsigned'] === true && \in_array(strtolower($fieldattributes['type']), array('tinyint', 'smallint', 'mediumint', 'int', 'bigint'))) {
-                $unsigned = true;
-            }
+        if (
+            \array_key_exists('unsigned', $fieldattributes) &&
+            $fieldattributes['unsigned'] === true &&
+            \in_array(strtolower($fieldattributes['type']), array('tinyint', 'smallint', 'mediumint', 'int', 'bigint'))
+        ) {
+            $unsigned = true;
         }
 
         $autoincrement = false;
-        if (\array_key_exists('autoincrement', $fieldattributes)) {
-            if ($fieldattributes['autoincrement'] === true) {
-                $autoincrement = true;
-            }
+        if (\array_key_exists('autoincrement', $fieldattributes) && $fieldattributes['autoincrement'] === true) {
+            $autoincrement = true;
         }
 
         $default = null;
         if (\array_key_exists('default', $fieldattributes)) {
+
             $default = $fieldattributes['default'];
             if ($autoincrement === true || $default === 'NULL') {
                 $default = null;
             }
+
         }
 
         $this->setLengthAndPrecisionByType($fieldattributes['type'], $dbType, $length, $scale, $precision, $fixed);
 
-        $type = $this->connection->getDatabasePlatform()->getDoctrineTypeMapping($fieldattributes['type']);
+        $type = $this->connection->getDatabasePlatform()?->getDoctrineTypeMapping($fieldattributes['type']);
+        if ($type === null) {
+            throw new \Exception('invalid type for ' . $fieldattributes['type']);
+        }
+
         if (0 === $length) {
             $length = null;
         }
@@ -235,8 +258,10 @@ class AlpdeskcoreMigration
         ];
 
         if (null !== $scale && null !== $precision) {
+
             $options['scale'] = $scale;
             $options['precision'] = $precision;
+
         }
 
         $platformOptions = [];
@@ -257,6 +282,7 @@ class AlpdeskcoreMigration
         }
 
         $table->addColumn($field, $type, $options);
+
     }
 
     private function setLengthAndPrecisionByType(string $type, string $dbType, ?int &$length, ?int &$scale, ?int &$precision, bool &$fixed): void

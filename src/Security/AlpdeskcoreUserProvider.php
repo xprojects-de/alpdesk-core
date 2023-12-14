@@ -83,10 +83,11 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
             $alpdeskUser = AlpdeskcoreMandantModel::findByUsername($username);
 
             $sessionModel = AlpdeskcoreSessionsModel::findByUsername($alpdeskUser->getUsername());
-            if ($sessionModel !== null) {
-                if (self::validateAndVerifyToken($sessionModel->token, $alpdeskUser->getUsername())) {
-                    $alpdeskUser->setToken($sessionModel->token);
-                }
+            if (
+                $sessionModel !== null &&
+                self::validateAndVerifyToken($sessionModel->token, $alpdeskUser->getUsername())
+            ) {
+                $alpdeskUser->setToken($sessionModel->token);
             }
 
             return $alpdeskUser;

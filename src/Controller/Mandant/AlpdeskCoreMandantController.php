@@ -8,7 +8,6 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandant;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
@@ -30,7 +29,6 @@ class AlpdeskCoreMandantController extends AbstractController
     )
     {
         $this->framework = $framework;
-
         $this->eventService = $eventService;
         $this->logger = $logger;
     }
@@ -79,11 +77,10 @@ class AlpdeskCoreMandantController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @param UserInterface $user
      * @return JsonResponse
      */
-    public function list(Request $request, UserInterface $user): JsonResponse
+    public function list(UserInterface $user): JsonResponse
     {
         try {
 
@@ -111,12 +108,11 @@ class AlpdeskCoreMandantController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @param UserInterface $user
      * @return JsonResponse
      * @throws \Exception
      */
-    public function edit(Request $request, UserInterface $user): JsonResponse
+    public function edit(UserInterface $user): JsonResponse
     {
         if (!($user instanceof AlpdeskcoreUser)) {
             throw new \Exception('invalid user type');

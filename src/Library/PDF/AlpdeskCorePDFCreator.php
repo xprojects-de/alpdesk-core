@@ -52,7 +52,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
 
     public function __construct()
     {
-        parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
+        parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT);
     }
 
     public function setFootersesstingsarray(array $footersesstingsarray): void
@@ -230,7 +230,11 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $l['a_meta_dir'] = 'ltr';
         $l['a_meta_charset'] = Config::get('characterSet');
 
-        $locale = System::getContainer()->get('request_stack')->getCurrentRequest()->getLocale();
+        $locale = System::getContainer()->get('request_stack')->getCurrentRequest()?->getLocale();
+        if ($locale === null) {
+            $locale = 'de';
+        }
+
         $l['a_meta_language'] = $locale;
 
         $l['w_page'] = 'page';
@@ -299,16 +303,16 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $pageCount = \count($pageSplit);
         if ($pageCount > 1) {
 
-            $this->writeHTML($pageSplit[0], true, false, true, false);
+            $this->writeHTML($pageSplit[0], true, false, true);
             for ($i = 1; $i < $pageCount; $i++) {
 
                 $this->AddPage();
-                $this->writeHTML($pageSplit[$i], true, false, true, false);
+                $this->writeHTML($pageSplit[$i], true, false, true);
 
             }
 
         } else {
-            $this->writeHTML($html, true, false, true, false);
+            $this->writeHTML($html, true, false, true);
         }
 
         $this->lastPage();
@@ -329,12 +333,11 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $resultPath = $path . '/' . $filename;
 
         $finalResultFile = new File($resultPath);
-        if ($finalResultFile->exists()) {
-            if (Dbafs::shouldBeSynchronized($finalResultFile->path)) {
-                Dbafs::addResource($finalResultFile->path);
-            }
+        if ($finalResultFile->exists() && Dbafs::shouldBeSynchronized($finalResultFile->path)) {
+            Dbafs::addResource($finalResultFile->path);
         }
 
         return $resultPath;
+
     }
 }

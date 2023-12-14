@@ -18,16 +18,12 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
     private static function create(int $id, string $host, int $port, string $username, string $password, string $database): ?Connection
     {
-        if (\count(self::$connectionsTable) > 0 && \array_key_exists($id, self::$connectionsTable)) {
-
-            if (self::$connectionsTable[$id] instanceof Connection) {
-
-                if (self::$connectionsTable[$id] !== null && self::$connectionsTable[$id]->isConnected()) {
-                    return self::$connectionsTable[$id];
-                }
-
-            }
-
+        if (
+            \array_key_exists($id, self::$connectionsTable) &&
+            self::$connectionsTable[$id] instanceof Connection &&
+            self::$connectionsTable[$id]->isConnected()
+        ) {
+            return self::$connectionsTable[$id];
         }
 
         $params = [
@@ -50,7 +46,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
             return self::$connectionsTable[$id];
 
-        } catch (\Exception $e) {
+        } catch (\Throwable) {
 
         }
 
@@ -59,18 +55,13 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
     public static function destroy(int $id): void
     {
-        if (\array_key_exists($id, self::$connectionsTable)) {
+        if (
+            \array_key_exists($id, self::$connectionsTable) &&
+            self::$connectionsTable[$id] instanceof Connection
+        ) {
 
-            if (self::$connectionsTable[$id] instanceof Connection) {
-
-                if (self::$connectionsTable[$id] !== null) {
-
-                    self::$connectionsTable[$id]->close();
-                    self::$connectionsTable[$id] = null;
-
-                }
-
-            }
+            self::$connectionsTable[$id]->close();
+            self::$connectionsTable[$id] = null;
 
         }
     }
@@ -93,7 +84,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
         try {
 
-            $tables = self::$connectionsTable[$id]->createSchemaManager()->createSchema()->getTables();
+            $tables = self::$connectionsTable[$id]->createSchemaManager()->introspectSchema()->getTables();
 
             $structure = array();
             foreach ($tables as $table) {
@@ -222,16 +213,12 @@ class AlpdeskcoreDatabasemanagerModel extends Model
      */
     public static function connectionById(int $id): ?Connection
     {
-        if (\count(self::$connectionsTable) > 0 && \array_key_exists($id, self::$connectionsTable)) {
-
-            if (self::$connectionsTable[$id] instanceof Connection) {
-
-                if (self::$connectionsTable[$id] !== null && self::$connectionsTable[$id]->isConnected()) {
-                    return self::$connectionsTable[$id];
-                }
-
-            }
-
+        if (
+            \array_key_exists($id, self::$connectionsTable) &&
+            self::$connectionsTable[$id] instanceof Connection &&
+            self::$connectionsTable[$id]->isConnected()
+        ) {
+            return self::$connectionsTable[$id];
         }
 
         $result = self::findByPk($id);
@@ -247,4 +234,5 @@ class AlpdeskcoreDatabasemanagerModel extends Model
         return null;
 
     }
+
 }

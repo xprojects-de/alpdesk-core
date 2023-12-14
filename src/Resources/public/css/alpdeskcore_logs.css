@@ -70,3 +70,15 @@
         width: auto;
     }
 }
+
+html[data-color-scheme="dark"] {
+
+    #alpdeskcorelogs_backendcontainer {
+        background: #121416;
+    }
+
+    .alpdeskcorelogfile {
+        background-color: #333;
+    }
+
+}

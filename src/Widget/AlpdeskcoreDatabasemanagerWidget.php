@@ -35,10 +35,14 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
             $username = $this->activeRecord->username;
             $password = $this->activeRecord->password;
             $database = $this->activeRecord->database;
-            if ($host !== '' && $username !== '' && $password !== '' && $database !== '') {
+
+            if ($host !== '' && $username !== '' && $password !== '' && $database !== '' && $port > 0) {
+
                 $outputValue = $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_parameters'] . '<br>';
                 $connection = AlpdeskcoreDatabasemanagerModel::connectionById($id);
+
                 try {
+
                     if ($connection !== null) {
 
                         $migrations = $this->checkMigrations($connection, $this->activeRecord->databasemodel);
@@ -50,34 +54,51 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                         AlpdeskcoreDatabasemanagerModel::destroy($id);
                         $outputValue .= $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['valid_connection'] . '<br>';
                         $outputValue .= '<hr>';
+
                         foreach ($structure as $key => $value) {
+
                             $outputValue .= '<div class="alpdeskcore_widget_databasemanager_table">';
                             $outputValue .= '<strong>' . $key . '</strong>';
                             if (is_array($value) && count($value) > 0) {
                                 $outputValue .= '<div class="alpdeskcore_widget_databasemanager_tablecolumns">';
+
                                 foreach ($value as $cKey => $cValue) {
+
                                     $outputValue .= '<p' . (($cKey === 'options' || $cKey === 'primary' || $cKey === 'indexes') ? ' class="alpdeskcore_widget_databasemanager_specialtablecolumns"' : '') . '>';
                                     $outputValue .= '<strong>' . $cKey . '</strong><br>';
                                     $outputValue .= $cValue;
                                     $outputValue .= '</p>';
+
                                 }
+
                                 $outputValue .= '</div>';
                             }
+
                             $outputValue .= '</div>';
                         }
                     } else {
                         $outputValue .= $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_connection'] . '<br>';
                     }
+
                 } catch (\Exception $ex) {
                     $outputValue .= $ex->getMessage() . '<br>';
                 }
+
             } else {
                 $outputValue .= $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['invalid_parameters'] . '<br>';
             }
+
         }
+
         return $migrationOutput . '<div class="alpdeskcore_widget_databasemanager_container">' . $outputValue . '</div>';
+
     }
 
+    /**
+     * @param Connection $connection
+     * @param mixed $modelUuid
+     * @return string
+     */
     private function checkMigrations(Connection $connection, mixed $modelUuid): string
     {
         $migrations = '';
@@ -92,7 +113,8 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                     $jsonFile = new File($jsonModelFile->path);
                     if ($jsonFile->exists()) {
 
-                        $jsonModel = \json_decode($jsonFile->getContent(), true);
+                        // $jsonFile->getContent() must always be a valid JSON
+                        $jsonModel = \json_decode($jsonFile->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
                         if (\count($jsonModel) > 0) {
 
@@ -121,14 +143,21 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                             } else {
                                 $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['nomigrations'] . '</h3>';
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         } catch (\Exception $ex) {
             $migrations = $ex->getMessage();
         }
 
         return $migrations;
+
     }
+
 }

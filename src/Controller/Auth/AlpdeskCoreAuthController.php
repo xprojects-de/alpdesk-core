@@ -89,9 +89,10 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $authdata = (array)\json_decode($request->getContent(), true);
+            // $request->getContent() must always be a valid JSON
+            $authData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->generateToken($authdata);
+            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->generateToken($authData);
 
             $event = new AlpdeskCoreAuthSuccessEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthSuccessEvent::NAME);
@@ -116,11 +117,10 @@ class AlpdeskCoreAuthController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @param UserInterface $user
      * @return JsonResponse
      */
-    public function verify(Request $request, UserInterface $user): JsonResponse
+    public function verify(UserInterface $user): JsonResponse
     {
         try {
 
@@ -165,7 +165,8 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $refreshData = (array)\json_decode($request->getContent(), true);
+            // $request->getContent() must always be a valid JSON
+            $refreshData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
             $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->refreshToken($refreshData, $user);
 
@@ -202,39 +203,55 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $memberdata = (array)\json_decode($request->getContent(), true);
+            $memberData = [];
 
-            if ($user->getIsAdmin() === true) {
+            try {
 
-                if (\array_key_exists('mandantid', $memberdata)) {
+                // Request could be empty
+                $memberRequest = $request->getContent();
+                if (\is_string($memberRequest) && $memberRequest !== '') {
 
-                    $mandantId = (string)AlpdeskcoreInputSecurity::secureValue($memberdata['mandantid']);
-
-                    if ($mandantId !== "") {
-
-                        if ($mandantId === "0") {
-
-                            $memberObject = MemberModel::findByPk($user->getMemberId());
-                            if ($memberObject !== null) {
-                                $memberObject->alpdeskcore_mandant = 0;
-                                $memberObject->save();
-                                $user->setMandantPid(0);
-                            }
-                        } else {
-
-                            if (!\array_key_exists((int)$mandantId, $user->getMandantWhitelist())) {
-                                throw new AlpdeskCoreAuthException('mandantid not in whitelistarray', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
-                            }
-
-                            $memberObject = MemberModel::findByPk($user->getMemberId());
-                            if ($memberObject !== null) {
-                                $memberObject->alpdeskcore_mandant = (int)$mandantId;
-                                $memberObject->save();
-                                $user->setMandantPid((int)$mandantId);
-                            }
-                        }
+                    $memberDataT = \json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+                    if (\is_array($memberDataT)) {
+                        $memberData = $memberDataT;
                     }
+
                 }
+
+            } catch (\Exception) {
+            }
+
+            if (\array_key_exists('mandantid', $memberData) && $user->getIsAdmin() === true) {
+
+                $mandantId = (string)AlpdeskcoreInputSecurity::secureValue($memberData['mandantid']);
+
+                if ($mandantId !== "") {
+
+                    if ($mandantId === "0") {
+
+                        $memberObject = MemberModel::findByPk($user->getMemberId());
+                        if ($memberObject !== null) {
+                            $memberObject->alpdeskcore_mandant = 0;
+                            $memberObject->save();
+                            $user->setMandantPid(0);
+                        }
+                    } else {
+
+                        if (!\array_key_exists((int)$mandantId, $user->getMandantWhitelist())) {
+                            throw new AlpdeskCoreAuthException('mandantid not in whitelistarray', AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
+                        }
+
+                        $memberObject = MemberModel::findByPk($user->getMemberId());
+                        if ($memberObject !== null) {
+                            $memberObject->alpdeskcore_mandant = (int)$mandantId;
+                            $memberObject->save();
+                            $user->setMandantPid((int)$mandantId);
+                        }
+
+                    }
+
+                }
+
             }
 
             $response = [
@@ -256,17 +273,18 @@ class AlpdeskCoreAuthController extends AbstractController
             return (new JsonResponse($event->getResultData()->getData(), AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Exception $exception) {
+
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+
         }
     }
 
     /**
-     * @param Request $request
      * @param UserInterface $user
      * @return JsonResponse
      */
-    public function logout(Request $request, UserInterface $user): JsonResponse
+    public function logout(UserInterface $user): JsonResponse
     {
         try {
 
@@ -291,6 +309,7 @@ class AlpdeskCoreAuthController extends AbstractController
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
 
         }
+
     }
 
 }
