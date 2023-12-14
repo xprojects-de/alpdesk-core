@@ -32,7 +32,6 @@ class AlpdeskCorePluginController extends AbstractController
     )
     {
         $this->framework = $framework;
-
         $this->eventService = $eventService;
         $this->logger = $logger;
         $this->rootDir = $rootDir;
@@ -84,9 +83,9 @@ class AlpdeskCorePluginController extends AbstractController
 
             $this->framework->initialize();
 
-            $plugindata = (array)\json_decode($request->getContent(), true);
+            $pluginData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $response = (new AlpdeskCorePlugin($this->rootDir))->call($user, $plugindata);
+            $response = (new AlpdeskCorePlugin($this->rootDir))->call($user, $pluginData);
 
             $event = new AlpdeskCorePlugincallEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCorePlugincallEvent::NAME);
@@ -101,6 +100,7 @@ class AlpdeskCorePluginController extends AbstractController
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
 
         }
+
     }
 
 }
