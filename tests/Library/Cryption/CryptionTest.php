@@ -22,13 +22,13 @@ class StubContainerInterface implements ContainerInterface
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @param int $invalidBehavior
-     * @return object|void|null
+     * @return object|null
      */
-    public function get($id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
+    public function get(string $id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE): ?object
     {
-        // TODO: Implement get() method.
+        return null;
     }
 
     /**
