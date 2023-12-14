@@ -83,6 +83,7 @@ class AlpdeskCorePluginController extends AbstractController
 
             $this->framework->initialize();
 
+            // $request->getContent() must always be a valid JSON
             $pluginData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
             $response = (new AlpdeskCorePlugin($this->rootDir))->call($user, $pluginData);
@@ -94,7 +95,7 @@ class AlpdeskCorePluginController extends AbstractController
 
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
