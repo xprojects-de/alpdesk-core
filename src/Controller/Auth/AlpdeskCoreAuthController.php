@@ -201,7 +201,23 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $memberData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $memberData = [];
+
+            try {
+
+                // Request could be empty
+                $memberRequest = $request->getContent();
+                if (\is_string($memberRequest) && $memberRequest !== '') {
+
+                    $memberDataT = \json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+                    if (\is_array($memberDataT)) {
+                        $memberData = $memberDataT;
+                    }
+
+                }
+
+            } catch (\Exception) {
+            }
 
             if (\array_key_exists('mandantid', $memberData) && $user->getIsAdmin() === true) {
 
@@ -255,8 +271,10 @@ class AlpdeskCoreAuthController extends AbstractController
             return (new JsonResponse($event->getResultData()->getData(), AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Exception $exception) {
+
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
+
         }
     }
 
