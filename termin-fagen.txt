@@ -14,7 +14,7 @@ Allgemeine Fragen:
     -> layz: true?
     -> stateless: true => Macht Contao trotzdem eine Session auf? (Thema gab es ja mal beim Preview-Listener)
     -> request_matcher deprecated
-    -> custom_authenticators richtig umgesetzt
+    -> custom_authenticators richtig umgesetzt (https://symfony.com/doc/current/security/custom_authenticator.html)
     -> fehlt da noch eine property in der firewall-config?
 -> AlpdeskcoreTokenAuthenticator und Userprovider durchgehen
 -> Routes prüfen ob diese duch den _scope abgesichert sind
