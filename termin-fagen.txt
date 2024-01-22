@@ -1,0 +1,20 @@
+
+
+Grobe Agenda:
+- kurze Vorstellug Produkt / Anwendungsfall
+- Vorstellung Aufbau und Prinzip Alpdesk-Core
+- genauere Betrachtung Security ALpdeskCore
+
+
+Allgemeine Fragen:
+- Besteht irgendwo ein "Sicherheitsloch" um die Security für den scope zu umgehen?
+
+
+-> firewall richtig konfiguriert für scope
+    -> layz: true?
+    -> stateless: true => Macht Contao trotzdem eine Session auf? (Thema gab es ja mal beim Preview-Listener)
+    -> request_matcher deprecated
+    -> custom_authenticators richtig umgesetzt
+    -> fehlt da noch eine property in der firewall-config?
+-> AlpdeskcoreTokenAuthenticator und Userprovider durchgehen
+-> Routes prüfen ob diese duch den _scope abgesichert sind
