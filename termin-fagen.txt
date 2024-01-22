@@ -1,8 +1,7 @@
 
-
 Grobe Agenda:
 - kurze Vorstellug Produkt / Anwendungsfall
-- Vorstellung Aufbau und Prinzip Alpdesk-Core
+- Vorstellung Aufbau und Prinzip Alpdesk-Core (Prinzip Authentication and Authorization)
 - genauere Betrachtung Security ALpdeskCore
 
 
