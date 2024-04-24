@@ -172,7 +172,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-menu" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-menu-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/contao/manager-bundle" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-code" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nelmio/security-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/debug-bundle" />
@@ -189,7 +188,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan-phpunit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan-symfony" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/masterminds/html5" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/templating" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/twig/string-extra" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/clock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/debril/feed-io" />
@@ -202,6 +200,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/messenger" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php83" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/rate-limiter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/toflar/cronjob-supervisor" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
