@@ -207,6 +207,7 @@
       <path value="$PROJECT_DIR$/vendor/league/uri-interfaces" />
       <path value="$PROJECT_DIR$/vendor/league/uri" />
       <path value="$PROJECT_DIR$/vendor/toflar/cronjob-supervisor" />
+      <path value="$PROJECT_DIR$/vendor/symfony/type-info" />
     </include_path>
   </component>
   <component name="PhpProjectServersManager">
