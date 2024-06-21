@@ -165,7 +165,8 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         if (!$backendUser instanceof BackendUser) {
 
             return $this->render('@AlpdeskCore/alpdeskcorelogs_error.html.twig', [
-                'errorMessage' => 'invalid access'
+                'headline' => 'Error',
+                'error' => 'invalid access'
             ]);
 
         }
@@ -175,7 +176,8 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
 
             return $this->render('@AlpdeskCore/alpdeskcorelogs_error.html.twig', [
-                'errorMessage' => 'invalid access'
+                'headline' => 'Error',
+                'error' => 'invalid access'
             ]);
 
         }
@@ -202,7 +204,8 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             'confirm' => $GLOBALS['TL_LANG']['MOD']['alpdeskcorelogs_confirm'],
             'numberOfLogs' => $GLOBALS['TL_LANG']['MOD']['alpdeskcorelogs_logcount'] . ': ' . $numberOfLogs,
             'filterValue' => $filterValue,
-            'logs' => $logFiles
+            'logs' => $logFiles,
+            'headline' => 'Logs'
         ]);
 
     }
