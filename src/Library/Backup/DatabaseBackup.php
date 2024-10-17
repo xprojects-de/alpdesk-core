@@ -16,6 +16,12 @@ class DatabaseBackup
     private ?string $prefix = null;
     private ?File $backupFile = null;
 
+    private array $searchPathMysqlDump = [
+        '/usr/bin',
+        '/Applications/MAMP/Library/bin',
+        '/Applications/MAMP/Library/bin/mysql80/bin'
+    ];
+
     /**
      * @param string $rootDir
      */
@@ -49,6 +55,23 @@ class DatabaseBackup
     }
 
     /**
+     * @return array|string[]
+     */
+    public function getSearchPathMysqlDump(): array
+    {
+        return $this->searchPathMysqlDump;
+    }
+
+    /**
+     * @param array $searchPathMysqlDump
+     * @return void
+     */
+    public function setSearchPathMysqlDump(array $searchPathMysqlDump): void
+    {
+        $this->searchPathMysqlDump = $searchPathMysqlDump;
+    }
+
+    /**
      * @param string $hostName
      * @param string $username
      * @param string|null $password
@@ -71,7 +94,11 @@ class DatabaseBackup
             $fullPath = $path . DIRECTORY_SEPARATOR . $fileName;
 
             $executableFinder = new ExecutableFinder();
-            $mySqlDump = $executableFinder->find('mysqldump', null, ['/usr/bin', '/Applications/MAMP/Library/bin']);
+            $mySqlDump = $executableFinder->find(
+                'mysqldump',
+                null,
+                $this->getSearchPathMysqlDump()
+            );
 
             if ($mySqlDump === null) {
                 throw new \Exception('error finding mysqldump');
