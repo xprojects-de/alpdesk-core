@@ -8,7 +8,6 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
-use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Validation\Constraint\IdentifiedBy;
@@ -34,7 +33,10 @@ class JwtToken
      */
     private static function getConfig(): Configuration
     {
-        return Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(self::getDefaultKeyString()));
+        $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(self::getDefaultKeyString()));
+        $config->setValidationConstraints(new SignedWith($config->signer(), $config->signingKey()));
+
+        return $config;
     }
 
     /**
@@ -54,23 +56,26 @@ class JwtToken
         $expiresAt = (new \DateTimeImmutable())->setTimestamp($time + $nbf);
 
         $builder = $config->builder();
-        $builder->issuedBy(self::$issuedBy); // iss claim
-        $builder->permittedFor(self::$permittedFor); // iss claim
-        $builder->identifiedBy($jti); // jti claim
-        $builder->issuedAt($issuesAt); // iat claim
+        $builder = $builder->issuedBy(self::$issuedBy); // iss claim
+        $builder = $builder->permittedFor(self::$permittedFor); // iss claim
+        $builder = $builder->identifiedBy($jti); // jti claim
+        $builder = $builder->issuedAt($issuesAt); // iat claim
 
-        $builder->canOnlyBeUsedAfter($usedAfter); // Configures the time that the token can be used (nbf claim)
+        $builder = $builder->canOnlyBeUsedAfter($usedAfter); // Configures the time that the token can be used (nbf claim)
         if ($nbf > 0) {
-            $builder->expiresAt($expiresAt); // Configures the expiration time of the token (exp claim)
+            $builder = $builder->expiresAt($expiresAt); // Configures the expiration time of the token (exp claim)
         }
 
         if (\count($claims) > 0) {
+
             foreach ($claims as $keyClaim => $valueClaim) {
-                $builder->withClaim($keyClaim, $valueClaim);
+                $builder = $builder->withClaim($keyClaim, $valueClaim);
             }
+
         }
 
         return $builder->getToken($config->signer(), $config->signingKey())->toString();
+
     }
 
     /**
@@ -93,11 +98,6 @@ class JwtToken
         try {
 
             $tokenObject = self::parse($token);
-
-            if (!$tokenObject instanceof UnencryptedToken) {
-                throw new \Exception('invalid token instance');
-            }
-
             $value = $tokenObject->claims()->get($name);
 
         } catch (\Exception) {
@@ -122,18 +122,17 @@ class JwtToken
         $permittedForConstraints = new PermittedFor(self::$permittedFor);
         $identifiedByConstraints = new IdentifiedBy($jti);
 
-        $validator = $config->validator();
-
         try {
 
-            $signer = new SignedWith($config->signer(), InMemory::plainText(self::getDefaultKeyString()));
-            $validator->assert($tokenObject, $signer);
-
-            $value = $validator->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
-
+            $value = $config->validator()->validate($tokenObject, ...$config->validationConstraints());
             if ($value === true) {
-                $now = (new \DateTimeImmutable())->setTimestamp(\time());
-                $value = !$tokenObject->isExpired($now);
+
+                $value = $config->validator()->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
+
+                if ($value === true) {
+                    $value = !$tokenObject->isExpired(new \DateTimeImmutable());
+                }
+
             }
 
         } catch (\Exception) {
@@ -141,6 +140,7 @@ class JwtToken
         }
 
         return $value;
+
     }
 
 }

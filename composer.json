@@ -15,7 +15,7 @@
     "ext-curl": "*",
     "contao/core-bundle": "^5.3",
     "tecnickcom/tcpdf": "^6.4",
-    "lcobucci/jwt": "^4.1",
+    "lcobucci/jwt": "^5.3",
     "symfony/security-bundle": "^6.4",
     "symfony/security-core": "^6.4",
     "symfony/security-http": "^6.4",
@@ -34,6 +34,7 @@
     "symfony/string": "^6.4",
     "symfony/framework-bundle": "^6.4",
     "symfony/monolog-bridge": "^6.4",
+    "symfony/twig-bundle": "^6.4",
     "doctrine/dbal": "^3.8",
     "monolog/monolog": "^2.9 || ^3.0"
   },
