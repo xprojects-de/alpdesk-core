@@ -48,7 +48,7 @@ class StubContainerInterface implements ContainerInterface
 
     /**
      * @param string $name
-     * @return array|bool|float|int|mixed|string|null
+     * @return array|bool|string|int|float|\UnitEnum|null
      */
     public function getParameter(string $name): array|bool|string|int|float|\UnitEnum|null
     {
@@ -169,6 +169,27 @@ class JwtTokenTest extends TestCase
             echo('exp == null' . PHP_EOL);
             $this->fail();
         }
+
+    }
+
+    public function testSecretLengthTest(): void
+    {
+
+        $keyStringGiven = System::getContainer()->getParameter('kernel.secret');
+        $keyStringPrepared = \substr($keyStringGiven, 10, 32);
+
+        $this->assertSame($keyStringPrepared, '9d7c761f1407279738f4268e8cf58310');
+
+        $length = strlen($keyStringPrepared);
+        $this->assertSame($length, 32);
+
+        $keyBytes = [];
+
+        for ($i = 0; $i < $length; $i++) {
+            $keyBytes[] = ord($keyStringPrepared[$i]);
+        }
+
+        $this->assertSame(\count($keyBytes), 32);
 
     }
 
