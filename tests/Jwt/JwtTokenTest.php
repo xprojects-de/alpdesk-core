@@ -84,6 +84,7 @@ class JwtTokenTest extends TestCase
 
         System::setContainer(new StubContainerInterface());
         System::getContainer()->setParameter('kernel.secret', '000adc04469d7c761f1407279738f4268e8cf58310e6ff2b3b317df0c61d3fc2');
+        System::getContainer()->setParameter('kernel.project_dir', '.');
 
     }
 

@@ -13,6 +13,8 @@ use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Validation\Constraint\IdentifiedBy;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Contao\System;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 class JwtToken
 {
@@ -24,8 +26,40 @@ class JwtToken
      */
     private static function getDefaultKeyString(): string
     {
-        $keyString = System::getContainer()->getParameter('kernel.secret');
-        return \substr($keyString, 10, 32);
+        // if secret becomes '' it is caught by InMemory::plainText because checked for empty
+
+        try {
+
+            $secret = null;
+            $projectDir = System::getContainer()->getParameter('kernel.project_dir');
+
+            $filesystem = new Filesystem();
+            $secretFile = Path::join($projectDir, 'var/alpdesk_jwt_secret');
+
+            if ($filesystem->exists($secretFile)) {
+                $secret = \file_get_contents($secretFile);
+            }
+
+            if (!\is_string($secret) || \strlen($secret) < 32) {
+
+                // legacySupport - Remove in future and do not use kernel.secret
+                $keyString = System::getContainer()->getParameter('kernel.secret');
+                if (\is_string($keyString) && $keyString !== '' && \strlen($keyString) >= 42) {
+                    $secret = \substr($keyString, 10, 32);
+                } else {
+                    $secret = \bin2hex(\random_bytes(32));
+                }
+
+                $filesystem->dumpFile($secretFile, $secret);
+
+            }
+
+            return $secret;
+
+        } catch (\Throwable) {
+            return '';
+        }
+
     }
 
     /**
@@ -33,6 +67,7 @@ class JwtToken
      */
     private static function getConfig(): Configuration
     {
+        // Empty key is caught
         $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(self::getDefaultKeyString()));
         $config->setValidationConstraints(new SignedWith($config->signer(), $config->signingKey()));
 
