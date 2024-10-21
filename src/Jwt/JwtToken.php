@@ -21,6 +21,8 @@ class JwtToken
     private static string $issuedBy = 'Alpdesk';
     private static string $permittedFor = 'https://alpdesk.de';
 
+    private static ?Configuration $configuration = null;
+
     /**
      * @return string
      */
@@ -67,11 +69,15 @@ class JwtToken
      */
     private static function getConfig(): Configuration
     {
-        // Empty key is caught
-        $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(self::getDefaultKeyString()));
-        $config->setValidationConstraints(new SignedWith($config->signer(), $config->signingKey()));
+        if (self::$configuration instanceof Configuration) {
+            return self::$configuration;
+        }
 
-        return $config;
+        // Empty key is caught
+        self::$configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(self::getDefaultKeyString()));
+        self::$configuration->setValidationConstraints(new SignedWith(self::$configuration->signer(), self::$configuration->signingKey()));
+
+        return self::$configuration;
     }
 
     /**
@@ -82,23 +88,17 @@ class JwtToken
      */
     public static function generate(string $jti, int $nbf = 3600, array $claims = array()): string
     {
-        $time = \time();
-
         $config = self::getConfig();
 
-        $issuesAt = (new \DateTimeImmutable())->setTimestamp($time);
-        $usedAfter = (new \DateTimeImmutable())->setTimestamp($time);
-        $expiresAt = (new \DateTimeImmutable())->setTimestamp($time + $nbf);
-
         $builder = $config->builder();
-        $builder = $builder->issuedBy(self::$issuedBy); // iss claim
-        $builder = $builder->permittedFor(self::$permittedFor); // iss claim
-        $builder = $builder->identifiedBy($jti); // jti claim
-        $builder = $builder->issuedAt($issuesAt); // iat claim
+        $builder = $builder->issuedBy(self::$issuedBy);
+        $builder = $builder->permittedFor(self::$permittedFor);
+        $builder = $builder->identifiedBy($jti);
+        $builder = $builder->issuedAt(new \DateTimeImmutable());
+        $builder = $builder->canOnlyBeUsedAfter(new \DateTimeImmutable());
 
-        $builder = $builder->canOnlyBeUsedAfter($usedAfter); // Configures the time that the token can be used (nbf claim)
         if ($nbf > 0) {
-            $builder = $builder->expiresAt($expiresAt); // Configures the expiration time of the token (exp claim)
+            $builder = $builder->expiresAt((new \DateTimeImmutable())->setTimestamp(\time() + $nbf));
         }
 
         if (\count($claims) > 0) {
@@ -119,8 +119,7 @@ class JwtToken
      */
     public static function parse(string $token): Token
     {
-        $config = self::getConfig();
-        return $config->parser()->parse($token);
+        return self::getConfig()->parser()->parse($token);
     }
 
     /**
@@ -131,15 +130,12 @@ class JwtToken
     public static function getClaim(string $token, string $name): mixed
     {
         try {
-
-            $tokenObject = self::parse($token);
-            $value = $tokenObject->claims()->get($name);
-
+            return self::parse($token)->claims()->get($name);
         } catch (\Exception) {
-            $value = null;
         }
 
-        return $value;
+        return null;
+
     }
 
     /**
@@ -153,16 +149,12 @@ class JwtToken
 
         $config = self::getConfig();
 
-        $issuedByConstraints = new IssuedBy(self::$issuedBy);
-        $permittedForConstraints = new PermittedFor(self::$permittedFor);
-        $identifiedByConstraints = new IdentifiedBy($jti);
-
         try {
 
             $value = $config->validator()->validate($tokenObject, ...$config->validationConstraints());
             if ($value === true) {
 
-                $value = $config->validator()->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
+                $value = $config->validator()->validate($tokenObject, new IssuedBy(self::$issuedBy), new PermittedFor(self::$permittedFor), new IdentifiedBy($jti));
 
                 if ($value === true) {
                     $value = !$tokenObject->isExpired(new \DateTimeImmutable());
