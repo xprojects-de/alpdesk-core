@@ -149,16 +149,12 @@ class JwtToken
 
         $config = self::getConfig();
 
-        $issuedByConstraints = new IssuedBy(self::$issuedBy);
-        $permittedForConstraints = new PermittedFor(self::$permittedFor);
-        $identifiedByConstraints = new IdentifiedBy($jti);
-
         try {
 
             $value = $config->validator()->validate($tokenObject, ...$config->validationConstraints());
             if ($value === true) {
 
-                $value = $config->validator()->validate($tokenObject, $issuedByConstraints, $permittedForConstraints, $identifiedByConstraints);
+                $value = $config->validator()->validate($tokenObject, new IssuedBy(self::$issuedBy), new PermittedFor(self::$permittedFor), new IdentifiedBy($jti));
 
                 if ($value === true) {
                     $value = !$tokenObject->isExpired(new \DateTimeImmutable());
