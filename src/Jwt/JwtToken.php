@@ -88,23 +88,17 @@ class JwtToken
      */
     public static function generate(string $jti, int $nbf = 3600, array $claims = array()): string
     {
-        $time = \time();
-
         $config = self::getConfig();
-
-        $issuesAt = (new \DateTimeImmutable())->setTimestamp($time);
-        $usedAfter = (new \DateTimeImmutable())->setTimestamp($time);
-        $expiresAt = (new \DateTimeImmutable())->setTimestamp($time + $nbf);
 
         $builder = $config->builder();
         $builder = $builder->issuedBy(self::$issuedBy); // iss claim
         $builder = $builder->permittedFor(self::$permittedFor); // iss claim
         $builder = $builder->identifiedBy($jti); // jti claim
-        $builder = $builder->issuedAt($issuesAt); // iat claim
+        $builder = $builder->issuedAt(new \DateTimeImmutable()); // iat claim
+        $builder = $builder->canOnlyBeUsedAfter(new \DateTimeImmutable()); // Configures the time that the token can be used (nbf claim)
 
-        $builder = $builder->canOnlyBeUsedAfter($usedAfter); // Configures the time that the token can be used (nbf claim)
         if ($nbf > 0) {
-            $builder = $builder->expiresAt($expiresAt); // Configures the expiration time of the token (exp claim)
+            $builder = $builder->expiresAt((new \DateTimeImmutable())->setTimestamp(\time() + $nbf)); // Configures the expiration time of the token (exp claim)
         }
 
         if (\count($claims) > 0) {
