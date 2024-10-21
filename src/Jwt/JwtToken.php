@@ -91,14 +91,14 @@ class JwtToken
         $config = self::getConfig();
 
         $builder = $config->builder();
-        $builder = $builder->issuedBy(self::$issuedBy); // iss claim
-        $builder = $builder->permittedFor(self::$permittedFor); // iss claim
-        $builder = $builder->identifiedBy($jti); // jti claim
-        $builder = $builder->issuedAt(new \DateTimeImmutable()); // iat claim
-        $builder = $builder->canOnlyBeUsedAfter(new \DateTimeImmutable()); // Configures the time that the token can be used (nbf claim)
+        $builder = $builder->issuedBy(self::$issuedBy);
+        $builder = $builder->permittedFor(self::$permittedFor);
+        $builder = $builder->identifiedBy($jti);
+        $builder = $builder->issuedAt(new \DateTimeImmutable());
+        $builder = $builder->canOnlyBeUsedAfter(new \DateTimeImmutable());
 
         if ($nbf > 0) {
-            $builder = $builder->expiresAt((new \DateTimeImmutable())->setTimestamp(\time() + $nbf)); // Configures the expiration time of the token (exp claim)
+            $builder = $builder->expiresAt((new \DateTimeImmutable())->setTimestamp(\time() + $nbf));
         }
 
         if (\count($claims) > 0) {
