@@ -65,18 +65,11 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
     {
         $this->framework->initialize();
 
-        if (!$request->headers->has(self::$name)) {
-
-            $this->logger->error(self::$name . ' not found in Header', __METHOD__);
-            throw new CustomUserMessageAuthenticationException(self::$name . ' not found in Header');
-
-        }
-
         $authorizationHeader = $request->headers->get(self::$name);
-        if (empty($authorizationHeader)) {
+        if (!\is_string($authorizationHeader) || $authorizationHeader === '') {
 
-            $this->logger->error(self::$name . ' empty in Header', __METHOD__);
-            throw new CustomUserMessageAuthenticationException(self::$name . ' empty in Header');
+            $this->logger->error(self::$name . ' empty / not found in Header', __METHOD__);
+            throw new CustomUserMessageAuthenticationException(self::$name . ' empty / not found in Header');
 
         }
 
