@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Security;
 
+use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,10 +51,33 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
     {
         $this->framework->initialize();
 
-        $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'message' => strtr($exception->getMessage(), $exception->getMessageData())];
-        $this->logger->error(strtr($exception->getMessage(), $exception->getMessageData()), __METHOD__);
+        $username = '';
+
+        try {
+
+            $authorizationHeader = $request->headers->get(self::$name);
+            if (\is_string($authorizationHeader) && $authorizationHeader !== '') {
+
+                $headerParts = \explode(' ', $authorizationHeader);
+                if ((2 === \count($headerParts) && 0 === \strcasecmp($headerParts[0], self::$prefix))) {
+
+                    $apiToken = $headerParts[1];
+                    $username = (JwtToken::getClaim($apiToken, 'username') ?? '');
+
+                }
+
+            }
+
+        } catch (\Throwable) {
+        }
+
+        $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'username' => $username, 'message' => \strtr($exception->getMessage(), $exception->getMessageData())];
+
+        $logEntry = 'Username:' . $username . ' => ' . \strtr($exception->getMessage(), $exception->getMessageData());
+        $this->logger->error($logEntry, __METHOD__);
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
