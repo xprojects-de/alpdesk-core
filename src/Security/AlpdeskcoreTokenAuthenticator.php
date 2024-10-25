@@ -73,7 +73,11 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
 
         $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'username' => $username, 'message' => \strtr($exception->getMessage(), $exception->getMessageData())];
 
-        $logEntry = 'Username:' . $username . ' => ' . \strtr($exception->getMessage(), $exception->getMessageData());
+        $logEntry = \strtr($exception->getMessage(), $exception->getMessageData());
+        if (\is_string($username) && $username !== '') {
+            $logEntry .= ' (Username: ' . $username . ')';
+        }
+
         $this->logger->error($logEntry, __METHOD__);
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
