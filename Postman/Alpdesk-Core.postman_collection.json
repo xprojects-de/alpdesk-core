@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"testmandant\",\n    \"password\": \"1234567890\",\n    \"ttltoken\": 20000\n}"
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\",\n    \"ttltoken\": 20000\n}"
 				},
 				"url": {
 					"raw": "{{host}}/auth",
@@ -271,7 +271,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"fetch\"\n    }\n}",
+					"raw": "{\n    \"plugin\": \"contaoCrud\",\n    \"data\": {\n        \"table\": \"page\",\n        \"crud\": \"schema\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -990,11 +990,11 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/Users/benjaminhummel/Documents/Github/alpdesk-automationclient/concatenate.js"
+							"src": "/Users/benjaminhummel/Documents/MAMPP/alpdesk-core/files/testmandant/public/close.png"
 						},
 						{
 							"key": "target",
-							"value": "/",
+							"value": "51e8c4fa-1a16-11ed-9a54-1c25658981ec",
 							"type": "text"
 						}
 					]
@@ -1034,7 +1034,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"target\": \"44d39dd8-0105-11ec-ae37-59b27225627d\"\n}",
+					"raw": "{\n    \"target\": \"8ce62cfa-1a16-11ed-9a54-1c25658981ec\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1070,7 +1070,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"e226302e-783c-11ec-abf3-89ee0d762867\"\n}",
+					"raw": "{\n    \"mode\": \"list\", \n    \"src\": \"/\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1106,7 +1106,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/test2\", \n    \"target\": \"dir\"\n}",
+					"raw": "{\n    \"mode\": \"create\", \n    \"src\": \"/public/Bilder/test123\", \n    \"target\": \"dir\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1142,7 +1142,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"delete\", \n    \"src\": \"8806251c-0105-11ec-ae37-59b27225627d\"\n}",
+					"raw": "{\n    \"mode\": \"delete\", \n    \"src\": \"2237f6ef-1a17-11ed-9a54-1c25658981ec\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1178,7 +1178,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"meta\", \n    \"src\": \"44d39dd8-0105-11ec-ae37-59b27225627d\",\n    \"meta\": {\n        \"de\": {\n            \"title\": \"Ich bin der Titel NEU\",\n            \"alt\": \"Ich bin der Alternativer Text NEU\",\n            \"link\": \"Ich bin der Link NEU\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU\"\n        },\n        \"en\": {\n            \"title\": \"Ich bin der Titel NEU EN\",\n            \"alt\": \"\",\n            \"link\": \"Ich bin der Link NEU EN\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU EN\"\n        }\n    } \n}",
+					"raw": "{\n    \"mode\": \"meta\", \n    \"src\": \"80992270-788d-11ec-b38b-a5a64e970965\",\n    \"meta\": {\n        \"de\": {\n            \"title\": \"Ich bin der Titel NEU\",\n            \"alt\": \"Ich bin der Alternativer Text NEU\",\n            \"link\": \"Ich bin der Link NEU\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU\"\n        },\n        \"en\": {\n            \"title\": \"Ich bin der Titel NEU EN\",\n            \"alt\": \"\",\n            \"link\": \"Ich bin der Link NEU EN\",\n            \"caption\": \"Ich bin die Bildunterschrift EN NEU EN\"\n        }\n    } \n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1214,7 +1214,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"rename\", \n    \"src\": \"46826759-7f5b-11eb-bd15-bf9bca265e63\", \n    \"target\": \"123456_1615131555_README.md\"\n}",
+					"raw": "{\n    \"mode\": \"rename\", \n    \"src\": \"8ce62cfa-1a16-11ed-9a54-1c25658981ec\", \n    \"target\": \"BlaBla.JPG\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1250,7 +1250,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"move\", \n    \"src\": \"f0c45d24-7eb2-11eb-b7fd-da45c81e3bcc\", \n    \"target\": \"f7358908-7eb2-11eb-b7fd-da45c81e3bcc\"\n}",
+					"raw": "{\n    \"mode\": \"move\", \n    \"src\": \"8ce62cfa-1a16-11ed-9a54-1c25658981ec\", \n    \"target\": \"51e8c4fa-1a16-11ed-9a54-1c25658981ec\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1286,7 +1286,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"mode\": \"copy\", \n    \"src\": \"44d39dd8-0105-11ec-ae37-59b27225627d\", \n    \"target\": \"8063f960-0105-11ec-ae37-59b27225627d\"\n}",
+					"raw": "{\n    \"mode\": \"copy\", \n    \"src\": \"80992270-788d-11ec-b38b-a5a64e970965\", \n    \"target\": \"75d44644-788d-11ec-b38b-a5a64e970965\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1300,6 +1300,36 @@
 					],
 					"path": [
 						"finder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logs",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"logFileName\": \"test.log\",\n    \"filterValue\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/contao/alpdeskcorelazylogs",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"contao",
+						"alpdeskcorelazylogs"
 					]
 				}
 			},
