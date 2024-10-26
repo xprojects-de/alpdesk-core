@@ -25,7 +25,7 @@
 
         {% for key,value in logs %}
 
-            <div class="alpdeskcorelogfile">
+            <div class="alpdeskcorelogfile" data-token="{{ token }}">
 
                 <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
                    onclick="if(!confirm('{{ confirm }}'))return false;"

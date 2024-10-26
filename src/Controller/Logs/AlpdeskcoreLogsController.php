@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Logs;
 
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Utils\Utils;
 use Contao\BackendUser;
 use Contao\Controller;
@@ -11,8 +12,11 @@ use Contao\File;
 use Contao\Input;
 use Contao\System;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -207,6 +211,55 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             'logs' => $logFiles,
             'headline' => 'Logs'
         ]);
+
+    }
+
+    public function lazyLogs(Request $request): JsonResponse
+    {
+        try {
+
+            $csrfToken = $request->headers->get('contaoCsrfToken');
+            $csrfTokenObject = new CsrfToken($this->csrfTokenName, $csrfToken);
+
+            if (!$this->csrfTokenManager->isTokenValid($csrfTokenObject)) {
+                throw new \Exception('invalid csrfToken');
+            }
+
+            $backendUser = $this->security->getUser();
+
+            if (!$backendUser instanceof BackendUser) {
+                throw new \Exception('invalid access');
+            }
+
+            Utils::mergeUserGroupPermissions($backendUser);
+
+            if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
+                throw new \Exception('invalid access');
+            }
+
+            $requestBody = $request->getContent();
+            if (!\is_string($requestBody) || $requestBody === '') {
+                throw new \Exception('invalid payload');
+            }
+
+            $requestBodyObject = \json_decode($requestBody, true, 512, JSON_THROW_ON_ERROR);
+            if (!\is_array($requestBodyObject)) {
+                throw new \Exception('invalid payload');
+            }
+
+            return (new JsonResponse([
+                'error' => false,
+                'message' => 'cool'
+            ], AlpdeskCoreConstants::$STATUSCODE_OK));
+
+        } catch (\Throwable $tr) {
+
+            return (new JsonResponse([
+                'error' => true,
+                'message' => $tr->getMessage()
+            ], AlpdeskCoreConstants::$STATUSCODE_COMMONERROR));
+
+        }
 
     }
 

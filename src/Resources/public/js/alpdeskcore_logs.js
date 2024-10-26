@@ -22,10 +22,37 @@
                     const visible = children[1];
                     const container = children[2];
 
+                    const requestToken = logFile.getAttribute('data-token');
+
                     visible.addEventListener('click', function () {
 
                         if (container.style.display === 'none' || container.style.display === '') {
+
+                            const xhr = new XMLHttpRequest();
+
+                            xhr.open('POST', '/contao/alpdeskcorelazylogs', true);
+                            xhr.setRequestHeader('Content-Type', 'application/json');
+                            xhr.setRequestHeader('contaoCsrfToken', requestToken);
+
+                            xhr.onload = function () {
+
+                                if (xhr.status === 200) {
+
+                                    const data = JSON.parse(xhr.responseText);
+                                    console.log(data);
+
+                                }
+
+                            };
+
+                            const jsonPayload = {
+                                'test': 'test1'
+                            };
+
+                            xhr.send(JSON.stringify(jsonPayload));
+
                             container.style.display = 'block';
+
                         } else {
                             container.style.display = 'none';
                         }

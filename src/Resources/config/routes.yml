@@ -5,6 +5,14 @@ alpdesk_logs_backend:
     _scope: backend
   methods: [ POST, GET ]
 
+alpdesk_lazylogs_backend:
+  path: /contao/alpdeskcorelazylogs
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Logs\AlpdeskcoreLogsController::lazyLogs
+    _scope: backend
+    _token_check: false
+  methods: [ POST ]
+
 alpdesk_auth:
   path: /auth
   defaults:
