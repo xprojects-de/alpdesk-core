@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Logs;
 
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Utils\Utils;
 use Contao\BackendUser;
 use Contao\Controller;
 use Contao\File;
 use Contao\Input;
+use Contao\StringUtil;
 use Contao\System;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -73,34 +78,34 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             $logFile = new File($parseFolder . '/' . $strFile);
             if ($logFile->extension === 'log' && $logFile->exists()) {
 
-                $content = $logFile->getContentAsArray();
+                $lines = $logFile->getContentAsArray();
 
-                if ($filterValue !== null && $filterValue !== '' && \count($content) > 0) {
+                if ($filterValue !== null && $filterValue !== '' && \count($lines) > 0) {
 
-                    $newContent = [];
+                    $filteredLines = [];
 
-                    foreach ($content as $contentItem) {
+                    foreach ($lines as $line) {
 
-                        if (\str_contains((string)$contentItem, $filterValue)) {
-                            $newContent[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $contentItem);
+                        if (\str_contains((string)$line, $filterValue)) {
+                            $filteredLines[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $line);
                         }
 
                     }
 
-                    $content = $newContent;
+                    $lines = $filteredLines;
 
                 }
 
-                if (\count($content) > 0) {
+                if (\count($lines) > 0) {
 
                     $arrReturn[] = [
-                        'logfile' => $logFile->name,
-                        'content' => $content
+                        'logfile' => $logFile->name
                     ];
 
                 }
 
             }
+
         }
 
         \usort($arrReturn, static function ($a, $b) {
@@ -207,6 +212,104 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             'logs' => $logFiles,
             'headline' => 'Logs'
         ]);
+
+    }
+
+    public function lazyLogs(Request $request): JsonResponse
+    {
+        try {
+
+            $csrfToken = $request->headers->get('contaoCsrfToken');
+            $csrfTokenObject = new CsrfToken($this->csrfTokenName, $csrfToken);
+
+            if (!$this->csrfTokenManager->isTokenValid($csrfTokenObject)) {
+                throw new \Exception('invalid csrfToken');
+            }
+
+            $backendUser = $this->security->getUser();
+
+            if (!$backendUser instanceof BackendUser) {
+                throw new \Exception('invalid access');
+            }
+
+            Utils::mergeUserGroupPermissions($backendUser);
+
+            if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
+                throw new \Exception('invalid access');
+            }
+
+            $requestBody = $request->getContent();
+            if (!\is_string($requestBody) || $requestBody === '') {
+                throw new \Exception('invalid payload');
+            }
+
+            $requestBodyObject = \json_decode($requestBody, true, 512, JSON_THROW_ON_ERROR);
+            if (
+                !\is_array($requestBodyObject) ||
+                !\array_key_exists('logFileName', $requestBodyObject) ||
+                $requestBodyObject['logFileName'] === null || $requestBodyObject['logFileName'] === ''
+            ) {
+                throw new \Exception('invalid payload');
+            }
+
+            $logFile = new File('var/logs/' . $requestBodyObject['logFileName']);
+            if ($logFile->extension !== 'log' || !$logFile->exists()) {
+                throw new \Exception('invalid extension or file does not exists');
+            }
+
+            $filterValue = ($requestBodyObject['filterValue'] ?? null);
+
+            $filteredLines = [];
+
+            $lines = $logFile->getContentAsArray();
+            if (\is_array($lines) && \count($lines) > 0) {
+
+                foreach ($lines as $line) {
+
+                    if (\trim($line) === '') {
+                        continue;
+                    }
+
+                    $filteredLines[] = StringUtil::specialchars($line);
+
+                }
+
+            }
+
+            if (
+                $filterValue !== null && $filterValue !== '' &&
+                \is_array($filteredLines) && \count($filteredLines) > 0
+            ) {
+
+                $newFilteredLines = [];
+
+                foreach ($filteredLines as $filteredLine) {
+
+                    if (\str_contains((string)$filteredLine, $filterValue)) {
+                        $newFilteredLines[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $filteredLine);
+                    }
+
+                }
+
+                $filteredLines = $newFilteredLines;
+
+            }
+
+            return (new JsonResponse([
+                'error' => false,
+                'fileName' => 'var/logs/' . $requestBodyObject['logFileName'],
+                'message' => '',
+                'content' => $filteredLines
+            ], AlpdeskCoreConstants::$STATUSCODE_OK));
+
+        } catch (\Throwable $tr) {
+
+            return (new JsonResponse([
+                'error' => true,
+                'message' => $tr->getMessage()
+            ], AlpdeskCoreConstants::$STATUSCODE_COMMONERROR));
+
+        }
 
     }
 
