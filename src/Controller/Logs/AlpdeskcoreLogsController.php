@@ -105,6 +105,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
                 }
 
             }
+
         }
 
         \usort($arrReturn, static function ($a, $b) {
@@ -251,9 +252,36 @@ class AlpdeskcoreLogsController extends AbstractBackendController
                 throw new \Exception('invalid payload');
             }
 
+            $logFile = new File('var/logs/' . $requestBodyObject['logFileName']);
+            if ($logFile->extension !== 'log' || !$logFile->exists()) {
+                throw new \Exception('invalid extension or file does not exists');
+            }
+
+            $filterValue = ($requestBodyObject['filterValue'] ?? null);
+
+            $content = $logFile->getContentAsArray();
+
+            if ($filterValue !== null && $filterValue !== '' && \count($content) > 0) {
+
+                $newContent = [];
+
+                foreach ($content as $contentItem) {
+
+                    if (\str_contains((string)$contentItem, $filterValue)) {
+                        $newContent[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $contentItem);
+                    }
+
+                }
+
+                $content = $newContent;
+
+            }
+
             return (new JsonResponse([
                 'error' => false,
-                'message' => 'parse var/logs/' . $requestBodyObject['logFileName']
+                'fileName' => 'var/logs/' . $requestBodyObject['logFileName'],
+                'message' => '',
+                'content' => $content
             ], AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Throwable $tr) {
