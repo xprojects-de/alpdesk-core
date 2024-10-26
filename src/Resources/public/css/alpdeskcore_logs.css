@@ -48,12 +48,13 @@
     color: #F47C00;
 }
 
+.alpdeskcore-errorContainer,
 #alpdeskcorelogs_error {
     margin-left: 15px;
     margin-top: 15px;
     display: inline-block;
     padding: 10px;
-    background-color: #f60000;
+    background-color: #C9473D;
     color: #fff;
 }
 
@@ -74,4 +75,34 @@ html[data-color-scheme="dark"] {
         background-color: #333;
     }
 
+}
+
+.alpdeskcore-loader {
+    margin-top: 10px;
+    border: 4px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 4px solid #F47C00;
+    width: 25px;
+    height: 25px;
+    -webkit-animation: alpdeskcore-spin 1s linear infinite; /* Safari */
+    animation: alpdeskcore-spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes alpdeskcore-spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes alpdeskcore-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
