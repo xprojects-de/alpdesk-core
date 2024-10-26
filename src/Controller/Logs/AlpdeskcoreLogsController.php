@@ -98,8 +98,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
                 if (\count($content) > 0) {
 
                     $arrReturn[] = [
-                        'logfile' => $logFile->name,
-                        'content' => $content
+                        'logfile' => $logFile->name
                     ];
 
                 }

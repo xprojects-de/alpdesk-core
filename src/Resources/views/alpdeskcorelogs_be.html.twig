@@ -25,7 +25,8 @@
 
         {% for key,value in logs %}
 
-            <div class="alpdeskcorelogfile" data-token="{{ token }}" data-filename="{{ value.logfile }}">
+            <div class="alpdeskcorelogfile" data-token="{{ token }}" data-filename="{{ value.logfile }}"
+                 data-filtervalue="{{ filterValue }}">
 
                 <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
                    onclick="if(!confirm('{{ confirm }}'))return false;"
@@ -39,13 +40,7 @@
 
                 {{ value.logfile }}
 
-                <div class="alpdeskcorelogitemcontainer">
-                    {% for keycontent,valuecontent in value.content %}
-                        <div class="alpdeskcorelogitem">
-                            <p>{{ valuecontent | raw }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
+                <div class="alpdeskcorelogitemcontainer"></div>
 
             </div>
 
