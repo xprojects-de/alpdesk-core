@@ -3,6 +3,7 @@
     border-bottom: 1px solid #ccc;
     padding: 15px;
     background-color: #fff;
+    overflow: auto;
 }
 
 .alpdeskcorelogfile a,

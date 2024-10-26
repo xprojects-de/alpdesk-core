@@ -10,6 +10,7 @@ use Contao\BackendUser;
 use Contao\Controller;
 use Contao\File;
 use Contao\Input;
+use Contao\StringUtil;
 use Contao\System;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -264,7 +265,13 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             if (\is_array($lines) && \count($lines) > 0) {
 
                 foreach ($lines as $line) {
-                    $filteredLines[] = \strip_tags($line);
+
+                    if (\trim($line) === '') {
+                        continue;
+                    }
+
+                    $filteredLines[] = StringUtil::specialchars($line);
+
                 }
 
             }
