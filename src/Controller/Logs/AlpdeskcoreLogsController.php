@@ -77,25 +77,25 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             $logFile = new File($parseFolder . '/' . $strFile);
             if ($logFile->extension === 'log' && $logFile->exists()) {
 
-                $content = $logFile->getContentAsArray();
+                $lines = $logFile->getContentAsArray();
 
-                if ($filterValue !== null && $filterValue !== '' && \count($content) > 0) {
+                if ($filterValue !== null && $filterValue !== '' && \count($lines) > 0) {
 
-                    $newContent = [];
+                    $filteredLines = [];
 
-                    foreach ($content as $contentItem) {
+                    foreach ($lines as $line) {
 
-                        if (\str_contains((string)$contentItem, $filterValue)) {
-                            $newContent[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $contentItem);
+                        if (\str_contains((string)$line, $filterValue)) {
+                            $filteredLines[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $line);
                         }
 
                     }
 
-                    $content = $newContent;
+                    $lines = $filteredLines;
 
                 }
 
-                if (\count($content) > 0) {
+                if (\count($lines) > 0) {
 
                     $arrReturn[] = [
                         'logfile' => $logFile->name
@@ -258,21 +258,33 @@ class AlpdeskcoreLogsController extends AbstractBackendController
 
             $filterValue = ($requestBodyObject['filterValue'] ?? null);
 
-            $content = $logFile->getContentAsArray();
+            $filteredLines = [];
 
-            if ($filterValue !== null && $filterValue !== '' && \count($content) > 0) {
+            $lines = $logFile->getContentAsArray();
+            if (\is_array($lines) && \count($lines) > 0) {
 
-                $newContent = [];
+                foreach ($lines as $line) {
+                    $filteredLines[] = \strip_tags($line);
+                }
 
-                foreach ($content as $contentItem) {
+            }
 
-                    if (\str_contains((string)$contentItem, $filterValue)) {
-                        $newContent[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $contentItem);
+            if (
+                $filterValue !== null && $filterValue !== '' &&
+                \is_array($filteredLines) && \count($filteredLines) > 0
+            ) {
+
+                $newFilteredLines = [];
+
+                foreach ($filteredLines as $filteredLine) {
+
+                    if (\str_contains((string)$filteredLine, $filterValue)) {
+                        $newFilteredLines[] = \str_replace($filterValue, '<strong class="filterMarked">' . $filterValue . '</strong>', $filteredLine);
                     }
 
                 }
 
-                $content = $newContent;
+                $filteredLines = $newFilteredLines;
 
             }
 
@@ -280,7 +292,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
                 'error' => false,
                 'fileName' => 'var/logs/' . $requestBodyObject['logFileName'],
                 'message' => '',
-                'content' => $content
+                'content' => $filteredLines
             ], AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Throwable $tr) {
