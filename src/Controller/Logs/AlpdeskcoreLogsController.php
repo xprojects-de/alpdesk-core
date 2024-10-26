@@ -243,13 +243,17 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             }
 
             $requestBodyObject = \json_decode($requestBody, true, 512, JSON_THROW_ON_ERROR);
-            if (!\is_array($requestBodyObject)) {
+            if (
+                !\is_array($requestBodyObject) ||
+                !\array_key_exists('logFileName', $requestBodyObject) ||
+                $requestBodyObject['logFileName'] === null || $requestBodyObject['logFileName'] === ''
+            ) {
                 throw new \Exception('invalid payload');
             }
 
             return (new JsonResponse([
                 'error' => false,
-                'message' => 'cool'
+                'message' => 'parse var/logs/' . $requestBodyObject['logFileName']
             ], AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Throwable $tr) {

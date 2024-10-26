@@ -23,6 +23,7 @@
                     const container = children[2];
 
                     const requestToken = logFile.getAttribute('data-token');
+                    const fileName = logFile.getAttribute('data-filename');
 
                     visible.addEventListener('click', function () {
 
@@ -46,7 +47,7 @@
                             };
 
                             const jsonPayload = {
-                                'test': 'test1'
+                                'logFileName': fileName
                             };
 
                             xhr.send(JSON.stringify(jsonPayload));
