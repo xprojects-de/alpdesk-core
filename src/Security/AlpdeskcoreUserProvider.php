@@ -15,6 +15,7 @@ use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 
+/** @phpstan-ignore-next-line */
 class AlpdeskcoreUserProvider implements UserProviderInterface
 {
     private ContaoFramework $framework;

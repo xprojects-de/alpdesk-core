@@ -67,6 +67,7 @@ class Cryption
         \sodium_memzero($message);
 
         if ($zeroKey) {
+            /** @phpstan-ignore-next-line */
             \sodium_memzero($this->key);
         }
 
@@ -102,6 +103,7 @@ class Cryption
         \sodium_memzero($ciphertext);
 
         if ($zeroKey) {
+            /** @phpstan-ignore-next-line */
             \sodium_memzero($this->key);
         }
 

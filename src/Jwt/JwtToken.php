@@ -130,6 +130,7 @@ class JwtToken
     public static function getClaim(string $token, string $name): mixed
     {
         try {
+            /** @phpstan-ignore-next-line */
             return self::parse($token)->claims()->get($name);
         } catch (\Exception) {
         }

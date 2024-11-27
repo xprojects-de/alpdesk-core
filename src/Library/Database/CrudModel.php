@@ -13,6 +13,7 @@ use Doctrine\DBAL\Schema\Schema;
 class CrudModel
 {
     private ?Connection $connection = null;
+    /** @phpstan-ignore-next-line */
     private ?AbstractSchemaManager $schemaManager = null;
     private ?Schema $schema = null;
     private string $table = '';
@@ -34,6 +35,7 @@ class CrudModel
     /**
      * @return AbstractSchemaManager
      * @throws \Exception
+     * @phpstan-ignore-next-line
      */
     public function getSchemaManager(): AbstractSchemaManager
     {

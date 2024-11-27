@@ -296,8 +296,7 @@ class AlpdeskcoreUser implements UserInterface
     }
 
     /**
-     * {@inheritdoc}
-     * @throws \Exception
+     * @return string
      */
     public function getUserIdentifier(): string
     {

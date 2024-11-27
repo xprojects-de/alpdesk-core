@@ -43,8 +43,7 @@ class ContaoCrud
 
     /**
      * @param array|null $crudTables
-     * @return ContaoCrud
-     * @throws \Exception
+     * @return $this
      */
     public function setCrudTables(?array $crudTables): ContaoCrud
     {
