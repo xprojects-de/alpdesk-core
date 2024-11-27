@@ -18,13 +18,13 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
 class AlpdeskCoreDcaUtils extends Backend
 {
     /**
-     * @param $row
-     * @param $label
-     * @param $dc
-     * @param $args
+     * @param mixed $row
+     * @param mixed $label
+     * @param mixed $dc
+     * @param mixed $args
      * @return array
      */
-    public function showSessionValid($row, $label, $dc, $args): array
+    public function showSessionValid(mixed $row, mixed $label, mixed $dc, mixed $args): array
     {
         try {
             $validateAndVerify = JwtToken::validateAndVerify($args[1], AlpdeskcoreUserProvider::createJti($args[0]));
@@ -41,11 +41,11 @@ class AlpdeskCoreDcaUtils extends Backend
     }
 
     /**
-     * @param $varValue
-     * @param $dc
+     * @param mixed $varValue
+     * @param mixed $dc
      * @return string
      */
-    public function generateFixToken($varValue, $dc): string
+    public function generateFixToken(mixed $varValue, mixed $dc): string
     {
         if ($varValue === null || $varValue === '') {
 
@@ -66,12 +66,12 @@ class AlpdeskCoreDcaUtils extends Backend
     }
 
     /**
-     * @param $varValue
+     * @param mixed $varValue
      * @param DataContainer $dc
      * @return string
      * @throws \Exception
      */
-    public function generateEncryptPassword($varValue, DataContainer $dc): string
+    public function generateEncryptPassword(mixed $varValue, DataContainer $dc): string
     {
         if ($varValue === '') {
             return $varValue;
@@ -81,12 +81,12 @@ class AlpdeskCoreDcaUtils extends Backend
     }
 
     /**
-     * @param $varValue
+     * @param mixed $varValue
      * @param DataContainer $dc
      * @return string
      * @throws \Exception
      */
-    public function regenerateEncryptPassword($varValue, DataContainer $dc): string
+    public function regenerateEncryptPassword(mixed $varValue, DataContainer $dc): string
     {
         if ($varValue === '') {
             return $varValue;
@@ -119,24 +119,24 @@ class AlpdeskCoreDcaUtils extends Backend
     }
 
     /**
-     * @param $arrRow
+     * @param mixed $arrRow
      * @return string
      */
-    public function listPDFElements($arrRow): string
+    public function listPDFElements(mixed $arrRow): string
     {
         return $arrRow['name'];
     }
 
     /**
-     * @param $row
-     * @param $href
-     * @param $label
-     * @param $title
-     * @param $icon
-     * @param $attributes
+     * @param mixed $row
+     * @param mixed $href
+     * @param mixed $label
+     * @param mixed $title
+     * @param mixed $icon
+     * @param mixed $attributes
      * @return string
      */
-    public function generatetestpdfLinkCallback($row, $href, $label, $title, $icon, $attributes): string
+    public function generatetestpdfLinkCallback(mixed $row, mixed $href, mixed $label, mixed $title, mixed $icon, mixed $attributes): string
     {
         return '<a href="' . self::addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
     }

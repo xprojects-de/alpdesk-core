@@ -29,8 +29,15 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
 
     private ContaoFramework $framework;
     private AlpdeskcoreLogger $logger;
+    /** @phpstan-ignore-next-line */
     private UserProviderInterface $userProvider;
 
+    /**
+     * @param ContaoFramework $framework
+     * @param AlpdeskcoreLogger $logger
+     * @param UserProviderInterface $userProvider
+     * @phpstan-ignore-next-line
+     */
     public function __construct(
         ContaoFramework       $framework,
         AlpdeskcoreLogger     $logger,

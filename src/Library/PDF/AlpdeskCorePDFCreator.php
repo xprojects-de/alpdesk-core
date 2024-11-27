@@ -65,22 +65,22 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $this->headersesstingsarray = $headersesstingsarray;
     }
 
-    public function setHeaderDataItem($key, $value): void
+    public function setHeaderDataItem(mixed $key, mixed $value): void
     {
         $this->headersesstingsarray[$key] = $value;
     }
 
-    public function setFooterDataItem($key, $value): void
+    public function setFooterDataItem(mixed $key, mixed $value): void
     {
         $this->footersesstingsarray[$key] = $value;
     }
 
-    public function getHeaderDataItem($key)
+    public function getHeaderDataItem(mixed $key): mixed
     {
         return $this->headersesstingsarray[$key];
     }
 
-    public function getFooterDataItem($key)
+    public function getFooterDataItem(mixed $key): mixed
     {
         return $this->footersesstingsarray[$key];
     }
@@ -90,8 +90,24 @@ class AlpdeskCorePDFCreator extends \TCPDF
     {
         if ($this->headersesstingsarray['valid'] === true) {
 
+            $align = ($this->headersesstingsarray['alignment'] ?? '');
+            if ($align === '') {
+                $align = 'C';
+            }
+
             $this->SetFont($this->headersesstingsarray['font'], $this->headersesstingsarray['fontstyle'], $this->headersesstingsarray['fontsize']);
-            $this->writeHTMLCell($this->headersesstingsarray['width'], $this->headersesstingsarray['height'], '', '', $this->headersesstingsarray['text'], 0, 0, false, $this->headersesstingsarray['alignment'], true);
+            $this->writeHTMLCell(
+                $this->headersesstingsarray['width'],
+                $this->headersesstingsarray['height'],
+                null,
+                null,
+                $this->headersesstingsarray['text'],
+                0,
+                0,
+                false,
+                true,
+                $align
+            );
 
         }
     }
@@ -101,10 +117,26 @@ class AlpdeskCorePDFCreator extends \TCPDF
     {
         if ($this->footersesstingsarray['valid'] === true) {
 
+            $align = ($this->footersesstingsarray['alignment'] ?? '');
+            if ($align === '') {
+                $align = 'C';
+            }
+
             $this->SetY(-((int)$this->footersesstingsarray['bottomoffset']));
             $this->SetFont($this->footersesstingsarray['font'], $this->footersesstingsarray['fontstyle'], $this->footersesstingsarray['fontsize']);
-            //$w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true
-            $this->writeHTMLCell($this->footersesstingsarray['width'], $this->footersesstingsarray['height'], '', '', $this->footersesstingsarray['text'], 0, 0, false, $this->footersesstingsarray['alignment'], true);
+
+            $this->writeHTMLCell(
+                $this->footersesstingsarray['width'],
+                $this->footersesstingsarray['height'],
+                null,
+                null,
+                $this->footersesstingsarray['text'],
+                0,
+                0,
+                false,
+                true,
+                $align
+            );
             //$this->Cell($this->footersesstingsarray['width'], $this->footersesstingsarray['height'], $this->footersesstingsarray['text'], 0, false, $this->footersesstingsarray['alignment']);
 
         }
@@ -216,14 +248,14 @@ class AlpdeskCorePDFCreator extends \TCPDF
     }
 
     /**
-     * @param $text
-     * @param $filename
-     * @param $path
-     * @param $settingsarray
+     * @param mixed $text
+     * @param mixed $filename
+     * @param mixed $path
+     * @param mixed $settingsarray
      * @return string
      * @throws \Exception
      */
-    public function generate($text, $filename, $path, $settingsarray): string
+    public function generate(mixed $text, mixed $filename, mixed $path, mixed $settingsarray): string
     {
         ob_start();
 
@@ -321,6 +353,7 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $xdir = $rootDir . "/" . $path;
 
         if (!\is_dir($xdir)) {
+            /** @phpstan-ignore-next-line */
             if (!\mkdir($xdir) && !\is_dir($xdir)) {
                 throw new \Exception(\sprintf('Directory "%s" was not created', $xdir));
             }

@@ -278,7 +278,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
 
             if (
                 $filterValue !== null && $filterValue !== '' &&
-                \is_array($filteredLines) && \count($filteredLines) > 0
+                \count($filteredLines) > 0
             ) {
 
                 $newFilteredLines = [];

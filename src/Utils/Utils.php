@@ -39,11 +39,11 @@ class Utils
     }
 
     /**
-     * @param $strBuffer
+     * @param mixed $strBuffer
      * @param bool $blnCache
      * @return string
      */
-    public static function replaceInsertTags($strBuffer, bool $blnCache = true): string
+    public static function replaceInsertTags(mixed $strBuffer, bool $blnCache = true): string
     {
         try {
 

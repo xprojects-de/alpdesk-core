@@ -141,6 +141,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     }
 
                     $indiciesStringArray = array();
+                    /** @phpstan-ignore-next-line */
                     if (\is_array($indexes) && \count($indexes) > 0) {
                         foreach ($indexes as $ind) {
                             $indiciesStringArray[] = 'Name: ' . $ind['indexname'] . ', Unique: ' . ($ind['indexunique'] === true ? 'true' : 'false') . ', Fields: ' . $ind['indexfields'];

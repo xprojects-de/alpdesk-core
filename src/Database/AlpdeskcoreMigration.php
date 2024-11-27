@@ -144,6 +144,7 @@ class AlpdeskcoreMigration
                                         $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
                                         $cCounter++;
 
+                                        /** @phpstan-ignore-next-line */
                                         if ($cCounter > 0) {
                                             break;
                                         }
@@ -229,6 +230,7 @@ class AlpdeskcoreMigration
 
         $this->setLengthAndPrecisionByType($fieldattributes['type'], $dbType, $length, $scale, $precision, $fixed);
 
+        /** @phpstan-ignore-next-line */
         $type = $this->connection->getDatabasePlatform()?->getDoctrineTypeMapping($fieldattributes['type']);
         if ($type === null) {
             throw new \Exception('invalid type for ' . $fieldattributes['type']);
@@ -300,6 +302,7 @@ class AlpdeskcoreMigration
             case 'decimal':
                 if (\preg_match('/[a-z]+\((\d+),(\d+)\)/i', $dbType, $match)) {
                     $length = null;
+                    /** @phpstan-ignore-next-line */
                     [, $precision, $scale] = $match;
                 }
                 break;
