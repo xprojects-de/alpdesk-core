@@ -227,9 +227,9 @@ class AlpdeskcoreDatabasemanagerModel extends Model
         if ($result !== null) {
 
             $decryption = new Cryption(true);
-            $result->password = $decryption->safeDecrypt($result->password);
+            $password = $decryption->safeDecrypt($result->password);
 
-            return self::create($id, $result->host, (int)$result->port, $result->username, $result->password, $result->database);
+            return self::create($id, $result->host, (int)$result->port, $result->username, $password, $result->database);
         }
 
         return null;
