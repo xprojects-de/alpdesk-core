@@ -4,11 +4,16 @@ export default class LogsController extends Controller {
 
     static targets = ['logoutput'];
 
+    static values = {
+        token: String,
+        filename: String,
+        filter: String,
+        confirm: String,
+        deleteurl: String
+    }
+
     show() {
 
-        const requestToken = this.element.getAttribute('data-token');
-        const fileName = this.element.getAttribute('data-filename');
-        const filterValue = this.element.getAttribute('data-filtervalue');
         const outputTarget = this.logoutputTarget;
 
         if (outputTarget.style.display === 'none' || outputTarget.style.display === '') {
@@ -17,7 +22,7 @@ export default class LogsController extends Controller {
 
             xhr.open('POST', '/contao/alpdeskcorelazylogs', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('contaoCsrfToken', requestToken);
+            xhr.setRequestHeader('contaoCsrfToken', this.tokenValue);
 
             xhr.onload = function () {
 
@@ -48,8 +53,8 @@ export default class LogsController extends Controller {
             };
 
             const jsonPayload = {
-                'logFileName': fileName,
-                'filterValue': filterValue
+                'logFileName': this.filenameValue,
+                'filterValue': this.filterValue
             };
 
             outputTarget.innerHTML = '<div class="alpdeskcore-loader"></div>';
@@ -64,11 +69,9 @@ export default class LogsController extends Controller {
     }
 
     delete() {
-        const textConfirm = this.element.getAttribute('data-confirm');
-        const deleteUrl = this.element.getAttribute('data-deleteurl');
 
-        if (confirm(textConfirm)) {
-            window.location.href = deleteUrl;
+        if (confirm(this.confirmValue)) {
+            window.location.href = this.deleteurlValue;
         }
 
     }

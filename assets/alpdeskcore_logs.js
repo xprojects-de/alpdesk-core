@@ -4,4 +4,4 @@ import LogsController from './controllers/logs-controller';
 import './styles/alpdeskcore_logs.css';
 
 const alpdeskApplication = Application.start();
-alpdeskApplication.register('AlpdeskLogsController', LogsController);
+alpdeskApplication.register('alpdeskcorelogs', LogsController);
