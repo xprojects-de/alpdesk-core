@@ -18,49 +18,56 @@ export default class LogsController extends Controller {
 
         if (outputTarget.style.display === 'none' || outputTarget.style.display === '') {
 
-            const xhr = new XMLHttpRequest();
+            outputTarget.innerHTML = '<div class="alpdeskcore-loader"></div>';
+            outputTarget.style.display = 'block';
 
-            xhr.open('POST', '/contao/alpdeskcorelazylogs', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('contaoCsrfToken', this.tokenValue);
-
-            xhr.onload = function () {
+            fetch('/contao/alpdeskcorelazylogs', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'contaoCsrfToken': this.tokenValue
+                },
+                body: JSON.stringify({
+                    REQUEST_TOKEN: this.tokenValue,
+                    logFileName: this.filenameValue,
+                    filterValue: this.filterValue
+                })
+            }).then((xhr) => {
 
                 if (xhr.status === 200) {
 
-                    let containerInnerHtml = '<div class="alpdeskcore-errorContainer">Error loading data</div>';
+                    xhr.json().then((data) => {
 
-                    const data = JSON.parse(xhr.responseText);
-                    if (
-                        data.error !== undefined && data.error !== null &&
-                        data.content !== undefined && data.content !== null &&
-                        data.error === false
-                    ) {
+                        let containerInnerHtml = '<div class="alpdeskcore-errorContainer">Error loading data</div>';
 
-                        containerInnerHtml = '';
-                        data.content.forEach((val) => {
-                            containerInnerHtml += '<div class="alpdeskcorelogitem"><p>' + val + '</p></div>';
-                        });
+                        if (
+                            data.error !== undefined && data.error !== null &&
+                            data.content !== undefined && data.content !== null &&
+                            data.error === false
+                        ) {
 
-                    }
+                            containerInnerHtml = '';
+                            data.content.forEach((val) => {
+                                containerInnerHtml += '<div class="alpdeskcorelogitem"><p>' + val + '</p></div>';
+                            });
 
-                    outputTarget.innerHTML = containerInnerHtml;
+                        }
+
+                        outputTarget.innerHTML = containerInnerHtml;
+
+                    }).catch(() => {
+                        outputTarget.innerHTML = '<div class="alpdeskcore-errorContainer">Error loading data</div>';
+                    });
 
                 } else {
                     outputTarget.innerHTML = '<div class="alpdeskcore-errorContainer">Error loading data</div>';
                 }
 
-            };
-
-            const jsonPayload = {
-                'logFileName': this.filenameValue,
-                'filterValue': this.filterValue
-            };
-
-            outputTarget.innerHTML = '<div class="alpdeskcore-loader"></div>';
-            outputTarget.style.display = 'block';
-
-            xhr.send(JSON.stringify(jsonPayload));
+            }).catch(() => {
+                outputTarget.innerHTML = '<div class="alpdeskcore-errorContainer">Error loading data</div>';
+            });
 
         } else {
             outputTarget.style.display = 'none';
