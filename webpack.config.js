@@ -1,9 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
 
-if (!Encore.isRuntimeEnvironmentConfigured()) {
-    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
-}
-
 Encore
     .setOutputPath('src/Resources/public/logs/')
     .setPublicPath('/bundles/alpdeskcore/logs')
