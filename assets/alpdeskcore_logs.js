@@ -1,5 +1,5 @@
 import {Application} from '@hotwired/stimulus';
 import LogsController from "./controllers/logs-controller"
 
-const application = Application.start();
-application.register("AlpdeskLogsController", LogsController);
+const alpdeskApplication = Application.start();
+alpdeskApplication.register("AlpdeskLogsController", LogsController);
