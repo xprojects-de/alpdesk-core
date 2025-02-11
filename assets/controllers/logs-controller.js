@@ -63,4 +63,14 @@ export default class LogsController extends Controller {
 
     }
 
+    delete() {
+        const textConfirm = this.element.getAttribute('data-confirm');
+        const deleteUrl = this.element.getAttribute('data-deleteurl');
+
+        if (confirm(textConfirm)) {
+            window.location.href = deleteUrl;
+        }
+
+    }
+
 }

@@ -26,13 +26,12 @@
         {% for key,value in logs %}
 
             <div class="alpdeskcorelogfile" data-token="{{ token }}" data-filename="{{ value.logfile }}"
-                 data-filtervalue="{{ filterValue }}" data-controller="AlpdeskLogsController">
+                 data-filtervalue="{{ filterValue }}" data-confirm="{{ confirm }}"
+                 data-deleteurl="{{ route }}?deleteLog={{ value.logfile }}" data-controller="AlpdeskLogsController">
 
-                <a href="{{ route }}?deleteLog={{ value.logfile }}" title="Delete"
-                   onclick="if(!confirm('{{ confirm }}'))return false;"
-                   class="alpdeskcorelogsdelete">
-                    <img src="/system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
-                </a>
+                <span class="alpdeskcorelogsdelete" data-action="click->AlpdeskLogsController#delete">
+                     <img src="/system/themes/flexible/icons/delete.svg" alt="" width="16" height="16">
+                </span>
 
                 <span class="logVisible" data-action="click->AlpdeskLogsController#show">
                     <img src="/system/themes/flexible/icons/visible.svg" alt="" width="16" height="16">
