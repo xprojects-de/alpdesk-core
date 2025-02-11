@@ -13,7 +13,6 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(false)
     .addEntry('alpdeskcore_logs', './assets/alpdeskcore_logs.js')
-    .addStyleEntry('alpdeskcore_logs_css', './assets/alpdeskcore_logs.css')
 ;
 
 const alpdeskCoreLogs = Encore.getWebpackConfig();
@@ -29,7 +28,6 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(false)
     .addEntry('alpdeskcore_widget_databasemanager', './assets/alpdeskcore_widget_databasemanager.js')
-    .addStyleEntry('alpdeskcore_widget_databasemanager_css', './assets/alpdeskcore_widget_databasemanager.css')
 ;
 
 const alpdeskCoreDatabaseManager = Encore.getWebpackConfig();

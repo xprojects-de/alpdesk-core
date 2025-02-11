@@ -1,6 +1,8 @@
 import {Application} from '@hotwired/stimulus';
-import DatabaseController from "./controllers/database-controller"
+import DatabaseController from './controllers/database-controller';
+
+import './styles/alpdeskcore_widget_databasemanager.css';
 
 const alpdeskApplication = Application.start();
-alpdeskApplication.register("AlpdeskDatabaseController", DatabaseController);
+alpdeskApplication.register('AlpdeskDatabaseController', DatabaseController);
 

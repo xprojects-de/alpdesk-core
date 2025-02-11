@@ -163,7 +163,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
      */
     public function endpoint(): Response
     {
-        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/logs/alpdeskcore_logs_css.css';
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/logs/alpdeskcore_logs.css';
 
         $backendUser = $this->security->getUser();
 
