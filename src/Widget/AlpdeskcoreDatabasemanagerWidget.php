@@ -138,7 +138,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                                     $migrations .= '<p>' . $mig . '</p>';
                                 }
                                 $migrations .= '<hr>';
-                                $migrationButton = '<button data-controller="alpdeskcoredatabase" data-alpdeskcoredatabase-do-value="' . Input::get('do') . '" data-alpdeskcoredatabase-id-value="' . Input::get('id') . '" data-alpdeskcoredatabase-act-value="' . Input::get('act') . '" data-alpdeskcoredatabase-rt-value="' . Input::get('rt') . '" data-action="click->alpdeskcoredatabase#migrate" class="tl_submit">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</button>';
+                                $migrationButton = '<span data-controller="alpdeskcoredatabase" data-alpdeskcoredatabase-do-value="' . Input::get('do') . '" data-alpdeskcoredatabase-id-value="' . Input::get('id') . '" data-alpdeskcoredatabase-act-value="' . Input::get('act') . '" data-alpdeskcoredatabase-rt-value="' . Input::get('rt') . '" data-action="click->alpdeskcoredatabase#migrate" style="border:1px solid #ccc;display:inline-block;padding:10px;cursor:pointer;">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</span>';
                                 $migrations .= $migrationButton;
                             } else {
                                 $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['nomigrations'] . '</h3>';
