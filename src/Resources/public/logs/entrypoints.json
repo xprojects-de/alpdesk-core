@@ -1,0 +1,12 @@
+{
+  "entrypoints": {
+    "alpdeskcore_logs": {
+      "css": [
+        "/bundles/alpdeskcore/logs/alpdeskcore_logs.css"
+      ],
+      "js": [
+        "/bundles/alpdeskcore/logs/alpdeskcore_logs.js"
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "entrypoints": {
+    "alpdeskcore_widget_databasemanager": {
+      "css": [
+        "/bundles/alpdeskcore/database/alpdeskcore_widget_databasemanager.css"
+      ],
+      "js": [
+        "/bundles/alpdeskcore/database/alpdeskcore_widget_databasemanager.js"
+      ]
+    }
+  }
+}

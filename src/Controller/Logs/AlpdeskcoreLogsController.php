@@ -163,7 +163,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
      */
     public function endpoint(): Response
     {
-        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_logs.css';
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/logs/alpdeskcore_logs.css';
 
         $backendUser = $this->security->getUser();
 
@@ -190,7 +190,7 @@ class AlpdeskcoreLogsController extends AbstractBackendController
         $this->deleteLog();
         $this->checkFilter();
 
-        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_logs.js';
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/logs/alpdeskcore_logs.js';
 
         System::loadLanguageFile('default');
 

@@ -101,8 +101,8 @@ class DcaCallbacks
      */
     public function databaseManagerOnLoad(DataContainer $dc = null): void
     {
-        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/css/alpdeskcore_widget_databasemanager.css';
-        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/js/alpdeskcore_widget_databasemanager.js';
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskcore/database/alpdeskcore_widget_databasemanager.css';
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskcore/database/alpdeskcore_widget_databasemanager.js';
 
         $act = $this->requestStack->getCurrentRequest()->query->get('act');
         if ($act === 'backup') {

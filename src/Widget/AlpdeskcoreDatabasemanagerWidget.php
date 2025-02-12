@@ -138,7 +138,7 @@ class AlpdeskcoreDatabasemanagerWidget extends Widget
                                     $migrations .= '<p>' . $mig . '</p>';
                                 }
                                 $migrations .= '<hr>';
-                                $migrationButton = '<button data-do="' . Input::get('do') . '" data-id="' . Input::get('id') . '" data-act="' . Input::get('act') . '" data-rt="' . Input::get('rt') . '" type="submit" name="alpdeskcore_dbmigration_button" id="alpdeskcore_dbmigration_button" class="tl_submit">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</button>';
+                                $migrationButton = '<button data-controller="alpdeskcoredatabase" data-alpdeskcoredatabase-do-value="' . Input::get('do') . '" data-alpdeskcoredatabase-id-value="' . Input::get('id') . '" data-alpdeskcoredatabase-act-value="' . Input::get('act') . '" data-alpdeskcoredatabase-rt-value="' . Input::get('rt') . '" data-action="click->alpdeskcoredatabase#migrate" class="tl_submit">' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['migratelink'] . '</button>';
                                 $migrations .= $migrationButton;
                             } else {
                                 $migrations .= '<h3>' . $GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['nomigrations'] . '</h3>';
