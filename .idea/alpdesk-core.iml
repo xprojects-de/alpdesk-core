@@ -227,6 +227,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/webauthn-stimulus" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/webauthn-symfony-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/enshrined/svg-sanitize" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php84" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

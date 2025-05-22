@@ -238,6 +238,8 @@
       <path value="$PROJECT_DIR$/vendor/loupe/loupe" />
       <path value="$PROJECT_DIR$/vendor/spomky-labs/cbor-php" />
       <path value="$PROJECT_DIR$/vendor/spomky-labs/pki-framework" />
+      <path value="$PROJECT_DIR$/vendor/enshrined/svg-sanitize" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php84" />
     </include_path>
   </component>
   <component name="PhpProjectServersManager">
