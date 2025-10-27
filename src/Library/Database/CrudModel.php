@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Database;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
@@ -39,58 +38,76 @@ class CrudModel
 
     /**
      * @return AbstractSchemaManager<AbstractPlatform>
-     * @throws Exception
+     * @throws \Exception
      */
     public function getSchemaManager(): AbstractSchemaManager
     {
-        if ($this->schemaManager === null) {
-            $this->schemaManager = $this->connection->createSchemaManager();
+        try {
+
+            if ($this->schemaManager === null) {
+                $this->schemaManager = $this->connection->createSchemaManager();
+            }
+
+            return $this->schemaManager;
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
 
-        return $this->schemaManager;
     }
 
     /**
      * @return Schema
-     * @throws Exception
+     * @throws \Exception
      */
     public function getSchema(): Schema
     {
-        if ($this->schema === null) {
-            $this->schema = $this->getSchemaManager()->introspectSchema();
+        try {
+
+            if ($this->schema === null) {
+                $this->schema = $this->getSchemaManager()->introspectSchema();
+            }
+
+            return $this->schema;
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
 
-        return $this->schema;
     }
 
     /**
      * @param string $table
-     * @throws Exception
+     * @throws \Exception
      */
     public function setTable(string $table): void
     {
-        $this->table = $table;
+        try {
 
-        $this->fields = ['*' => 'string'];
+            $this->table = $table;
 
-        $columns = $this->getSchemaManager()->listTableColumns($this->table);
-        if (\count($columns) > 0) {
+            $this->fields = ['*' => 'string'];
 
-            foreach ($columns as $column) {
+            $columns = $this->getSchemaManager()->listTableColumns($this->table);
+            if (\count($columns) > 0) {
 
-                if ($column instanceof Column) {
+                foreach ($columns as $column) {
 
-                    $name = $column->getName();
-                    $type = strtolower(Type::getTypeRegistry()->lookupName($column->getType()));
-                    $comment = $column->getComment();
+                    if ($column instanceof Column) {
 
-                    if ($name !== '') {
+                        $name = $column->getName();
+                        $type = strtolower(Type::getTypeRegistry()->lookupName($column->getType()));
+                        $comment = $column->getComment();
 
-                        if ($comment !== '') {
-                            $type .= ' | ' . $comment;
+                        if ($name !== '') {
+
+                            if ($comment !== '') {
+                                $type .= ' | ' . $comment;
+                            }
+
+                            $this->fields[$name] = $type;
+
                         }
-
-                        $this->fields[$name] = $type;
 
                     }
 
@@ -98,6 +115,8 @@ class CrudModel
 
             }
 
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
 
     }
