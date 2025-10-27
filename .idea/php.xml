@@ -235,6 +235,14 @@
       <path value="$PROJECT_DIR$/vendor/loupe/matcher" />
       <path value="$PROJECT_DIR$/vendor/joomla/string" />
       <path value="$PROJECT_DIR$/vendor/php-feed-io/feed-io" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-iconv" />
+      <path value="$PROJECT_DIR$/vendor/debril/feed-io" />
+      <path value="$PROJECT_DIR$/vendor/beberlei/assert" />
+      <path value="$PROJECT_DIR$/vendor/voku/portable-ascii" />
+      <path value="$PROJECT_DIR$/vendor/voku/portable-utf8" />
+      <path value="$PROJECT_DIR$/vendor/thecodingmachine/safe" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
     </include_path>
   </component>
   <component name="PhpProjectServersManager">

@@ -13,3 +13,6 @@ The registered plugins can then be selected for this "Mandant".
 
 After that, a member must be created through which the API is authenticated.
 The "Mandant" is then linked to member and the necessary settings and access rights are set.
+
+PHPSTAN
+php vendor/bin/phpstan --memory-limit=2G analyse src

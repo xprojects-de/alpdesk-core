@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFilemanagement;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
-use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadEvent;
@@ -133,7 +132,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             return $file;
 
-        } catch (\Exception|AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Exception $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -164,7 +163,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
 
-        } catch (\Exception|AlpdeskCoreFilemanagementException $exception) {
+        } catch (\Exception $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
