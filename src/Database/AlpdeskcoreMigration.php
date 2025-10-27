@@ -246,25 +246,26 @@ class AlpdeskcoreMigration
                 $notNull = $fieldattributes['notnull'];
             }
 
-            $comment = $fieldattributes['comment'] ?? null;
-
             $options = [
                 'length' => $length,
                 'unsigned' => $unsigned,
                 'fixed' => $fixed,
                 'default' => $default,
                 'notnull' => $notNull,
-                'scale' => null,
-                'precision' => null,
-                'autoincrement' => $autoincrement,
-                'comment' => $comment,
+                'autoincrement' => $autoincrement
             ];
 
-            if (null !== $scale && null !== $precision) {
-
+            if (null !== $scale) {
                 $options['scale'] = $scale;
-                $options['precision'] = $precision;
+            }
 
+            if (null !== $precision) {
+                $options['precision'] = $precision;
+            }
+
+            $comment = $fieldattributes['comment'] ?? null;
+            if (null !== $comment) {
+                $options['comment'] = $comment;
             }
 
             $platformOptions = [];
