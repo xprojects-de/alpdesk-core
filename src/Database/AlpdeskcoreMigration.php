@@ -145,17 +145,12 @@ class AlpdeskcoreMigration
                                     \is_array($columnMatching['constraint']) && \count($columnMatching['constraint']) > 0
                                 ) {
 
-                                    // Only one per Table // Maybe @TODO
-                                    $cCounter = 0;
-                                    foreach ($columnMatching['constraint'] as $localColumn => $foreignColumn) {
+                                    $constraints = $columnMatching['constraint'];
+                                    $localColumn = \array_key_first($constraints);
+                                    if ($localColumn !== null) {
 
+                                        $foreignColumn = $constraints[$localColumn];
                                         $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
-                                        $cCounter++;
-
-                                        /** @phpstan-ignore-next-line */
-                                        if ($cCounter > 0) {
-                                            break;
-                                        }
 
                                     }
 
@@ -310,10 +305,10 @@ class AlpdeskcoreMigration
             case 'real':
             case 'numeric':
             case 'decimal':
-                if (\preg_match('/[a-z]+\((\d+),(\d+)\)/i', $dbType, $match)) {
+                if (\preg_match('/[a-z]+\((\d+),(\d+)\)/i', $dbType, $match) === 1) {
                     $length = null;
-                    /** @phpstan-ignore-next-line */
-                    [, $precision, $scale] = $match;
+                    $precision = (int)$match[1];
+                    $scale = (int)$match[2];
                 }
                 break;
 

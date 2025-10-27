@@ -119,6 +119,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     }
 
                     $indexes = array();
+
                     foreach ($table->getIndexes() as $indexEntry) {
 
                         if ('PRIMARY' !== $indexEntry->getName()) {
@@ -140,12 +141,14 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
                     }
 
-                    $indiciesStringArray = array();
-                    /** @phpstan-ignore-next-line */
-                    if (\is_array($indexes) && \count($indexes) > 0) {
+                    $indiciesStringArray = [];
+
+                    if (\count($indexes) > 0) {
+
                         foreach ($indexes as $ind) {
                             $indiciesStringArray[] = 'Name: ' . $ind['indexname'] . ', Unique: ' . ($ind['indexunique'] === true ? 'true' : 'false') . ', Fields: ' . $ind['indexfields'];
                         }
+
                     }
 
                     $structure[$table->getName()] = array(
