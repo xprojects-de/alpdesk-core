@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\Type;
 
 class AlpdeskcoreDatabasemanagerModel extends Model
 {
@@ -41,7 +41,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
             self::$connectionsTable[$id] = DriverManager::getConnection($params);
 
             if (!self::$connectionsTable[$id]->isConnected()) {
-                self::$connectionsTable[$id]->connect();
+                self::$connectionsTable[$id]->executeQuery('SELECT 1');
             }
 
             return self::$connectionsTable[$id];
@@ -93,7 +93,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     $options = "";
                     $tableOptions = $table->getOptions();
 
-                    if (\is_array($tableOptions) && \count($tableOptions) > 0) {
+                    if (\count($tableOptions) > 0) {
 
                         if (\array_key_exists('engine', $tableOptions)) {
                             $options .= 'engine: ' . $tableOptions['engine'];
@@ -155,46 +155,45 @@ class AlpdeskcoreDatabasemanagerModel extends Model
                     );
 
                     $columns = $table->getColumns();
-                    if (\is_array($columns) && \count($columns) > 0) {
+                    if (\count($columns) > 0) {
 
                         foreach ($columns as $column) {
 
-                            if ($column instanceof Column) {
+                            $output = strtolower(Type::getTypeRegistry()->lookupName($column->getType()));
 
-                                $type = $column->getType();
-                                $output = $type->getName();
-
-                                if ($column->getAutoincrement()) {
-                                    $output .= ' | autoincrement';
-                                }
-
-                                if ($column->getUnsigned()) {
-                                    $output .= ' | unsigned';
-                                }
-
-                                if ($column->getNotnull()) {
-                                    $output .= ' | NOT NULL';
-                                }
-
-                                $default = $column->getDefault();
-                                if ($default !== null) {
-                                    $output .= ' | DEFAULT "' . $default . '"';
-                                }
-
-                                $length = $column->getLength();
-                                if ($length !== null) {
-                                    $output .= ' | LENGTH ' . $length;
-                                }
-
-                                $platformOptions = $column->getPlatformOptions();
-                                if (\is_array($platformOptions) && \count($platformOptions) > 0) {
-                                    foreach ($platformOptions as $pKey => $pValue) {
-                                        $output .= ' | ' . $pKey . ' ' . $pValue;
-                                    }
-                                }
-
-                                $structure[$table->getName()][$column->getName()] = $output;
+                            if ($column->getAutoincrement()) {
+                                $output .= ' | autoincrement';
                             }
+
+                            if ($column->getUnsigned()) {
+                                $output .= ' | unsigned';
+                            }
+
+                            if ($column->getNotnull()) {
+                                $output .= ' | NOT NULL';
+                            }
+
+                            $default = $column->getDefault();
+                            if ($default !== null) {
+                                $output .= ' | DEFAULT "' . $default . '"';
+                            }
+
+                            $length = $column->getLength();
+                            if ($length !== null) {
+                                $output .= ' | LENGTH ' . $length;
+                            }
+
+                            $platformOptions = $column->getPlatformOptions();
+                            if (\count($platformOptions) > 0) {
+
+                                foreach ($platformOptions as $pKey => $pValue) {
+                                    $output .= ' | ' . $pKey . ' ' . $pValue;
+                                }
+
+                            }
+
+                            $structure[$table->getName()][$column->getName()] = $output;
+
                         }
                     }
                 }
@@ -202,7 +201,7 @@ class AlpdeskcoreDatabasemanagerModel extends Model
 
             return $structure;
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
     }

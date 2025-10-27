@@ -5,15 +5,20 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Database;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\Type;
 
 class CrudModel
 {
     private ?Connection $connection = null;
-    /** @phpstan-ignore-next-line */
+    /**
+     * @var AbstractSchemaManager<AbstractPlatform>|null
+     */
     private ?AbstractSchemaManager $schemaManager = null;
     private ?Schema $schema = null;
     private string $table = '';
@@ -33,9 +38,8 @@ class CrudModel
     }
 
     /**
-     * @return AbstractSchemaManager
-     * @throws \Exception
-     * @phpstan-ignore-next-line
+     * @return AbstractSchemaManager<AbstractPlatform>
+     * @throws Exception
      */
     public function getSchemaManager(): AbstractSchemaManager
     {
@@ -48,7 +52,7 @@ class CrudModel
 
     /**
      * @return Schema
-     * @throws \Exception
+     * @throws Exception
      */
     public function getSchema(): Schema
     {
@@ -61,7 +65,7 @@ class CrudModel
 
     /**
      * @param string $table
-     * @throws \Exception
+     * @throws Exception
      */
     public function setTable(string $table): void
     {
@@ -70,23 +74,24 @@ class CrudModel
         $this->fields = ['*' => 'string'];
 
         $columns = $this->getSchemaManager()->listTableColumns($this->table);
-        if (\is_array($columns) && \count($columns) > 0) {
+        if (\count($columns) > 0) {
 
             foreach ($columns as $column) {
 
                 if ($column instanceof Column) {
 
                     $name = $column->getName();
-                    $type = $column->getType()->getName();
+                    $type = strtolower(Type::getTypeRegistry()->lookupName($column->getType()));
                     $comment = $column->getComment();
 
-                    if ($name !== null && $name !== '') {
+                    if ($name !== '') {
 
-                        if ($comment !== null && $comment !== '') {
+                        if ($comment !== '') {
                             $type .= ' | ' . $comment;
                         }
 
                         $this->fields[$name] = $type;
+
                     }
 
                 }
@@ -110,6 +115,7 @@ class CrudModel
         }
 
         return $fields;
+
     }
 
     /**
@@ -134,14 +140,25 @@ class CrudModel
         }
 
         return $this->connection->createQueryBuilder();
+
     }
 
+    /**
+     * @param QueryBuilder $qb
+     * @param int $limit
+     * @param int $offset
+     * @return void
+     */
     public function limit(QueryBuilder $qb, int $limit, int $offset = 0): void
     {
         $qb->setMaxResults($limit);
         $qb->setFirstResult($offset);
     }
 
+    /**
+     * @param string $exMessage
+     * @return string
+     */
     private function getSQLErrorMessage(string $exMessage): string
     {
         $message = 'invalid statement';
@@ -176,11 +193,15 @@ class CrudModel
         }
 
         $selectParam = '*';
+
         if (\count($select) > 0) {
+
             foreach ($select as $selectfield) {
                 $this->checkField($selectfield);
             }
+
             $selectParam = \implode(',', $select);
+
         }
 
         $qb = $this->getQueryBuilder()->select($selectParam)->from($this->table);
@@ -216,7 +237,7 @@ class CrudModel
 
         try {
             $data = $qb->executeQuery()->fetchAllAssociative();
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             throw new \Exception($this->getSQLErrorMessage($ex->getMessage()));
         }
 
@@ -225,6 +246,7 @@ class CrudModel
         }
 
         return $data;
+
     }
 
     /**
@@ -275,7 +297,7 @@ class CrudModel
 
         try {
             $qb->executeStatement();
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             throw new \Exception($this->getSQLErrorMessage($ex->getMessage()));
         }
 
@@ -307,19 +329,21 @@ class CrudModel
                 $qb->setValue($key, '?')->setParameter($counter, $value);
                 $counter++;
 
-            } catch (\Exception $ex) {
+            } catch (\Throwable $ex) {
                 throw new \Exception($ex->getMessage());
-
             }
+
         }
 
         try {
+
             $qb->executeStatement();
-        } catch (\Exception $ex) {
+            return $this->connection->lastInsertId();
+
+        } catch (\Throwable $ex) {
             throw new \Exception($this->getSQLErrorMessage($ex->getMessage()));
         }
 
-        return $this->connection->lastInsertId();
     }
 
 
@@ -354,7 +378,7 @@ class CrudModel
 
         try {
             $qb->executeStatement();
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             throw new \Exception($this->getSQLErrorMessage($ex->getMessage()));
         }
 

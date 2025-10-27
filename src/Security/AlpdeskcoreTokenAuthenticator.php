@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
@@ -123,8 +124,12 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
             $username = AlpdeskcoreUserProvider::extractUsernameFromToken($apiToken);
 
             return new Passport(
-                new UserBadge($username, [$this->userProvider, 'loadUserByIdentifier']), new CustomCredentials(
-                    function ($credentials, AlpdeskcoreUser $userObject) {
+                new UserBadge($username, $this->userProvider->loadUserByIdentifier(...)), new CustomCredentials(
+                    function ($credentials, UserInterface $userObject) {
+
+                        if (!$userObject instanceof AlpdeskcoreUser) {
+                            return false;
+                        }
 
                         if ($userObject->getFixToken() === $credentials) {
 
