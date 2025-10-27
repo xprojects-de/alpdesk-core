@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
 
 class AlpdeskCoreFileuploadEvent extends Event
 {
-    public const NAME = 'alpdesk.fileupload';
+    public const string NAME = 'alpdesk.fileupload';
 
     private AlpdeskCoreFileuploadResponse $resultData;
 

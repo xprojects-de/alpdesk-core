@@ -9,7 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AlpdeskCoreFilemanagementFinderDeleteEvent extends Event
 {
-    public const NAME = 'alpdesk.finder_delete';
+    public const string NAME = 'alpdesk.finder_delete';
 
     private array $inputData;
     private bool $resultData;

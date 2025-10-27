@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 
 class AlpdeskCoreAuthVerifyEvent extends Event
 {
-    public const NAME = 'alpdesk.auth_verify';
+    public const string NAME = 'alpdesk.auth_verify';
 
     private AlpdeskCoreAuthResponse $resultData;
 

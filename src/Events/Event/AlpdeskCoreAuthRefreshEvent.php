@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 
 class AlpdeskCoreAuthRefreshEvent extends Event
 {
-    public const NAME = 'alpdesk.auth_refresh';
+    public const string NAME = 'alpdesk.auth_refresh';
 
     private AlpdeskCoreAuthResponse $resultData;
 

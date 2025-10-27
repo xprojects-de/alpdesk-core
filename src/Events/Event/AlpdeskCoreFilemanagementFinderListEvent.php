@@ -9,7 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AlpdeskCoreFilemanagementFinderListEvent extends Event
 {
-    public const NAME = 'alpdesk.finder_listfolder';
+    public const string NAME = 'alpdesk.finder_listfolder';
 
     private array $inputData;
     private array $resultData;

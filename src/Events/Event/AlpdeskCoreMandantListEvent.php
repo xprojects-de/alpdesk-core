@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandantResponse;
 
 class AlpdeskCoreMandantListEvent extends Event
 {
-    public const NAME = 'alpdesk.mandantlist';
+    public const string NAME = 'alpdesk.mandantlist';
 
     private AlpdeskCoreMandantResponse $resultData;
 
