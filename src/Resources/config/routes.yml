@@ -16,7 +16,7 @@ alpdesk_lazylogs_backend:
 alpdesk_database_backend:
   path: /contao/alpdeskcoredatabase
   defaults:
-    _controller: Alpdesk\AlpdeskCore\Controller\Backup\AlpdeskcoreBackupController::endpoint
+    _controller: Alpdesk\AlpdeskCore\Controller\Database\AlpdeskcoreDatabaseController::endpoint
     _scope: backend
     _token_check: false
   methods: [ GET ]
