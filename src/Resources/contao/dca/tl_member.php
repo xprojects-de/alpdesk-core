@@ -26,7 +26,6 @@ PaletteManipulator::create()
 $GLOBALS['TL_DCA']['tl_member']['config']['sql']['keys']['disable,login,username'] = 'index';
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandant'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_mandant'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'select',
@@ -36,7 +35,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandant'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_fixtoken'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_fixtoken'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'text',
@@ -48,7 +46,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_fixtoken'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_elements'],
     'exclude' => true,
     'filter' => true,
     'inputType' => 'checkbox',
@@ -58,7 +55,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_elements'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_admin'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_admin'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -67,7 +63,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_admin'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandantwhitelist'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_mandantwhitelist'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'foreignKey' => 'tl_alpdeskcore_mandant.mandant',
@@ -76,7 +71,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_mandantwhitelist'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_upload'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_upload'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -85,7 +79,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_upload'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_download'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_download'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -94,7 +87,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_download'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_create'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_create'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -103,7 +95,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_create'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_delete'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_delete'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -112,7 +103,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_delete'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_rename'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_rename'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -121,7 +111,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_rename'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_move'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_move'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -130,7 +119,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_move'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_copy'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_copy'],
     'exclude' => true,
     'search' => true,
     'inputType' => 'checkbox',
@@ -139,7 +127,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_copy'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_crudOperations'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_crudOperations'],
     'exclude' => true,
     'filter' => true,
     'inputType' => 'checkbox',
@@ -155,7 +142,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_crudOperations'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_crudTables'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_member']['alpdeskcore_crudTables'],
     'exclude' => true,
     'filter' => true,
     'inputType' => 'checkbox',
