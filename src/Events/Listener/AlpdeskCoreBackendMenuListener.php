@@ -59,7 +59,7 @@ class AlpdeskCoreBackendMenuListener
             ];
 
             $databaseNode = $factory
-                ->createItem('favorite')
+                ->createItem('alpdeskcore_databasemanager')
                 ->setLabel($databaseNodeLabel)
                 ->setLinkAttribute('title', $databaseNodeLabel)
                 ->setUri($this->router->generate('contao_backend', $databaseNodeData))
