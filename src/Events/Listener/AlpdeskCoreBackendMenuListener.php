@@ -44,28 +44,28 @@ class AlpdeskCoreBackendMenuListener
         if ('mainMenu' === $tree->getName()) {
 
             $contentNode = $tree->getChild('alpdeskcore');
-            if ($contentNode === null) {
-                $contentNode = $tree->getChild('system');
+            if ($contentNode !== null) {
+
+                $contentNode->getChild('alpdeskcore_databasemanager')?->setLinkAttribute('data-turbo-prefetch', 'false');
+
+                Utils::mergeUserGroupPermissions($backendUser);
+
+                if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
+                    return;
+                }
+
+                $logNode = $factory
+                    ->createItem('alpdesk_logs_backend')
+                    ->setUri($this->router->generate('alpdesk_logs_backend'))
+                    ->setLabel('Logs')
+                    ->setLinkAttribute('title', 'Logs')
+                    ->setLinkAttribute('class', 'alpdesk_logs_backend')
+                    ->setLinkAttribute('data-turbo-prefetch', 'false')
+                    ->setCurrent($request->get('_route') === 'alpdesk_logs_backend');
+
+                $contentNode->addChild($logNode);
+
             }
-
-            $contentNode->getChild('alpdeskcore_databasemanager')?->setLinkAttribute('data-turbo-prefetch', 'false');
-
-            Utils::mergeUserGroupPermissions($backendUser);
-
-            if (!$backendUser->isAdmin && (int)$backendUser->alpdeskcorelogs_enabled !== 1) {
-                return;
-            }
-
-            $logNode = $factory
-                ->createItem('alpdesk_logs_backend')
-                ->setUri($this->router->generate('alpdesk_logs_backend'))
-                ->setLabel('Logs')
-                ->setLinkAttribute('title', 'Logs')
-                ->setLinkAttribute('class', 'alpdesk_logs_backend')
-                ->setLinkAttribute('data-turbo-prefetch', 'false')
-                ->setCurrent($request->get('_route') === 'alpdesk_logs_backend');
-
-            $contentNode?->addChild($logNode);
 
         }
 
