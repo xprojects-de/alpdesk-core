@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
         'operations' => array
         (
             'edit',
-            'editheader',
+            'children',
             'delete'
         )
     ),

@@ -41,7 +41,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf'] = array
         'operations' => array
         (
             'edit',
-            'editheader',
+            'children',
             'delete'
         )
     ),
