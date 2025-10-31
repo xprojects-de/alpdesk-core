@@ -6,6 +6,7 @@ services:
       - '@security.helper'
       - '@router'
       - '@request_stack'
+      - '@translator'
     tags:
       - { name: kernel.event_listener, event: contao.backend_menu_build, priority: -255 }
 
