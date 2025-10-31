@@ -249,7 +249,7 @@
     <servers>
       <server host="alpdesk-core" id="11bbc50c-8a3c-4c93-bf86-40930e06661b" name="Alpdesk-Core" port="8890" use_path_mappings="true">
         <path_mappings>
-          <mapping local-root="$PROJECT_DIR$" remote-root="/Users/benjaminhummel/Documents/DokumenteMacMini/MAMPP/alpdesk-core/vendor/alpdesk/alpdesk-core" />
+          <mapping local-root="$PROJECT_DIR$" remote-root="/Users/benjaminhummel/MAMPP/alpdesk-core/vendor/alpdesk/alpdesk-core" />
         </path_mappings>
       </server>
     </servers>
