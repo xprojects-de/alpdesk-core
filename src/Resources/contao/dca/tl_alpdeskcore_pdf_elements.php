@@ -1,6 +1,7 @@
 <?php
 
 use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
 use Contao\DC_Table;
 
@@ -47,6 +48,8 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
             (
                 'icon' => 'redirect.gif',
                 'href' => 'act=generatetestpdf',
+                'prefetch' => false,
+                'attributes' => (new HtmlAttributes())->set('data-turbo', 'false'),
                 'button_callback' => array(AlpdeskCoreDcaUtils::class, 'generatetestpdfLinkCallback')
             ),
         )
