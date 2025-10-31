@@ -11,21 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Contao\BackendUser;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AlpdeskCoreBackendMenuListener
 {
     protected RouterInterface $router;
     protected RequestStack $requestStack;
     private Security $security;
-    private TranslatorInterface $translator;
 
-    public function __construct(Security $security, RouterInterface $router, RequestStack $requestStack, TranslatorInterface $translator)
+    public function __construct(Security $security, RouterInterface $router, RequestStack $requestStack)
     {
         $this->router = $router;
         $this->requestStack = $requestStack;
         $this->security = $security;
-        $this->translator = $translator;
     }
 
     public function __invoke(MenuEvent $event): void
@@ -51,24 +48,10 @@ class AlpdeskCoreBackendMenuListener
                 $contentNode = $tree->getChild('system');
             }
 
-            $databaseNodeLabel = $this->translator->trans('MOD.alpdeskcore_databasemanager.0', [], 'contao_modules');
-
-            $databaseNodeData = [
-                'do' => 'alpdeskcore_databasemanager',
-                'ref' => $request->attributes->get('_contao_referer_id'),
-            ];
-
-            $databaseNode = $factory
-                ->createItem('alpdeskcore_databasemanager')
-                ->setLabel($databaseNodeLabel)
-                ->setLinkAttribute('title', $databaseNodeLabel)
-                ->setUri($this->router->generate('contao_backend', $databaseNodeData))
-                ->setLinkAttribute('class', 'alpdeskcore_databasemanager')
-                ->setLinkAttribute('data-turbo-prefetch', 'false')
-                ->setExtra('safe_label', true)
-                ->setExtra('translation_domain', false);
-
-            $contentNode?->addChild($databaseNode);
+            $databaseNode = $tree->getChild('alpdeskcore_databasemanager');
+            if ($databaseNode !== null) {
+                $databaseNode->setLinkAttribute('data-turbo-prefetch', 'false');
+            }
 
             Utils::mergeUserGroupPermissions($backendUser);
 
@@ -88,6 +71,7 @@ class AlpdeskCoreBackendMenuListener
             $contentNode?->addChild($logNode);
 
         }
+
     }
 
 }

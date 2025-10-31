@@ -32,8 +32,7 @@ $GLOBALS['BE_MOD']['alpdeskcore']['alpdeskcore_mandant'] = array(
 $GLOBALS['BE_MOD']['alpdeskcore']['alpdeskcore_databasemanager'] = array(
     'tables' => array(
         'tl_alpdeskcore_databasemanager'
-    ),
-    'hideInNavigation' => true
+    )
 );
 
 $GLOBALS['BE_MOD']['alpdeskcore']['alpdeskcore_pdf'] = array(
