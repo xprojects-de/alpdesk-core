@@ -48,10 +48,7 @@ class AlpdeskCoreBackendMenuListener
                 $contentNode = $tree->getChild('system');
             }
 
-            $databaseNode = $tree->getChild('alpdeskcore_databasemanager');
-            if ($databaseNode !== null) {
-                $databaseNode->setLinkAttribute('data-turbo-prefetch', 'false');
-            }
+            $tree->getChild('alpdeskcore_databasemanager')?->setLinkAttribute('data-turbo-prefetch', 'false');
 
             Utils::mergeUserGroupPermissions($backendUser);
 
