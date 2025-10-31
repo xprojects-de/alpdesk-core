@@ -93,3 +93,11 @@ services:
       - '@security.helper'
     tags:
       - controller.service_arguments
+
+  Alpdesk\AlpdeskCore\Controller\Database\AlpdeskcoreDatabaseController:
+    arguments:
+      - '%kernel.project_dir%'
+      - '@request_stack'
+      - '@security.helper'
+    tags:
+      - controller.service_arguments

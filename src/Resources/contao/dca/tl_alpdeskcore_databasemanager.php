@@ -34,23 +34,11 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'operations' => array
         (
-            'edit' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.gif'
-            ),
-            'delete' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
-            ),
+            'edit',
+            'delete',
             'backupDatabase' => array
             (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['backupDatabase'],
-                'href' => 'act=backup',
+                'route' => 'alpdesk_database_backend',
                 'icon' => 'theme_export.svg'
             )
         )
@@ -71,7 +59,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'title' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['title'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -80,7 +67,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'host' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['host'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -90,7 +76,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'port' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['port'],
             'exclude' => true,
             'search' => false,
             'inputType' => 'text',
@@ -100,7 +85,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'database' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['database'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -109,7 +93,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'username' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['username'],
             'exclude' => true,
             'search' => false,
             'inputType' => 'text',
@@ -118,7 +101,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'password' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['password'],
             'exclude' => true,
             'search' => false,
             'inputType' => 'text',
@@ -135,7 +117,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'databasemodel' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['databasemodel'],
             'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => [
