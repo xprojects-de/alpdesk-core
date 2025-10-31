@@ -39,6 +39,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
             'backupDatabase' => array
             (
                 'route' => 'alpdesk_database_backend',
+                'prefetch' => false,
                 'icon' => 'theme_export.svg'
             )
         )

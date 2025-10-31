@@ -48,8 +48,8 @@ class AlpdeskcoreDatabaseController extends AbstractBackendController
             }
 
             $currentId = $this->requestStack->getCurrentRequest()->query->get('id');
-            if (\is_int($currentId)) {
-                $this->backupDatabaseSendBrowser($currentId);
+            if ($currentId !== null && $currentId !== '') {
+                $this->backupDatabaseSendBrowser((int)$currentId);
             }
 
         } catch (\Throwable $tr) {
