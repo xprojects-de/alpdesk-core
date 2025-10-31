@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Backend;
 
 use Alpdesk\AlpdeskCore\Library\PDF\AlpdeskCorePDFCreator;
+use Alpdesk\AlpdeskCore\Model\PDF\AlpdeskcorePdfElementsModel;
 use Contao\DataContainer;
 use Contao\Backend;
 use Contao\Input;
-use Contao\Image;
-use Contao\StringUtil;
 use Contao\Controller;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
@@ -93,51 +92,34 @@ class AlpdeskCoreDcaUtils extends Backend
         }
 
         if ($dc->activeRecord) {
-            $cryption = new Cryption(true);
-            $varValue = $cryption->safeDecrypt($varValue);
+            $crypto = new Cryption(true);
+            $varValue = $crypto->safeDecrypt($varValue);
         }
 
         return $varValue;
     }
 
     /**
-     * @param DataContainer $dc
      * @return void
      */
-    public function pdfElementsloadCallback(DataContainer $dc): void
+    public function generatePdfPreview(): void
     {
-        if (Input::get('act') === 'generatetestpdf') {
+        if (Input::get('key') === 'generate_pdf_preview') {
 
             try {
-                (new AlpdeskCorePDFCreator())->generateById((int)Input::get('pdfid'), "files/tmp", time() . ".pdf");
+                (new AlpdeskCorePDFCreator())->generateById((int)Input::get('id'), "files/tmp", time() . ".pdf");
             } catch (\Exception) {
             }
+        }
 
-            Controller::redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . Input::get('id') . '&rt=' . Input::get('rt'));
+        $elementsModel = AlpdeskcorePdfElementsModel::findById((int)Input::get('id'));
+        $pid = $elementsModel?->pid;
+        if ($pid !== null) {
+            Controller::redirect('contao?do=' . Input::get('do') . '&table=' . Input::get('table') . '&id=' . (int)$pid);
+        } else {
+            Controller::redirect('contao?do=alpdeskcore_pdf');
         }
 
     }
 
-    /**
-     * @param mixed $arrRow
-     * @return string
-     */
-    public function listPDFElements(mixed $arrRow): string
-    {
-        return $arrRow['name'];
-    }
-
-    /**
-     * @param mixed $row
-     * @param mixed $href
-     * @param mixed $label
-     * @param mixed $title
-     * @param mixed $icon
-     * @param mixed $attributes
-     * @return string
-     */
-    public function generatetestpdfLinkCallback(mixed $row, mixed $href, mixed $label, mixed $title, mixed $icon, mixed $attributes): string
-    {
-        return '<a href="' . self::addToUrl($href . '&amp;pdfid=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a>';
-    }
 }

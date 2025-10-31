@@ -1,6 +1,5 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
 use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
 use Contao\DC_Table;
@@ -19,21 +18,21 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
                 'id' => 'primary',
                 'pid' => 'index'
             )
-        ),
-        'onload_callback' => array
-        (
-            array(AlpdeskCoreDcaUtils::class, 'pdfElementsloadCallback')
-        ),
+        )
     ),
     'list' => array
     (
         'sorting' => array
         (
             'mode' => DataContainer::MODE_PARENT,
-            'fields' => array('sorting'),
             'headerFields' => array('title'),
-            'panelLayout' => 'filter;search,limit',
-            'child_record_callback' => array(AlpdeskCoreDcaUtils::class, 'listPDFElements')
+            'fields' => array('sorting'),
+            'panelLayout' => 'filter;search,limit'
+        ),
+        'label' => array
+        (
+            'fields' => array('name'),
+            'showColumns' => false
         ),
         'global_operations' => array
         (
@@ -44,13 +43,13 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
             'edit',
             'copy',
             'delete',
-            'generatetestpdf' => array
+            'generate_pdf_preview' => array
             (
                 'icon' => 'redirect.gif',
-                'href' => 'act=generatetestpdf',
-                'prefetch' => false,
+                'href' => 'key=generate_pdf_preview',
                 'attributes' => (new HtmlAttributes())->set('data-turbo', 'false'),
-                'button_callback' => array(AlpdeskCoreDcaUtils::class, 'generatetestpdfLinkCallback')
+                'method' => 'GET',
+                'prefetch' => false,
             ),
         )
     ),
