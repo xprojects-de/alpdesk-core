@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
+use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,7 +12,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFilemanagement;
-use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadEvent;
@@ -20,38 +20,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreFilemanagementController extends AbstractController
 {
-    protected string $rootDir;
     protected ContaoFramework $framework;
     protected AlpdeskCoreEventService $eventService;
     protected AlpdeskcoreLogger $logger;
+    protected StorageAdapter $storageAdapter;
 
     public function __construct(
         ContaoFramework         $framework,
         AlpdeskCoreEventService $eventService,
         AlpdeskcoreLogger       $logger,
-        string                  $rootDir
+        StorageAdapter          $storageAdapter,
     )
     {
         $this->framework = $framework;
         $this->eventService = $eventService;
         $this->logger = $logger;
-        $this->rootDir = $rootDir;
-    }
-
-    /**
-     * @param AlpdeskCoreFileuploadResponse $data
-     * @param int $statusCode
-     * @return JsonResponse
-     */
-    private function output(AlpdeskCoreFileuploadResponse $data, int $statusCode): JsonResponse
-    {
-        return (new JsonResponse(array(
-            'username' => $data->getUsername(),
-            'alpdesk_token' => $data->getAlpdesk_token(),
-            'file' => $data->getFileName(),
-            'uuid' => $data->getUuid(),
-        ), $statusCode
-        ));
+        $this->storageAdapter = $storageAdapter;
     }
 
     /**
@@ -89,16 +73,24 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             if ($uploadFile !== null && $target !== null) {
 
-                $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->upload($uploadFile, $target, $user);
+                $response = (new AlpdeskCoreFilemanagement($this->storageAdapter, $this->eventService))->upload($uploadFile, $target, $user);
 
                 $event = new AlpdeskCoreFileuploadEvent($response);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFileuploadEvent::NAME);
 
                 $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Upload successfully', __METHOD__);
 
-                return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
+                return (new JsonResponse(array(
+                    'username' => $event->getResultData()->getUsername(),
+                    'alpdesk_token' => $event->getResultData()->getAlpdesk_token(),
+                    'file' => $event->getResultData()->getFileName(),
+                    'uuid' => $event->getResultData()->getUuid(),
+                ), AlpdeskCoreConstants::$STATUSCODE_OK));
+
             }
+
             $this->logger->error('invalid parameters (=null) for upload', __METHOD__);
+
             return $this->outputError('invalid parameters (=null) for upload', AlpdeskCoreConstants::$ERROR_FILEMANAGEMENT_INVALIDFILES, AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
 
         } catch (\Exception $exception) {
@@ -107,6 +99,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
 
         }
+
     }
 
     /**
@@ -124,10 +117,9 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
-            // $request->getContent() must always be a valid JSON
             $downloadData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $file = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->download($user, $downloadData);
+            $file = (new AlpdeskCoreFilemanagement($this->storageAdapter, $this->eventService))->download($user, $downloadData);
             $this->logger->info('Download successfully', __METHOD__);
 
             return $file;
@@ -155,10 +147,9 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
-            // $request->getContent() must always be a valid JSON
             $finderData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $response = (new AlpdeskCoreFilemanagement($this->rootDir, $this->eventService))->finder($user, $finderData);
+            $response = (new AlpdeskCoreFilemanagement($this->storageAdapter, $this->eventService))->finder($user, $finderData);
             $this->logger->info('Finder successfully', __METHOD__);
 
             return (new JsonResponse($response, AlpdeskCoreConstants::$STATUSCODE_OK));
@@ -169,5 +160,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
 
         }
+
     }
+
 }

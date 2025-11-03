@@ -14,5 +14,21 @@ The registered plugins can then be selected for this "Mandant".
 After that, a member must be created through which the API is authenticated.
 The "Mandant" is then linked to member and the necessary settings and access rights are set.
 
+Add optional to config/config.yml
+
+```yml
+
+# e.g. fort awss3 Storage
+
+alpdesk_core:
+  storage:
+    awss3:
+      key: "KEY"
+      secret: "SECRET"
+      region: "eu-central-1"
+      bucket: "vakanza-dev-local"
+
+```
+
 PHPSTAN
 php vendor/bin/phpstan --memory-limit=2G analyse src
