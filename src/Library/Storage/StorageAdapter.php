@@ -32,7 +32,7 @@ class StorageAdapter
      */
     private function getStorage(string $alias = 'local'): BaseStorageInterface
     {
-        $object = $this->storageServices[$alias];
+        $object = ($this->storageServices[$alias] ?? null);
         if (!$object instanceof BaseStorageInterface) {
             throw new \Exception('invalid service type');
         }
