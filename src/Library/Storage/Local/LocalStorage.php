@@ -401,9 +401,7 @@ class LocalStorage extends BaseStorage
      */
     public function createFile(string $filePath, mixed $content): ?StorageObject
     {
-        $file = new File($filePath);
-        $file->write($content);
-        $file->close();
+        $this->filesStorage->write(\str_replace('files/', '', $filePath), $content);
 
         $storageObject = $this->deploy($filePath, $filePath, true);
         if ($storageObject instanceof StorageObject) {
