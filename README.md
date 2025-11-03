@@ -28,7 +28,3 @@ alpdeskcore.storage_local:
 ```
 
 After register the storage, it can be used by manipulating the storageAdapter in the alpdesk.filemanagement.request.event
-
-### TESTING
-PHPSTAN
-php vendor/bin/phpstan --memory-limit=2G analyse src
