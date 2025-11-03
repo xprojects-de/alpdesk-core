@@ -106,7 +106,7 @@ class AlpdeskCoreFilemanagement
     {
         if ($basePath === null) {
 
-            $baseObject = $this->storageAdapter->findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+            $baseObject = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
             if (!$baseObject instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid mandant fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
             }
@@ -190,7 +190,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("error upload file");
             }
 
-            $response->setUuid(StringUtil::binToUuid($objFinalFile->uuid));
+            $response->setUuid($objFinalFile->uuid);
             $response->setRootFileName($objFinalFile->path . '/' . $fileName);
             $response->setFileName($objFinalFile->basename);
 
@@ -381,7 +381,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("No valid mode in target. Must be 'file' or 'dir'");
             }
 
-            $objTargetBase = $this->storageAdapter->findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+            $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
             if (!$objTargetBase instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid Mandant FileMount");
             }
