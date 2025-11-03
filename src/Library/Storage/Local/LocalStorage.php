@@ -106,7 +106,11 @@ class LocalStorage extends BaseStorage
                         $storageObject->absolutePath = $fileObject->getAbsolutePath();
                         $storageObject->name = $fileObject->name;
                         $storageObject->filename = $file->filename;
-                        $storageObject->url = $this->generateLocalUrl($fileObject->path);
+
+                        if ($file->isUnprotected()) {
+                            $storageObject->url = $this->generateLocalUrl($file->path);
+                        }
+
                         $storageObject->uuid = self::binToUuid($fileObject->uuid);
                         $storageObject->type = 'file';
                         $storageObject->meta = $fileObject->meta;
@@ -129,7 +133,6 @@ class LocalStorage extends BaseStorage
                     $storageObject->absolutePath = $fileObject->getAbsolutePath();
                     $storageObject->name = $fileObject->name;
                     $storageObject->filename = $folder->filename;
-                    $storageObject->url = $this->generateLocalUrl($fileObject->path);
                     $storageObject->uuid = self::binToUuid($fileObject->uuid);
                     $storageObject->type = 'folder';
                     $storageObject->isPublic = $folder->isUnprotected();
@@ -155,7 +158,11 @@ class LocalStorage extends BaseStorage
                     $storageObject->absolutePath = $this->rootDir . '/' . $objectFile->path;
                     $storageObject->name = $objectFile->name;
                     $storageObject->filename = $objectFile->filename;
-                    $storageObject->url = $this->generateLocalUrl($objectFile->path);
+
+                    if ($objectFile->isUnprotected()) {
+                        $storageObject->url = $this->generateLocalUrl($objectFile->path);
+                    }
+
                     $storageObject->uuid = null;
                     $storageObject->type = 'file';
                     $storageObject->meta = $fileObject->meta;
@@ -178,7 +185,6 @@ class LocalStorage extends BaseStorage
                     $storageObject->absolutePath = $this->rootDir . '/' . $objectFolder->path;
                     $storageObject->name = $objectFolder->name;
                     $storageObject->filename = $objectFolder->filename;
-                    $storageObject->url = $this->generateLocalUrl($objectFolder->path);
                     $storageObject->uuid = null;
                     $storageObject->type = 'folder';
                     $storageObject->isPublic = $objectFolder->isUnprotected();
@@ -272,7 +278,11 @@ class LocalStorage extends BaseStorage
                 $storageObject->absolutePath = $this->rootDir . '/' . $fileLocal->path;
                 $storageObject->name = $fileLocal->name;
                 $storageObject->filename = $fileLocal->filename;
-                $storageObject->url = $this->generateLocalUrl($fileLocal->path);
+
+                if ($fileLocal->isUnprotected()) {
+                    $storageObject->url = $this->generateLocalUrl($fileLocal->path);
+                }
+
                 $storageObject->uuid = ($model !== null ? self::binToUuid($model->uuid) : null);
                 $storageObject->type = 'file';
                 $storageObject->isPublic = $fileLocal->isUnprotected();
@@ -300,7 +310,11 @@ class LocalStorage extends BaseStorage
                 $storageObject->absolutePath = $this->rootDir . '/' . $fileRemote->path;
                 $storageObject->name = $fileRemote->name;
                 $storageObject->filename = $fileRemote->filename;
-                $storageObject->url = $this->generateLocalUrl($fileRemote->path);
+
+                if ($fileRemote->isUnprotected()) {
+                    $storageObject->url = $this->generateLocalUrl($fileRemote->path);
+                }
+
                 $storageObject->uuid = ($model !== null ? self::binToUuid($model->uuid) : null);
                 $storageObject->type = 'file';
                 $storageObject->isPublic = $fileRemote->isUnprotected();
