@@ -8,12 +8,14 @@ use Alpdesk\AlpdeskCore\Library\Storage\BaseStorage;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageObject;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\Dbafs;
+use Contao\Environment;
 use Contao\File;
 use Contao\FilesModel;
 use Contao\Folder;
 use Contao\StringUtil;
 use Contao\Validator;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class LocalStorage extends BaseStorage
 {
@@ -62,7 +64,7 @@ class LocalStorage extends BaseStorage
      * @param mixed $strUuid
      * @return StorageObject|null
      */
-    public function findByUuid(mixed $strUuid): ?StorageObject
+    public function get(mixed $strUuid): ?StorageObject
     {
         try {
 
@@ -202,9 +204,9 @@ class LocalStorage extends BaseStorage
      * @param mixed $strUuid
      * @return void
      */
-    public function deleteByUuid(mixed $strUuid): void
+    public function delete(mixed $strUuid): void
     {
-        $fileObject = $this->findByUuid($strUuid);
+        $fileObject = $this->get($strUuid);
         if ($fileObject instanceof StorageObject) {
 
             if ($fileObject->file !== null) {
@@ -221,88 +223,10 @@ class LocalStorage extends BaseStorage
      * @param mixed $strUuid
      * @return bool
      */
-    public function existsByUuid(mixed $strUuid): bool
+    public function exists(mixed $strUuid): bool
     {
-        $fileObject = $this->findByUuid($strUuid);
+        $fileObject = $this->get($strUuid);
         return ($fileObject !== null);
-    }
-
-    /**
-     * @param mixed $uuid
-     * @param bool $checkFileExists
-     * @return string|null
-     */
-    public function uuidForDb(mixed $uuid, bool $checkFileExists): ?string
-    {
-        try {
-
-            if ($uuid === null || $uuid === '') {
-                return null;
-            }
-
-            if (Validator::isBinaryUuid($uuid)) {
-                return $uuid;
-            }
-
-            if (Validator::isStringUuid($uuid) === false) {
-                return null;
-            }
-
-            if ($checkFileExists === true) {
-
-                $check = $this->existsByUuid($uuid);
-                if ($check === false) {
-                    return null;
-                }
-
-            }
-
-            return StringUtil::uuidToBin($uuid);
-
-        } catch (\Exception) {
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string|null $bin
-     * @param bool $checkFileExists
-     * @return string|null
-     */
-    public function dbToUuid(?string $bin, bool $checkFileExists): ?string
-    {
-        try {
-
-            if ($bin === null || $bin === '') {
-                return null;
-            }
-
-            if (Validator::isStringUuid($bin)) {
-                return $bin;
-            }
-
-            $uuid = StringUtil::binToUuid($bin);
-
-            if (Validator::isStringUuid($uuid) === false) {
-                return null;
-            }
-
-            if ($checkFileExists === true) {
-
-                $check = $this->existsByUuid($uuid);
-                if ($check === false) {
-                    return null;
-                }
-
-            }
-
-            return $uuid;
-
-        } catch (\Exception) {
-        }
-
-        return null;
     }
 
     /**
@@ -442,7 +366,7 @@ class LocalStorage extends BaseStorage
     {
         $this->filesStorage->createDirectory(\str_replace('files/', '', $filePath));
 
-        return $this->findByUuid($filePath);
+        return $this->get($filePath);
 
     }
 
@@ -486,28 +410,28 @@ class LocalStorage extends BaseStorage
      */
     public function rename(string $srcPath, string $destFileName): ?StorageObject
     {
-        $srcObject = $this->findByUuid($srcPath);
+        $srcObject = $this->get($srcPath);
         if (!$srcObject instanceof StorageObject) {
             return null;
         }
 
         $parent = \substr($srcObject->path, 0, (\strlen($srcObject->path) - \strlen($srcObject->basename)));
 
-        if ($this->existsByUuid($parent . $destFileName)) {
+        if ($this->exists($parent . $destFileName)) {
             throw new \Exception("target still exists");
         }
 
         if ($srcObject->type === 'file') {
 
             (new File($srcObject->path))->renameTo($parent . $destFileName);
-            return $this->findByUuid($parent . $destFileName);
+            return $this->get($parent . $destFileName);
 
         }
 
         if ($srcObject->type === 'folder') {
 
             (new Folder($srcObject->path))->renameTo($parent . $destFileName);
-            return $this->findByUuid($parent . $destFileName);
+            return $this->get($parent . $destFileName);
 
         }
 
@@ -535,6 +459,94 @@ class LocalStorage extends BaseStorage
     public function copy(string $srcPath, string $destPath): ?StorageObject
     {
         return $this->deploy($srcPath, $destPath, false);
+    }
+
+    /**
+     * @param string|null $path
+     * @return string|null
+     */
+    public function generateLocalUrl(?string $path): ?string
+    {
+        if ($path === null || $path === '') {
+            return null;
+        }
+
+        $publicDir = $this->getPublicDir() . '/';
+        if (\str_starts_with($path, $publicDir)) {
+            $path = \substr($path, \strlen($publicDir));
+        }
+
+        return Environment::get('base') . $path;
+
+    }
+
+    /**
+     * @param string $path
+     * @return array
+     */
+    public function listDir(string $path): array
+    {
+        $arrReturn = [];
+
+        $filesystem = new Filesystem();
+
+        if (!$filesystem->exists($path) || !\is_dir($path)) {
+            return $arrReturn;
+        }
+
+        $finderDirs = (new Finder())
+            ->in($path)
+            ->depth('== 0')
+            ->directories()
+            ->sortByName();
+
+        foreach ($finderDirs as $dir) {
+            $arrReturn[] = $dir->getFilename();
+        }
+
+        $finderFiles = (new Finder())
+            ->in($path)
+            ->depth('== 0')
+            ->files()
+            ->sortByName();
+
+        foreach ($finderFiles as $file) {
+            $arrReturn[] = $file->getFilename();
+        }
+
+        return $arrReturn;
+
+    }
+
+    /**
+     * @param string|null $bin
+     * @return string|null
+     */
+    private static function binToUuid(?string $bin): ?string
+    {
+        try {
+
+            if ($bin === null || $bin === '') {
+                return null;
+            }
+
+            if (Validator::isStringUuid($bin) === true) {
+                return $bin;
+            }
+
+            $uuid = StringUtil::binToUuid($bin);
+
+            if (Validator::isStringUuid($uuid) === false) {
+                return null;
+            }
+
+            return $uuid;
+
+        } catch (\Exception) {
+        }
+
+        return null;
+
     }
 
 }

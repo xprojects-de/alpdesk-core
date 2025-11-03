@@ -7,8 +7,6 @@ namespace Alpdesk\AlpdeskCore\Library\Storage;
 use Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\StringUtil;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 
 class StorageAdapter
 {
@@ -93,13 +91,13 @@ class StorageAdapter
      * @param string $currentStorage
      * @return StorageObject|null
      */
-    public function findByUuid(
+    public function get(
         mixed  $strUuid,
         string $currentStorage = 'local'
     ): ?StorageObject
     {
         try {
-            return $this->getStorage($currentStorage)->findByUuid($strUuid);
+            return $this->getStorage($currentStorage)->get($strUuid);
         } catch (\Throwable) {
         }
 
@@ -112,13 +110,13 @@ class StorageAdapter
      * @param string $currentStorage
      * @return void
      */
-    public function deleteByUuid(
+    public function delete(
         mixed  $strUuid,
         string $currentStorage = 'local'
     ): void
     {
         try {
-            $this->getStorage($currentStorage)->deleteByUuid($strUuid);
+            $this->getStorage($currentStorage)->delete($strUuid);
         } catch (\Throwable) {
         }
 
@@ -129,59 +127,17 @@ class StorageAdapter
      * @param string $currentStorage
      * @return bool
      */
-    public function existsByUuid(
+    public function exists(
         mixed  $strUuid,
         string $currentStorage = 'local'
     ): bool
     {
         try {
-            return $this->getStorage($currentStorage)->existsByUuid($strUuid);
+            return $this->getStorage($currentStorage)->exists($strUuid);
         } catch (\Throwable) {
         }
 
         return false;
-
-    }
-
-    /**
-     * @param mixed $uuid
-     * @param bool $checkFileExists
-     * @param string $currentStorage
-     * @return string|null
-     */
-    public function uuidForDb(
-        mixed  $uuid,
-        bool   $checkFileExists = false,
-        string $currentStorage = 'local'
-    ): ?string
-    {
-        try {
-            return $this->getStorage($currentStorage)->uuidForDb($uuid, $checkFileExists);
-        } catch (\Exception) {
-        }
-
-        return null;
-
-    }
-
-    /**
-     * @param string|null $bin
-     * @param bool $checkFileExists
-     * @param string $currentStorage
-     * @return string|null
-     */
-    public function dbToUuid(
-        ?string $bin,
-        bool    $checkFileExists = false,
-        string  $currentStorage = 'local'
-    ): ?string
-    {
-        try {
-            return $this->getStorage($currentStorage)->dbToUuid($bin, $checkFileExists);
-        } catch (\Exception) {
-        }
-
-        return null;
 
     }
 
@@ -349,40 +305,17 @@ class StorageAdapter
 
     /**
      * @param string $path
+     * @param string $currentStorage
      * @return array
+     * @throws \Exception
      */
-    public function listDir(string $path): array
+    public function listDir(string $path, string $currentStorage = 'local'): array
     {
-        $arrReturn = [];
-
-        $filesystem = new Filesystem();
-
-        if (!$filesystem->exists($path) || !\is_dir($path)) {
-            return $arrReturn;
+        try {
+            return $this->getStorage($currentStorage)->listDir($path);
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
-
-        $finderDirs = (new Finder())
-            ->in($path)
-            ->depth('== 0')
-            ->directories()
-            ->sortByName();
-
-        foreach ($finderDirs as $dir) {
-            $arrReturn[] = $dir->getFilename();
-        }
-
-        $finderFiles = (new Finder())
-            ->in($path)
-            ->depth('== 0')
-            ->files()
-            ->sortByName();
-
-        foreach ($finderFiles as $file) {
-            $arrReturn[] = $file->getFilename();
-        }
-
-        return $arrReturn;
-
     }
 
     /**
@@ -392,7 +325,7 @@ class StorageAdapter
      */
     public function sanitizePath(string $path): string
     {
-        $path = \preg_replace('/[\pC]/u', '', $path);
+        $path = \preg_replace('/\pC/u', '', $path);
 
         if ($path === null) {
             throw new \Exception('The file name could not be sanitzied');

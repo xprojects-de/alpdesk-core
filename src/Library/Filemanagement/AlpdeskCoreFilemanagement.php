@@ -51,7 +51,7 @@ class AlpdeskCoreFilemanagement
 
             $mInfo = new AlpdescCoreBaseMandantInfo();
 
-            $rootPath = $this->storageAdapter->findByUuid($mandantInfo->filemount);
+            $rootPath = $this->storageAdapter->get($mandantInfo->filemount);
 
             $pathRootPath = $rootPath->path ?? '';
 
@@ -67,7 +67,7 @@ class AlpdeskCoreFilemanagement
 
             if ($user->getHomeDir() !== null) {
 
-                $rootPathMember = $this->storageAdapter->findByUuid($user->getHomeDir());
+                $rootPathMember = $this->storageAdapter->get($user->getHomeDir());
                 if ($rootPathMember !== null) {
                     $mInfo->setFilemount_uuid($rootPathMember->uuid);
                     $mInfo->setFilemount_path($rootPathMember->path);
@@ -107,7 +107,7 @@ class AlpdeskCoreFilemanagement
     {
         $src = $this->storageAdapter->sanitizePath($src);
 
-        $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
+        $objTargetBase = $this->storageAdapter->get($mandantInfo->getFilemount_uuid());
         if (!$objTargetBase instanceof StorageObject) {
             throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
         }
@@ -118,7 +118,7 @@ class AlpdeskCoreFilemanagement
 
         if ($checkPermission) {
 
-            $objTargetSrc = $this->storageAdapter->findByUuid($src);
+            $objTargetSrc = $this->storageAdapter->get($src);
             if (!$objTargetSrc instanceof StorageObject) {
                 throw new \Exception("invalid src fileMount");
             }
@@ -141,7 +141,7 @@ class AlpdeskCoreFilemanagement
     {
         if ($basePath === null) {
 
-            $baseObject = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
+            $baseObject = $this->storageAdapter->get($mandantInfo->getFilemount_uuid());
             if (!$baseObject instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid mandant fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
             }
@@ -171,7 +171,7 @@ class AlpdeskCoreFilemanagement
 
         $target = $this->prepareSrcPath($target, $mandantInfo, true);
 
-        $objTarget = $this->storageAdapter->findByUuid($target);
+        $objTarget = $this->storageAdapter->get($target);
         if (!$objTarget instanceof StorageObject) {
             throw new AlpdeskCoreFilemanagementException("invalid target fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
         }
@@ -209,7 +209,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("error upload file");
             }
 
-            $objFinalFile = $this->storageAdapter->findByUuid($uploadTarget->path);
+            $objFinalFile = $this->storageAdapter->get($uploadTarget->path);
             if (!$objFinalFile instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("error upload file");
             }
@@ -240,7 +240,7 @@ class AlpdeskCoreFilemanagement
 
             $target = $this->prepareSrcPath($target, $mandantInfo, true);
 
-            $objTarget = $this->storageAdapter->findByUuid($target);
+            $objTarget = $this->storageAdapter->get($target);
             if (!$objTarget instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid target fileMount");
             }
@@ -289,7 +289,7 @@ class AlpdeskCoreFilemanagement
 
             $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
-            $objTargetSrc = $this->storageAdapter->findByUuid($src);
+            $objTargetSrc = $this->storageAdapter->get($src);
             if (!$objTargetSrc instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid src fileMount");
             }
@@ -304,7 +304,7 @@ class AlpdeskCoreFilemanagement
 
             foreach ($files as $file) {
 
-                $objFileTmp = $this->storageAdapter->findByUuid($objTargetSrc->path . '/' . $file);
+                $objFileTmp = $this->storageAdapter->get($objTargetSrc->path . '/' . $file);
 
                 if ($objFileTmp instanceof StorageObject) {
 
@@ -383,7 +383,7 @@ class AlpdeskCoreFilemanagement
 
             $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, false);
 
-            if ($this->storageAdapter->existsByUuid($src)) {
+            if ($this->storageAdapter->get($src)) {
                 throw new AlpdeskCoreFilemanagementException("target still exists");
             }
 
@@ -395,7 +395,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid targetMode");
             }
 
-            $objTargetModel = $this->storageAdapter->findByUuid($src);
+            $objTargetModel = $this->storageAdapter->get($src);
             if (!$objTargetModel instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("error create - target not found after create");
             }
@@ -432,9 +432,9 @@ class AlpdeskCoreFilemanagement
 
             $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
-            $this->storageAdapter->deleteByUuid($src);
+            $this->storageAdapter->delete($src);
 
-            if ($this->storageAdapter->existsByUuid($src)) {
+            if ($this->storageAdapter->exists($src)) {
                 throw new AlpdeskCoreFilemanagementException("target still exists");
             }
 
@@ -570,7 +570,7 @@ class AlpdeskCoreFilemanagement
 
             $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
-            $objFileModelSrc = $this->storageAdapter->findByUuid($src);
+            $objFileModelSrc = $this->storageAdapter->get($src);
             if (!$objFileModelSrc instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
             }
