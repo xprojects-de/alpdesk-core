@@ -98,57 +98,6 @@ class AlpdeskCoreFilemanagement
     }
 
     /**
-     * @param string $src
-     * @return string
-     * @throws AlpdeskCoreFilemanagementException
-     */
-    private static function preparePath(string $src): string
-    {
-        // Remove invisible control characters and unused code points
-        $src = \preg_replace('/[\pC]/u', '', $src);
-
-        if ($src === null) {
-            throw new AlpdeskCoreFilemanagementException("No valid src file", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
-        }
-
-        // Remove special characters not supported on e.g. Windows
-        $src = \str_replace(['\\', ':', '*', '?', '"', '<', '>', '|'], '-', $src);
-
-        if (\str_contains($src, '..')) {
-            throw new AlpdeskCoreFilemanagementException("invalid levelup sequence ..", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
-        }
-
-        if (\str_contains($src, '~')) {
-            throw new AlpdeskCoreFilemanagementException("invalid tilde sequence", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
-        }
-
-        if (\str_starts_with($src, '/')) {
-            $src = \substr($src, 1, \strlen($src));
-        }
-
-        if (\str_ends_with($src, '/')) {
-            $src = \substr($src, 0, -1);
-        }
-
-        return $src;
-    }
-
-    private static function scanDir(string $strFolder): array
-    {
-        $arrReturn = [];
-
-        foreach (\scandir($strFolder, SCANDIR_SORT_ASCENDING) as $strFile) {
-            if ($strFile === '.' || $strFile === '..') {
-                continue;
-            }
-
-            $arrReturn[] = $strFile;
-        }
-
-        return $arrReturn;
-    }
-
-    /**
      * @param string|null $basePath
      * @param string $srcPath
      * @param AlpdescCoreBaseMandantInfo $mandantInfo
@@ -186,7 +135,7 @@ class AlpdeskCoreFilemanagement
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
-        $target = self::preparePath($target);
+        $target = $this->storageAdapter->sanitizePath($target);
 
         if ($target === '/' || $target === '') {
             $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
@@ -268,7 +217,7 @@ class AlpdeskCoreFilemanagement
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
-        $target = self::preparePath($target);
+        $target = $this->storageAdapter->sanitizePath($target);
 
         $objTarget = $this->storageAdapter->findByUuid($target);
         if (!$objTarget instanceof StorageObject) {
@@ -316,7 +265,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = self::preparePath(((string)$finderData['src']));
+            $src = $this->storageAdapter->sanitizePath(((string)$finderData['src']));
 
             $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
             if (!$objTargetBase instanceof StorageObject) {
@@ -340,7 +289,7 @@ class AlpdeskCoreFilemanagement
 
             $listPath = $this->storageAdapter->getRootDir() . '/' . $objTargetSrc->path;
 
-            $files = self::scanDir($listPath);
+            $files = $this->storageAdapter->listDir($listPath);
 
             foreach ($files as $file) {
 
@@ -411,13 +360,13 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = self::preparePath(((string)$finderData['src']));
+            $src = $this->storageAdapter->sanitizePath((string)$finderData['src']);
 
             if (!\array_key_exists('target', $finderData)) {
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
             }
 
-            $target = self::preparePath(((string)$finderData['target']));
+            $target = $this->storageAdapter->sanitizePath((string)$finderData['target']);
 
             if ($target === "") {
                 throw new AlpdeskCoreFilemanagementException("No valid mode in target. Must be 'file' or 'dir'");
@@ -477,7 +426,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = self::preparePath(((string)$finderData['src']));
+            $src = $this->storageAdapter->sanitizePath(((string)$finderData['src']));
 
             $objFileModelSrc = $this->storageAdapter->findByUuid($src);
             if (!$objFileModelSrc instanceof StorageObject) {
@@ -519,7 +468,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = self::preparePath(((string)$finderData['src']));
+            $src = $this->storageAdapter->sanitizePath(((string)$finderData['src']));
 
             if ($src === '') {
                 throw new AlpdeskCoreFilemanagementException("invalid src");
@@ -529,7 +478,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
             }
 
-            $target = self::preparePath(((string)$finderData['target']));
+            $target = $this->storageAdapter->sanitizePath(((string)$finderData['target']));
 
             if ($target === '') {
                 throw new AlpdeskCoreFilemanagementException("invalid target");
@@ -625,7 +574,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = self::preparePath(((string)$finderData['src']));
+            $src = $this->storageAdapter->sanitizePath((string)$finderData['src']);
 
             if ($src === '') {
                 throw new AlpdeskCoreFilemanagementException("invalid src");
@@ -635,7 +584,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
             }
 
-            $target = self::preparePath(((string)$finderData['target']));
+            $target = $this->storageAdapter->sanitizePath((string)$finderData['target']);
 
             if ($target === '/' || $target === '') {
                 $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
@@ -738,7 +687,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = self::preparePath(((string)$finderData['src']));
+            $src = $this->storageAdapter->sanitizePath((string)$finderData['src']);
 
             if ($src === '') {
                 throw new AlpdeskCoreFilemanagementException("invalid src");
@@ -891,6 +840,7 @@ class AlpdeskCoreFilemanagement
         $mandantInfo = $this->getMandantInformation($user);
 
         switch ($mode) {
+
             case 'list':
             {
                 $finderResponseData = $this->listFolder($finderData, $mandantInfo);
@@ -901,10 +851,12 @@ class AlpdeskCoreFilemanagement
                 return $event->getResultData();
 
             }
+
             case 'create':
             {
                 return $this->create($finderData, $mandantInfo);
             }
+
             case 'delete':
             {
                 $this->delete($finderData, $mandantInfo);
@@ -915,18 +867,22 @@ class AlpdeskCoreFilemanagement
                 return $event->getResultData();
 
             }
+
             case 'rename':
             {
                 return $this->rename($finderData, $mandantInfo);
             }
+
             case 'move':
             {
                 return $this->moveOrcopy($finderData, $mandantInfo, false);
             }
+
             case 'copy':
             {
                 return $this->moveOrcopy($finderData, $mandantInfo, true);
             }
+
             case 'meta':
             {
                 $finderResponseData = $this->meta($finderData, $mandantInfo);
@@ -937,8 +893,10 @@ class AlpdeskCoreFilemanagement
                 return $event->getResultData();
 
             }
+
             default:
                 throw new AlpdeskCoreFilemanagementException("invalid mode for finder", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
+
         }
 
     }

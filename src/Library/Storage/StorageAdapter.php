@@ -8,6 +8,7 @@ use Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\Environment;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class StorageAdapter
 {
@@ -327,6 +328,80 @@ class StorageAdapter
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
+
+    }
+
+    /**
+     * @param string $path
+     * @return array
+     */
+    public function listDir(string $path): array
+    {
+        $arrReturn = [];
+
+        $filesystem = new Filesystem();
+
+        if (!$filesystem->exists($path) || !\is_dir($path)) {
+            return $arrReturn;
+        }
+
+        $finderDirs = (new Finder())
+            ->in($path)
+            ->depth('== 0')
+            ->directories()
+            ->sortByName();
+
+        foreach ($finderDirs as $dir) {
+            $arrReturn[] = $dir->getFilename();
+        }
+
+        $finderFiles = (new Finder())
+            ->in($path)
+            ->depth('== 0')
+            ->files()
+            ->sortByName();
+
+        foreach ($finderFiles as $file) {
+            $arrReturn[] = $file->getFilename();
+        }
+
+        return $arrReturn;
+
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     * @throws \Exception
+     */
+    public function sanitizePath(string $path): string
+    {
+        $path = \preg_replace('/[\pC]/u', '', $path);
+
+        if ($path === null) {
+            throw new \Exception('The file name could not be sanitzied');
+        }
+
+        // Remove special characters not supported on e.g. Windows
+        $path = \str_replace(array('\\', ':', '*', '?', '"', '<', '>', '|'), '-', $path);
+
+        if (\str_contains($path, '..')) {
+            throw new \Exception("invalid levelup sequence ..");
+        }
+
+        if (\str_contains($path, '~')) {
+            throw new \Exception("invalid tilde sequence");
+        }
+
+        if (\str_starts_with($path, '/')) {
+            $path = \substr($path, 1, \strlen($path));
+        }
+
+        if (\str_ends_with($path, '/')) {
+            $path = \substr($path, 0, -1);
+        }
+
+        return $path;
 
     }
 
