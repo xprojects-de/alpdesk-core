@@ -4,62 +4,32 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Storage;
 
-use Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage;
-use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\StringUtil;
 
 class StorageAdapter
 {
-    private ?array $storageConfig;
-
-    private array $storageMap;
+    private array $storageServices = [];
 
     /**
-     * @param VirtualFilesystemInterface $filesStorage
-     * @param string $rootDir
-     * @param array|null $storageConfig
+     * @param BaseStorageInterface $storage
+     * @param string $alias
+     * @return void
      */
-    public function __construct(
-        VirtualFilesystemInterface $filesStorage,
-        string                     $rootDir,
-        ?array                     $storageConfig
-    )
+    public function addStorage(BaseStorageInterface $storage, string $alias): void
     {
-        $this->storageConfig = $storageConfig;
-
-        $localStorage = new LocalStorage($filesStorage, $rootDir);
-
-        $this->storageMap = [
-            'local' => [
-                'object' => $localStorage,
-                'initialized' => false
-            ]
-        ];
-
+        $this->storageServices[$alias] = $storage;
     }
 
     /**
-     * @param string $currentStorage
-     * @return BaseStorage
+     * @param string $alias
+     * @return BaseStorageInterface
      * @throws \Exception
      */
-    private function getStorage(string $currentStorage = 'local'): BaseStorage
+    private function getStorage(string $alias = 'local'): BaseStorageInterface
     {
-        $object = $this->storageMap[$currentStorage]['object'];
-        if (!$object instanceof BaseStorage) {
-            throw new \Exception('invalid object type');
-        }
-
-        if ($this->storageMap[$currentStorage]['initialized'] === false) {
-
-            $storageConfig = null;
-            if (\is_array($this->storageConfig) && \count($this->storageConfig) > 0) {
-                $storageConfig = $this->storageConfig;
-            }
-
-            $object->initialize($storageConfig);
-            $this->storageMap[$currentStorage]['initialized'] = true;
-
+        $object = $this->storageServices[$alias];
+        if (!$object instanceof BaseStorageInterface) {
+            throw new \Exception('invalid service type');
         }
 
         return $object;

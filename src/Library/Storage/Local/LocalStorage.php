@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Storage\Local;
 
-use Alpdesk\AlpdeskCore\Library\Storage\BaseStorage;
+use Alpdesk\AlpdeskCore\Library\Storage\BaseStorageInterface;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageObject;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\Dbafs;
@@ -17,27 +17,22 @@ use Contao\Validator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-class LocalStorage extends BaseStorage
+class LocalStorage implements BaseStorageInterface
 {
     private VirtualFilesystemInterface $filesStorage;
+    private string $rootDir;
 
     /**
      * @param VirtualFilesystemInterface $filesStorage
      * @param string $rootDir
      */
-    public function __construct(VirtualFilesystemInterface $filesStorage, string $rootDir)
+    public function __construct(
+        VirtualFilesystemInterface $filesStorage,
+        string                     $rootDir
+    )
     {
-        parent::__construct($rootDir);
         $this->filesStorage = $filesStorage;
-    }
-
-    /**
-     * @param array|null $config
-     * @return void
-     */
-    public function initialize(?array $config): void
-    {
-
+        $this->rootDir = $rootDir;
     }
 
     /**

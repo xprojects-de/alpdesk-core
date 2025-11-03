@@ -36,11 +36,14 @@ services:
 
   alpdeskcore.storage_adapter:
     class: Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter
+
+  alpdeskcore.storage_local:
+    class: Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage
     arguments:
       - '@contao.filesystem.virtual.files'
       - '%kernel.project_dir%'
-      - '%alpdesk_core.storage%'
-    public: true
+    tags:
+      - { name: 'alpdeskcore.storage', alias: 'local' }
 
   Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:
     arguments:

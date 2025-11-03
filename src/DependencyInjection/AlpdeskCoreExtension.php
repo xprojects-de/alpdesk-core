@@ -22,15 +22,6 @@ class AlpdeskCoreExtension extends Extension
         $loader->load('listener.yml');
         $loader->load('services.yml');
 
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
-
-        if (!isset($config['storage']) || !\is_array($config['storage'])) {
-            $config['storage'] = [];
-        }
-
-        $container->setParameter('alpdesk_core.storage', $config['storage']);
-
     }
 
 }
