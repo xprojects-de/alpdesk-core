@@ -54,27 +54,40 @@ class AlpdeskCoreFilemanagement
 
         $mInfo = new AlpdescCoreBaseMandantInfo();
 
-        $rootPath = $this->storageAdapter->get($mandantInfo->filemount, $this->storageType);
-
-        $pathRootPath = $rootPath->path ?? '';
-
         $mInfo->setRootDir($this->storageAdapter->getRootDir($this->storageType));
+        $mInfo->setFilemountmandant_uuid('');
+        $mInfo->setFilemountmandant_path('');
+        $mInfo->setFilemountmandant_rootpath($this->storageAdapter->getRootDir($this->storageType));
+        $mInfo->setFilemount_uuid('');
+        $mInfo->setFilemount_path('');
+        $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir($this->storageType));
 
-        $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
-        $mInfo->setFilemountmandant_path($pathRootPath);
-        $mInfo->setFilemountmandant_rootpath($this->storageAdapter->getRootDir($this->storageType) . '/' . $pathRootPath);
+        if ($mandantInfo->filemount !== null && $mandantInfo->filemount !== '') {
 
-        $mInfo->setFilemount_uuid($mandantInfo->filemount);
-        $mInfo->setFilemount_path($pathRootPath);
-        $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir($this->storageType) . '/' . $pathRootPath);
+            $mandantFileMount = $this->storageAdapter->get($mandantInfo->filemount, $this->storageType);
+            if ($mandantFileMount instanceof StorageObject) {
+
+                $mInfo->setFilemountmandant_uuid($mandantFileMount->uuid);
+                $mInfo->setFilemountmandant_path($mandantFileMount->path);
+                $mInfo->setFilemountmandant_rootpath($this->storageAdapter->getRootDir($this->storageType) . '/' . $mandantFileMount->path);
+
+                $mInfo->setFilemount_uuid($mandantFileMount->uuid);
+                $mInfo->setFilemount_path($mandantFileMount->path);
+                $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir($this->storageType) . '/' . $mandantFileMount->path);
+
+            }
+
+        }
 
         if ($user->getHomeDir() !== null) {
 
             $rootPathMember = $this->storageAdapter->get($user->getHomeDir(), $this->storageType);
-            if ($rootPathMember !== null) {
+            if ($rootPathMember instanceof StorageObject) {
+
                 $mInfo->setFilemount_uuid($rootPathMember->uuid);
                 $mInfo->setFilemount_path($rootPathMember->path);
-                $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir($this->storageType) . '/' . $pathRootPath);
+                $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir($this->storageType) . '/' . $rootPathMember->path);
+
             }
 
         }
