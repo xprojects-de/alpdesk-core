@@ -358,6 +358,52 @@ class StorageAdapter
     }
 
     /**
+     * @param string $srcPath
+     * @param string $destPath
+     * @param string $currentStorage
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    public function move(
+        string $srcPath,
+        string $destPath,
+        string $currentStorage = 'local'
+    ): ?StorageObject
+    {
+        try {
+
+            return $this->getStorage($currentStorage)->move($srcPath, $destPath);
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
+        }
+
+    }
+
+    /**
+     * @param string $srcPath
+     * @param string $destPath
+     * @param string $currentStorage
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    public function copy(
+        string $srcPath,
+        string $destPath,
+        string $currentStorage = 'local'
+    ): ?StorageObject
+    {
+        try {
+
+            return $this->getStorage($currentStorage)->copy($srcPath, $destPath);
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
+        }
+
+    }
+
+    /**
      * @param string $path
      * @return array
      */

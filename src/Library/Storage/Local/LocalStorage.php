@@ -494,4 +494,27 @@ class LocalStorage extends BaseStorage
         return null;
 
     }
+
+    /**
+     * @param string $srcPath
+     * @param string $destPath
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    public function move(string $srcPath, string $destPath): ?StorageObject
+    {
+        return $this->deploy($srcPath, $destPath, false);
+    }
+
+    /**
+     * @param string $srcPath
+     * @param string $destPath
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    public function copy(string $srcPath, string $destPath): ?StorageObject
+    {
+        return $this->deploy($srcPath, $destPath, false);
+    }
+
 }

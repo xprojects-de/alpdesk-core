@@ -45,6 +45,10 @@ abstract class BaseStorage
 
     abstract public function rename(string $srcPath, string $destFileName): ?StorageObject;
 
+    abstract public function move(string $srcPath, string $destPath): ?StorageObject;
+
+    abstract public function copy(string $srcPath, string $destPath): ?StorageObject;
+
     /**
      * @param string|null $bin
      * @return string|null

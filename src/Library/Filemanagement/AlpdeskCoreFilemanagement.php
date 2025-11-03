@@ -511,97 +511,41 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = $this->storageAdapter->sanitizePath((string)$finderData['src']);
+            $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
-            if ($src === '') {
-                throw new AlpdeskCoreFilemanagementException("invalid src");
-            }
-
-            if (!\array_key_exists('target', $finderData)) {
+            if (!\array_key_exists('target', $finderData) || $finderData['target'] === '') {
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
             }
 
-            $target = $this->storageAdapter->sanitizePath((string)$finderData['target']);
+            $target = $this->prepareSrcPath((string)$finderData['target'], $mandantInfo, false);
 
-            if ($target === '/' || $target === '') {
-                $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
-            }
+            if ($copy === true) {
 
-            $objFileModelSrc = $this->storageAdapter->findByUuid($src);
-            if (!$objFileModelSrc instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
-            }
-
-            $this->checkFileMountPermission($objFileModelSrc->path, $mandantInfo);
-
-            $objFileModelTarget = $this->storageAdapter->findByUuid($target);
-            if (!$objFileModelTarget instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
-            }
-
-            $this->checkFileMountPermission($objFileModelTarget->path, $mandantInfo);
-
-            if ($objFileModelTarget->type !== 'folder') {
-                throw new AlpdeskCoreFilemanagementException("error - target must be folder");
-            }
-
-            $filesystem = new Filesystem();
-
-            if ($objFileModelSrc->type === 'folder' && $objFileModelSrc->folder !== null) {
-
-                $basename = $objFileModelSrc->folder->basename;
-                if ($filesystem->exists($mandantInfo->getRootDir() . '/' . $objFileModelTarget->path . '/' . $basename)) {
-                    $basename = \time() . '_' . $basename;
-                }
-
-                if ($copy) {
-                    $objFileModelSrc->folder->copyTo($objFileModelTarget->path . '/' . $basename);
-                } else {
-                    $objFileModelSrc->folder->renameTo($objFileModelTarget->path . '/' . $basename);
-                }
-
-                $targetObject = $this->storageAdapter->findByUuid($objFileModelTarget->path . '/' . $basename);
-                if (!$targetObject instanceof StorageObject) {
-                    throw new AlpdeskCoreFilemanagementException("error rename");
+                $copyObject = $this->storageAdapter->copy($src, $target);
+                if (!$copyObject instanceof StorageObject) {
+                    throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
                 }
 
                 return [
-                    'uuid' => $targetObject->uuid,
-                    'name' => $basename,
-                    'path' => $targetObject->path,
-                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
+                    'uuid' => $copyObject->uuid,
+                    'name' => $copyObject->basename,
+                    'path' => $copyObject->path,
+                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $copyObject->path)
                 ];
 
             }
 
-            if ($objFileModelSrc->type === 'file' && $objFileModelSrc->file !== null) {
-
-                $basename = $objFileModelSrc->file->basename;
-                if ($filesystem->exists($mandantInfo->getRootDir() . '/' . $objFileModelTarget->path . '/' . $basename)) {
-                    $basename = \time() . '_' . $basename;
-                }
-
-                if ($copy) {
-                    $objFileModelSrc->file->copyTo($objFileModelTarget->path . '/' . $basename);
-                } else {
-                    $objFileModelSrc->file->renameTo($objFileModelTarget->path . '/' . $basename);
-                }
-
-                $targetObject = $this->storageAdapter->findByUuid($objFileModelTarget->path . '/' . $basename);
-                if (!$targetObject instanceof StorageObject) {
-                    throw new AlpdeskCoreFilemanagementException("error rename");
-                }
-
-                return [
-                    'uuid' => $targetObject->uuid,
-                    'name' => $basename,
-                    'path' => $targetObject->path,
-                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
-                ];
-
+            $moveObject = $this->storageAdapter->move($src, $target);
+            if (!$moveObject instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
             }
 
-            throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
+            return [
+                'uuid' => $moveObject->uuid,
+                'name' => $moveObject->basename,
+                'path' => $moveObject->path,
+                'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $moveObject->path)
+            ];
 
         } catch (\Exception $ex) {
             throw new AlpdeskCoreFilemanagementException("error at moveOrCopy - " . $ex->getMessage());
