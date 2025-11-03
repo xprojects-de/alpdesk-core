@@ -14,21 +14,21 @@ The registered plugins can then be selected for this "Mandant".
 After that, a member must be created through which the API is authenticated.
 The "Mandant" is then linked to member and the necessary settings and access rights are set.
 
-Add optional to config/config.yml
+## Register and tag custom storage
+Storage must implement Alpdesk\AlpdeskCore\Library\Storage\BaseStorageInterface
+
+(see also Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage as example)
 
 ```yml
-
-# e.g. fort awss3 Storage
-
-alpdesk_core:
-  storage:
-    awss3:
-      key: "KEY"
-      secret: "SECRET"
-      region: "eu-central-1"
-      bucket: "vakanza-dev-local"
-
+alpdeskcore.storage_local:
+  class: Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage
+  arguments:
+  tags:
+    - { name: 'alpdeskcore.storage', alias: 'local' }
 ```
 
+After register the storage, it can be used by manipulating the storageAdapter in the alpdesk.filemanagement.request.event
+
+### TESTING
 PHPSTAN
 php vendor/bin/phpstan --memory-limit=2G analyse src
