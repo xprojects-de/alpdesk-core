@@ -43,6 +43,8 @@ abstract class BaseStorage
 
     abstract public function setMeta(StorageObject $object): void;
 
+    abstract public function rename(string $srcPath, string $destFileName): ?StorageObject;
+
     /**
      * @param string|null $bin
      * @return string|null

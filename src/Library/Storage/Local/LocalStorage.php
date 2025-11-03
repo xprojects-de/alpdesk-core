@@ -458,4 +458,40 @@ class LocalStorage extends BaseStorage
 
     }
 
+    /**
+     * @param string $srcPath
+     * @param string $destFileName
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    public function rename(string $srcPath, string $destFileName): ?StorageObject
+    {
+        $srcObject = $this->findByUuid($srcPath);
+        if (!$srcObject instanceof StorageObject) {
+            return null;
+        }
+
+        $parent = \substr($srcObject->path, 0, (\strlen($srcObject->path) - \strlen($srcObject->basename)));
+
+        if ($this->existsByUuid($parent . $destFileName)) {
+            throw new \Exception("target still exists");
+        }
+
+        if ($srcObject->type === 'file') {
+
+            (new File($srcObject->path))->renameTo($parent . $destFileName);
+            return $this->findByUuid($parent . $destFileName);
+
+        }
+
+        if ($srcObject->type === 'folder') {
+
+            (new Folder($srcObject->path))->renameTo($parent . $destFileName);
+            return $this->findByUuid($parent . $destFileName);
+
+        }
+
+        return null;
+
+    }
 }

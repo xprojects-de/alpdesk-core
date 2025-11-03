@@ -7,6 +7,7 @@ namespace Alpdesk\AlpdeskCore\Library\Storage;
 use Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\Environment;
+use Contao\StringUtil;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -326,6 +327,29 @@ class StorageAdapter
         try {
 
             $this->getStorage($currentStorage)->setMeta($object);
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
+        }
+
+    }
+
+    /**
+     * @param string $srcPath
+     * @param string $destFileName
+     * @param string $currentStorage
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    public function rename(
+        string $srcPath,
+        string $destFileName,
+        string $currentStorage = 'local'
+    ): ?StorageObject
+    {
+        try {
+
+            return $this->getStorage($currentStorage)->rename($srcPath, StringUtil::sanitizeFileName($destFileName));
 
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());

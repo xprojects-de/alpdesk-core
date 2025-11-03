@@ -463,78 +463,22 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = $this->storageAdapter->sanitizePath(((string)$finderData['src']));
+            $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
-            if ($src === '') {
-                throw new AlpdeskCoreFilemanagementException("invalid src");
-            }
-
-            if (!\array_key_exists('target', $finderData)) {
+            if (!\array_key_exists('target', $finderData) || $finderData['target'] === '') {
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
             }
 
-            $target = $this->storageAdapter->sanitizePath(((string)$finderData['target']));
-
-            if ($target === '') {
-                throw new AlpdeskCoreFilemanagementException("invalid target");
+            $renameObject = $this->storageAdapter->rename($src, (string)$finderData['target']);
+            if (!$renameObject instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("error rename");
             }
 
-            $objFileModelSrc = $this->storageAdapter->findByUuid($src);
-            if (!$objFileModelSrc instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("src-File by uuid not found on server");
-            }
-
-            $this->checkFileMountPermission($objFileModelSrc->path, $mandantInfo);
-
-            $filesystem = new Filesystem();
-
-            if ($objFileModelSrc->type === 'folder' && $objFileModelSrc->folder !== null) {
-
-                $parent = \substr($objFileModelSrc->folder->path, 0, (\strlen($objFileModelSrc->folder->path) - \strlen($objFileModelSrc->folder->basename)));
-
-                if ($filesystem->exists($mandantInfo->getRootDir() . '/' . $parent . $target)) {
-                    throw new AlpdeskCoreFilemanagementException("target still exists");
-                }
-
-                $objFileModelSrc->folder->renameTo($parent . $target);
-
-                $targetObject = $this->storageAdapter->findByUuid($parent . $target);
-                if (!$targetObject instanceof StorageObject) {
-                    throw new AlpdeskCoreFilemanagementException("error rename");
-                }
-
-                return [
-                    'uuid' => $targetObject->uuid,
-                    'path' => $targetObject->path,
-                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
-                ];
-
-            }
-
-            if ($objFileModelSrc->type === 'file' && $objFileModelSrc->file !== null) {
-
-                $parent = \substr($objFileModelSrc->file->path, 0, (\strlen($objFileModelSrc->file->path) - \strlen($objFileModelSrc->file->basename)));
-
-                if ($filesystem->exists($mandantInfo->getRootDir() . '/' . $parent . $target)) {
-                    throw new AlpdeskCoreFilemanagementException("target still exists");
-                }
-
-                $objFileModelSrc->file->renameTo($parent . $target);
-
-                $targetObject = $this->storageAdapter->findByUuid($parent . $target);
-                if (!$targetObject instanceof StorageObject) {
-                    throw new AlpdeskCoreFilemanagementException("error rename");
-                }
-
-                return [
-                    'uuid' => $targetObject->uuid,
-                    'path' => $targetObject->path,
-                    'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $targetObject->path)
-                ];
-
-            }
-
-            throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
+            return [
+                'uuid' => $renameObject->uuid,
+                'path' => $renameObject->path,
+                'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $renameObject->path)
+            ];
 
         } catch (\Exception $ex) {
             throw new AlpdeskCoreFilemanagementException("error at rename - " . $ex->getMessage());
