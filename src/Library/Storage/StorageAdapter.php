@@ -11,9 +11,14 @@ class StorageAdapter
     private array $storageServices = [];
 
     /**
+     * Wird per CompilerPass registriert.
+     *
+     * @used-by \Alpdesk\AlpdeskCore\DependencyInjection\CompilerPass\StoragePass
      * @param BaseStorageInterface $storage
      * @param string $alias
      * @return void
+     * @see     \Alpdesk\AlpdeskCore\DependencyInjection\CompilerPass\StoragePass
+     *
      */
     public function addStorage(BaseStorageInterface $storage, string $alias): void
     {
