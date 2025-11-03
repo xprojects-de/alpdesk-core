@@ -121,7 +121,7 @@ class AlpdeskCoreFilemanagement
 
         $objTargetBase = $this->storageAdapter->get($mandantInfo->getFilemount_uuid(), $this->storageType);
         if (!$objTargetBase instanceof StorageObject) {
-            throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
+            throw new AlpdeskCoreFilemanagementException("invalid Mandant fileMount");
         }
 
         if (!Validator::isUuid($src)) {
