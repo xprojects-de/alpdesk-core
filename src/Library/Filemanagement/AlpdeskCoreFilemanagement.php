@@ -41,7 +41,7 @@ class AlpdeskCoreFilemanagement
     /**
      * @param AlpdeskcoreUser $user
      * @return AlpdescCoreBaseMandantInfo
-     * @throws AlpdeskCoreFilemanagementException
+     * @throws \Exception
      */
     private function getMandantInformation(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo
     {
@@ -663,21 +663,28 @@ class AlpdeskCoreFilemanagement
      * @param string $target
      * @param AlpdeskcoreUser $user
      * @return AlpdeskCoreFileuploadResponse
-     * @throws \Exception
+     * @throws AlpdeskCoreFilemanagementException
      */
     public function upload(UploadedFile $uploadFile, string $target, AlpdeskcoreUser $user): AlpdeskCoreFileuploadResponse
     {
-        $mandantInfo = $this->getMandantInformation($user);
+        try {
 
-        $response = new AlpdeskCoreFileuploadResponse();
+            $mandantInfo = $this->getMandantInformation($user);
 
-        $this->copyToTarget($uploadFile, $target, $mandantInfo, $response);
+            $response = new AlpdeskCoreFileuploadResponse();
 
-        $response->setUsername($user->getUsername());
-        $response->setAlpdesk_token($user->getUsedToken());
-        $response->setMandantInfo($mandantInfo);
+            $this->copyToTarget($uploadFile, $target, $mandantInfo, $response);
 
-        return $response;
+            $response->setUsername($user->getUsername());
+            $response->setAlpdesk_token($user->getUsedToken());
+            $response->setMandantInfo($mandantInfo);
+
+            return $response;
+
+        } catch (\Exception $ex) {
+            throw new AlpdeskCoreFilemanagementException($ex->getMessage());
+        }
+
     }
 
     /**
@@ -688,14 +695,21 @@ class AlpdeskCoreFilemanagement
      */
     public function download(AlpdeskcoreUser $user, array $downloadData): BinaryFileResponse
     {
-        if (!\array_key_exists('target', $downloadData)) {
-            throw new AlpdeskCoreFilemanagementException("invalid key-parameters for download");
+        try {
+
+            if (!\array_key_exists('target', $downloadData)) {
+                throw new AlpdeskCoreFilemanagementException("invalid key-parameters for download");
+            }
+
+            $target = (string)$downloadData['target'];
+            $mandantInfo = $this->getMandantInformation($user);
+
+            return $this->downloadFile($target, $mandantInfo);
+
+        } catch (\Exception $ex) {
+            throw new AlpdeskCoreFilemanagementException("error at download - " . $ex->getMessage());
         }
 
-        $target = (string)$downloadData['target'];
-        $mandantInfo = $this->getMandantInformation($user);
-
-        return $this->downloadFile($target, $mandantInfo);
     }
 
     /**
@@ -706,72 +720,78 @@ class AlpdeskCoreFilemanagement
      */
     public function finder(AlpdeskcoreUser $user, array $finderData): array|bool
     {
-        if (!\array_key_exists('mode', $finderData)) {
-            throw new AlpdeskCoreFilemanagementException("invalid key-parameter mode for finder");
-        }
+        try {
 
-        $mode = (string)$finderData['mode'];
+            if (!\array_key_exists('mode', $finderData)) {
+                throw new AlpdeskCoreFilemanagementException("invalid key-parameter mode for finder");
+            }
 
-        $mandantInfo = $this->getMandantInformation($user);
+            $mode = (string)$finderData['mode'];
 
-        switch ($mode) {
+            $mandantInfo = $this->getMandantInformation($user);
 
-            case 'list':
-            {
-                $finderResponseData = $this->listFolder($finderData, $mandantInfo);
+            switch ($mode) {
 
-                $event = new AlpdeskCoreFilemanagementFinderListEvent($finderData, $finderResponseData, $mandantInfo);
-                $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderListEvent::NAME);
+                case 'list':
+                {
+                    $finderResponseData = $this->listFolder($finderData, $mandantInfo);
 
-                return $event->getResultData();
+                    $event = new AlpdeskCoreFilemanagementFinderListEvent($finderData, $finderResponseData, $mandantInfo);
+                    $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderListEvent::NAME);
+
+                    return $event->getResultData();
+
+                }
+
+                case 'create':
+                {
+                    return $this->create($finderData, $mandantInfo);
+                }
+
+                case 'delete':
+                {
+                    $this->delete($finderData, $mandantInfo);
+
+                    $event = new AlpdeskCoreFilemanagementFinderDeleteEvent($finderData, true, $mandantInfo);
+                    $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderDeleteEvent::NAME);
+
+                    return $event->getResultData();
+
+                }
+
+                case 'rename':
+                {
+                    return $this->rename($finderData, $mandantInfo);
+                }
+
+                case 'move':
+                {
+                    return $this->moveOrcopy($finderData, $mandantInfo, false);
+                }
+
+                case 'copy':
+                {
+                    return $this->moveOrcopy($finderData, $mandantInfo, true);
+                }
+
+                case 'meta':
+                {
+                    $finderResponseData = $this->meta($finderData, $mandantInfo);
+
+                    $event = new AlpdeskCoreFilemanagementFinderMetaEvent($finderData, $finderResponseData, $mandantInfo);
+                    $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderMetaEvent::NAME);
+
+                    return $event->getResultData();
+
+                }
+
+                default:
+                    throw new AlpdeskCoreFilemanagementException("invalid mode for finder", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
 
             }
 
-            case 'create':
-            {
-                return $this->create($finderData, $mandantInfo);
-            }
-
-            case 'delete':
-            {
-                $this->delete($finderData, $mandantInfo);
-
-                $event = new AlpdeskCoreFilemanagementFinderDeleteEvent($finderData, true, $mandantInfo);
-                $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderDeleteEvent::NAME);
-
-                return $event->getResultData();
-
-            }
-
-            case 'rename':
-            {
-                return $this->rename($finderData, $mandantInfo);
-            }
-
-            case 'move':
-            {
-                return $this->moveOrcopy($finderData, $mandantInfo, false);
-            }
-
-            case 'copy':
-            {
-                return $this->moveOrcopy($finderData, $mandantInfo, true);
-            }
-
-            case 'meta':
-            {
-                $finderResponseData = $this->meta($finderData, $mandantInfo);
-
-                $event = new AlpdeskCoreFilemanagementFinderMetaEvent($finderData, $finderResponseData, $mandantInfo);
-                $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderMetaEvent::NAME);
-
-                return $event->getResultData();
-
-            }
-
-            default:
-                throw new AlpdeskCoreFilemanagementException("invalid mode for finder", AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
-
+        } catch (\Exception $ex) {
+            throw new AlpdeskCoreFilemanagementException("error at finder - " . $ex->getMessage());
         }
 
     }

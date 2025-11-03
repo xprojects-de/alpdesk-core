@@ -6,14 +6,12 @@ namespace Alpdesk\AlpdeskCore\Library\Storage;
 
 use Alpdesk\AlpdeskCore\Library\Storage\Local\LocalStorage;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
-use Contao\Environment;
 use Contao\StringUtil;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 class StorageAdapter
 {
-    private string $rootDir;
     private ?array $storageConfig;
 
     private array $storageMap;
@@ -29,7 +27,6 @@ class StorageAdapter
         ?array                     $storageConfig
     )
     {
-        $this->rootDir = $rootDir;
         $this->storageConfig = $storageConfig;
 
         $localStorage = new LocalStorage($filesStorage, $rootDir);
@@ -72,27 +69,24 @@ class StorageAdapter
     }
 
     /**
+     * @param string $currentStorage
      * @return string
+     * @throws \Exception
      */
-    public function getRootDir(): string
+    public function getRootDir(string $currentStorage = 'local'): string
     {
-        return $this->rootDir;
+        return $this->getStorage($currentStorage)->getRootDir();
     }
 
     /**
+     * @param string $currentStorage
      * @return string
+     * @throws \Exception
      */
-    public function getPublicDir(): string
+    public function getPublicDir(string $currentStorage = 'local'): string
     {
-
-        if ((new Filesystem())->exists($this->rootDir . '/web')) {
-            return 'web';
-        }
-
-        return 'public';
-
+        return $this->getStorage($currentStorage)->getPublicDir();
     }
-
 
     /**
      * @param mixed $strUuid
@@ -107,29 +101,9 @@ class StorageAdapter
         try {
             return $this->getStorage($currentStorage)->findByUuid($strUuid);
         } catch (\Throwable) {
-
         }
 
         return null;
-
-    }
-
-    /**
-     * @param string|null $path
-     * @return string|null
-     */
-    public function generateLocalUrl(?string $path): ?string
-    {
-        if ($path === null || $path === '') {
-            return null;
-        }
-
-        $publicDir = $this->getPublicDir() . '/';
-        if (\str_starts_with($path, $publicDir)) {
-            $path = \substr($path, \strlen($publicDir));
-        }
-
-        return Environment::get('base') . $path;
 
     }
 
@@ -144,11 +118,8 @@ class StorageAdapter
     ): void
     {
         try {
-
             $this->getStorage($currentStorage)->deleteByUuid($strUuid);
-
         } catch (\Throwable) {
-
         }
 
     }
@@ -164,11 +135,8 @@ class StorageAdapter
     ): bool
     {
         try {
-
             return $this->getStorage($currentStorage)->existsByUuid($strUuid);
-
         } catch (\Throwable) {
-
         }
 
         return false;
@@ -188,11 +156,8 @@ class StorageAdapter
     ): ?string
     {
         try {
-
             return $this->getStorage($currentStorage)->uuidForDb($uuid, $checkFileExists);
-
         } catch (\Exception) {
-
         }
 
         return null;
@@ -212,11 +177,8 @@ class StorageAdapter
     ): ?string
     {
         try {
-
             return $this->getStorage($currentStorage)->dbToUuid($bin, $checkFileExists);
-
         } catch (\Exception) {
-
         }
 
         return null;
@@ -238,11 +200,8 @@ class StorageAdapter
     ): ?StorageObject
     {
         try {
-
             return $this->getStorage($currentStorage)->deploy($localPath, $remotePath, $override);
-
         } catch (\Throwable) {
-
         }
 
         return null;
@@ -260,11 +219,8 @@ class StorageAdapter
     ): void
     {
         try {
-
             $this->getStorage($currentStorage)->synchronize($strUuid);
-
         } catch (\Throwable) {
-
         }
 
     }
@@ -283,9 +239,7 @@ class StorageAdapter
     ): ?StorageObject
     {
         try {
-
             return $this->getStorage($currentStorage)->createFile($filePath, $content);
-
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
@@ -304,9 +258,7 @@ class StorageAdapter
     ): ?StorageObject
     {
         try {
-
             return $this->getStorage($currentStorage)->createDirectory($filePath);
-
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
@@ -325,9 +277,7 @@ class StorageAdapter
     ): void
     {
         try {
-
             $this->getStorage($currentStorage)->setMeta($object);
-
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
@@ -348,9 +298,7 @@ class StorageAdapter
     ): ?StorageObject
     {
         try {
-
             return $this->getStorage($currentStorage)->rename($srcPath, StringUtil::sanitizeFileName($destFileName));
-
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
@@ -371,9 +319,7 @@ class StorageAdapter
     ): ?StorageObject
     {
         try {
-
             return $this->getStorage($currentStorage)->move($srcPath, $destPath);
-
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
@@ -394,9 +340,7 @@ class StorageAdapter
     ): ?StorageObject
     {
         try {
-
             return $this->getStorage($currentStorage)->copy($srcPath, $destPath);
-
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }

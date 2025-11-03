@@ -7,7 +7,6 @@ namespace Alpdesk\AlpdeskCore\Library\Storage;
 use Contao\Environment;
 use Contao\StringUtil;
 use Contao\Validator;
-use Symfony\Component\Filesystem\Filesystem;
 
 abstract class BaseStorage
 {
@@ -22,6 +21,10 @@ abstract class BaseStorage
     }
 
     abstract public function initialize(?array $config): void;
+
+    abstract public function getRootDir(): string;
+
+    abstract public function getPublicDir(): string;
 
     abstract public function findByUuid(mixed $strUuid): ?StorageObject;
 
@@ -78,18 +81,6 @@ abstract class BaseStorage
 
         return null;
 
-    }
-
-    /**
-     * @return string
-     */
-    public function getPublicDir(): string
-    {
-        if ((new Filesystem())->exists($this->rootDir . '/web')) {
-            return 'web';
-        }
-
-        return 'public';
     }
 
     /**

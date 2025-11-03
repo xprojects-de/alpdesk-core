@@ -39,6 +39,26 @@ class LocalStorage extends BaseStorage
     }
 
     /**
+     * @return string
+     */
+    public function getRootDir(): string
+    {
+        return $this->rootDir;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicDir(): string
+    {
+        if ((new Filesystem())->exists($this->rootDir . '/web')) {
+            return 'web';
+        }
+
+        return 'public';
+    }
+
+    /**
      * @param mixed $strUuid
      * @return StorageObject|null
      */
