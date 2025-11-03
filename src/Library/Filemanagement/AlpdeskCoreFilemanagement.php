@@ -42,56 +42,54 @@ class AlpdeskCoreFilemanagement
      * @return AlpdescCoreBaseMandantInfo
      * @throws \Exception
      */
-    private function getMandantInformation(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo
+    private function getMandantData(AlpdeskcoreUser $user): AlpdescCoreBaseMandantInfo
     {
         $mandantInfo = AlpdeskcoreMandantModel::findById($user->getMandantPid());
 
-        if ($mandantInfo !== null) {
+        if ($mandantInfo === null) {
+            throw new AlpdeskCoreFilemanagementException("cannot get client info", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
+        }
 
-            $mInfo = new AlpdescCoreBaseMandantInfo();
+        $mInfo = new AlpdescCoreBaseMandantInfo();
 
-            $rootPath = $this->storageAdapter->get($mandantInfo->filemount);
+        $rootPath = $this->storageAdapter->get($mandantInfo->filemount);
 
-            $pathRootPath = $rootPath->path ?? '';
+        $pathRootPath = $rootPath->path ?? '';
 
-            $mInfo->setRootDir($this->storageAdapter->getRootDir());
+        $mInfo->setRootDir($this->storageAdapter->getRootDir());
 
-            $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
-            $mInfo->setFilemountmandant_path($pathRootPath);
-            $mInfo->setFilemountmandant_rootpath($this->storageAdapter->getRootDir() . '/' . $pathRootPath);
+        $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
+        $mInfo->setFilemountmandant_path($pathRootPath);
+        $mInfo->setFilemountmandant_rootpath($this->storageAdapter->getRootDir() . '/' . $pathRootPath);
 
-            $mInfo->setFilemount_uuid($mandantInfo->filemount);
-            $mInfo->setFilemount_path($pathRootPath);
-            $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir() . '/' . $pathRootPath);
+        $mInfo->setFilemount_uuid($mandantInfo->filemount);
+        $mInfo->setFilemount_path($pathRootPath);
+        $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir() . '/' . $pathRootPath);
 
-            if ($user->getHomeDir() !== null) {
+        if ($user->getHomeDir() !== null) {
 
-                $rootPathMember = $this->storageAdapter->get($user->getHomeDir());
-                if ($rootPathMember !== null) {
-                    $mInfo->setFilemount_uuid($rootPathMember->uuid);
-                    $mInfo->setFilemount_path($rootPathMember->path);
-                    $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir() . '/' . $pathRootPath);
-                }
-
+            $rootPathMember = $this->storageAdapter->get($user->getHomeDir());
+            if ($rootPathMember !== null) {
+                $mInfo->setFilemount_uuid($rootPathMember->uuid);
+                $mInfo->setFilemount_path($rootPathMember->path);
+                $mInfo->setFilemount_rootpath($this->storageAdapter->getRootDir() . '/' . $pathRootPath);
             }
-
-            $mInfo->setId((int)$mandantInfo->id);
-            $mInfo->setMemberId($user->getMemberId());
-            $mInfo->setMandant($mandantInfo->mandant);
-            $mInfo->setAccessDownload($user->getAccessDownload());
-            $mInfo->setAccessUpload($user->getAccessUpload());
-            $mInfo->setAccessCreate($user->getAccessCreate());
-            $mInfo->setAccessDelete($user->getAccessDelete());
-            $mInfo->setAccessRename($user->getAccessRename());
-            $mInfo->setAccessMove($user->getAccessMove());
-            $mInfo->setAccessCopy($user->getAccessCopy());
-            $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
-
-            return $mInfo;
 
         }
 
-        throw new AlpdeskCoreFilemanagementException("cannot get Mandantinformations", AlpdeskCoreConstants::$ERROR_INVALID_MANDANT);
+        $mInfo->setId((int)$mandantInfo->id);
+        $mInfo->setMemberId($user->getMemberId());
+        $mInfo->setMandant($mandantInfo->mandant);
+        $mInfo->setAccessDownload($user->getAccessDownload());
+        $mInfo->setAccessUpload($user->getAccessUpload());
+        $mInfo->setAccessCreate($user->getAccessCreate());
+        $mInfo->setAccessDelete($user->getAccessDelete());
+        $mInfo->setAccessRename($user->getAccessRename());
+        $mInfo->setAccessMove($user->getAccessMove());
+        $mInfo->setAccessCopy($user->getAccessCopy());
+        $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
+
+        return $mInfo;
 
     }
 
@@ -122,36 +120,11 @@ class AlpdeskCoreFilemanagement
                 throw new \Exception("invalid src fileMount");
             }
 
-            $this->checkFileMountPermission($objTargetSrc->path, $mandantInfo, $objTargetBase->path);
+            $this->storageAdapter->hasMountPermission($objTargetSrc->path, $objTargetBase->path);
 
         }
 
         return $src;
-
-    }
-
-    /**
-     * @param string $srcPath
-     * @param AlpdescCoreBaseMandantInfo $mandantInfo
-     * @param string|null $basePath
-     * @throws AlpdeskCoreFilemanagementException
-     */
-    private function checkFileMountPermission(string $srcPath, AlpdescCoreBaseMandantInfo $mandantInfo, ?string $basePath = null): void
-    {
-        if ($basePath === null) {
-
-            $baseObject = $this->storageAdapter->get($mandantInfo->getFilemount_uuid());
-            if (!$baseObject instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("invalid mandant fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
-            }
-
-            $basePath = $baseObject->path;
-
-        }
-
-        if (!\str_starts_with($srcPath, $basePath)) {
-            throw new AlpdeskCoreFilemanagementException("invalid mandant fileMount - access denied", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
-        }
 
     }
 
@@ -653,7 +626,7 @@ class AlpdeskCoreFilemanagement
     {
         try {
 
-            $mandantInfo = $this->getMandantInformation($user);
+            $mandantInfo = $this->getMandantData($user);
 
             $response = new AlpdeskCoreFileuploadResponse();
 
@@ -686,7 +659,7 @@ class AlpdeskCoreFilemanagement
             }
 
             $target = (string)$downloadData['target'];
-            $mandantInfo = $this->getMandantInformation($user);
+            $mandantInfo = $this->getMandantData($user);
 
             return $this->downloadFile($target, $mandantInfo);
 
@@ -712,7 +685,7 @@ class AlpdeskCoreFilemanagement
 
             $mode = (string)$finderData['mode'];
 
-            $mandantInfo = $this->getMandantInformation($user);
+            $mandantInfo = $this->getMandantData($user);
 
             switch ($mode) {
 

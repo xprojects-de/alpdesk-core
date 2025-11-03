@@ -67,6 +67,26 @@ class StorageAdapter
     }
 
     /**
+     * @param string $srcPath
+     * @param string $basePath
+     * @param string $currentStorage
+     * @return void
+     * @throws \Exception
+     */
+    public function hasMountPermission(string $srcPath, string $basePath, string $currentStorage = 'local'): void
+    {
+        $baseObject = $this->get($basePath, $currentStorage);
+        if (!$baseObject instanceof StorageObject) {
+            throw new \Exception("invalid fileMount access");
+        }
+
+        if (!\str_starts_with($srcPath, $baseObject->path)) {
+            throw new \Exception("invalid fileMount - access denied");
+        }
+
+    }
+
+    /**
      * @param string $currentStorage
      * @return string
      * @throws \Exception
