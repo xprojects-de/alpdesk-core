@@ -213,39 +213,44 @@ class AlpdeskCoreFilemanagement
      */
     private function downloadFile(string $target, AlpdescCoreBaseMandantInfo $mandantInfo): BinaryFileResponse
     {
-        if ($mandantInfo->getAccessDownload() === false) {
-            throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
+        try {
+
+            if ($mandantInfo->getAccessDownload() === false) {
+                throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
+            }
+
+            $target = $this->storageAdapter->sanitizePath($target);
+
+            $objTarget = $this->storageAdapter->findByUuid($target);
+            if (!$objTarget instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("invalid target fileMount");
+            }
+
+            $this->checkFileMountPermission(null, $objTarget->path, $mandantInfo);
+
+            if ($objTarget->type === 'folder') {
+                throw new AlpdeskCoreFilemanagementException("invalid src file - must be file");
+            }
+
+            $pDest = $mandantInfo->getRootDir() . '/' . $objTarget->path;
+
+            $filesystem = new Filesystem();
+
+            if ($filesystem->exists($pDest) && \is_file($pDest)) {
+
+                $response = new BinaryFileResponse($pDest);
+                $response->headers->set('Access-Control-Expose-Headers', 'Content-Disposition');
+                $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, \str_replace('/', '_', $objTarget->basename));
+
+                return $response;
+
+            }
+
+            throw new AlpdeskCoreFilemanagementException("src-File not found on server");
+
+        } catch (\Exception $ex) {
+            throw new AlpdeskCoreFilemanagementException("error at downloadFile - " . $ex->getMessage());
         }
-
-        $target = $this->storageAdapter->sanitizePath($target);
-
-        $objTarget = $this->storageAdapter->findByUuid($target);
-        if (!$objTarget instanceof StorageObject) {
-            throw new AlpdeskCoreFilemanagementException("invalid target fileMount");
-        }
-
-        $this->checkFileMountPermission(null, $objTarget->path, $mandantInfo);
-
-        if ($objTarget->type === 'folder') {
-            throw new AlpdeskCoreFilemanagementException("invalid src file - must be file");
-        }
-
-        $target = $objTarget->path;
-        $pDest = $mandantInfo->getRootDir() . '/' . $target;
-
-        $filesystem = new Filesystem();
-
-        if ($filesystem->exists($pDest) && \is_file($pDest)) {
-
-            $response = new BinaryFileResponse($pDest);
-            $response->headers->set('Access-Control-Expose-Headers', 'Content-Disposition');
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, str_replace('/', '_', $target));
-
-            return $response;
-
-        }
-
-        throw new AlpdeskCoreFilemanagementException("src-File not found on server");
 
     }
 
@@ -562,10 +567,8 @@ class AlpdeskCoreFilemanagement
             if ($accessCheck === true && $mandantInfo->getAccessCopy() === false) {
                 throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
             }
-        } else {
-            if ($accessCheck === true && $mandantInfo->getAccessMove() === false) {
-                throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
-            }
+        } else if ($accessCheck === true && $mandantInfo->getAccessMove() === false) {
+            throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
         try {
