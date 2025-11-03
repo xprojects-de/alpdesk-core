@@ -216,6 +216,15 @@ class AlpdeskCoreFilemanagement
 
             $target = $this->storageAdapter->sanitizePath($target);
 
+            $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
+            if (!$objTargetBase instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("invalid Mandant fileMount");
+            }
+
+            if (!Validator::isUuid($target)) {
+                $target = $objTargetBase->path . '/' . $target;
+            }
+
             $objTarget = $this->storageAdapter->findByUuid($target);
             if (!$objTarget instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid target fileMount");
