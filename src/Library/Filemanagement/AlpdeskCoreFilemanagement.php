@@ -13,7 +13,6 @@ use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageObject;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\StringUtil;
-use Contao\Environment;
 use Contao\Config;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Contao\Validator;
@@ -388,14 +387,13 @@ class AlpdeskCoreFilemanagement
             }
 
             if ($target === 'file') {
-                $this->storageAdapter->createFile($src, 'init');
+                $objTargetModel = $this->storageAdapter->createFile($src, 'init');
             } else if ($target === 'dir') {
-                $this->storageAdapter->createDirectory($src);
+                $objTargetModel = $this->storageAdapter->createDirectory($src);
             } else {
                 throw new AlpdeskCoreFilemanagementException("invalid targetMode");
             }
 
-            $objTargetModel = $this->storageAdapter->get($src);
             if (!$objTargetModel instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("error create - target not found after create");
             }
@@ -575,23 +573,9 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
             }
 
-            if ($objFileModelSrc->type !== 'file' || $objFileModelSrc->file === null) {
+            if ($objFileModelSrc->type !== 'file') {
                 throw new AlpdeskCoreFilemanagementException("error - src must be file");
             }
-
-            if (!$objFileModelSrc->file->exists()) {
-                throw new AlpdeskCoreFilemanagementException("error - src file does not exists");
-            }
-
-            $url = '';
-            $public = $objFileModelSrc->file->isUnprotected();
-            if ($public === true) {
-                $url = Environment::get('base') . $objFileModelSrc->file->path;
-            }
-            $basename = $objFileModelSrc->file->basename;
-            $extension = $objFileModelSrc->file->extension;
-            $size = $objFileModelSrc->file->size;
-            $isImage = ($objFileModelSrc->file->isCmykImage || $objFileModelSrc->file->isGdImage || $objFileModelSrc->file->isImage || $objFileModelSrc->file->isRgbImage || $objFileModelSrc->file->isSvgImage);
 
             $metaData = [];
 
@@ -641,14 +625,14 @@ class AlpdeskCoreFilemanagement
 
             return [
                 'uuid' => $objFileModelSrc->uuid,
-                'name' => $basename,
+                'name' => $objFileModelSrc->basename,
                 'path' => $objFileModelSrc->path,
                 'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileModelSrc->path),
-                'extention' => $extension,
-                'size' => $size,
-                'isimage' => $isImage,
-                'public' => $public,
-                'url' => $url,
+                'extention' => $objFileModelSrc->extension,
+                'size' => $objFileModelSrc->size,
+                'isimage' => $objFileModelSrc->isImage,
+                'public' => $objFileModelSrc->isPublic,
+                'url' => $objFileModelSrc->url,
                 'meta' => $metaData
             ];
 
