@@ -225,18 +225,20 @@ class StorageAdapter
     /**
      * @param string|null $localPath
      * @param string|null $remotePath
+     * @param bool $override
      * @param string $currentStorage
      * @return StorageObject|null
      */
     public function deploy(
         ?string $localPath,
         ?string $remotePath,
+        bool    $override,
         string  $currentStorage = 'local'
     ): ?StorageObject
     {
         try {
 
-            return $this->getStorage($currentStorage)->deploy($localPath, $remotePath);
+            return $this->getStorage($currentStorage)->deploy($localPath, $remotePath, $override);
 
         } catch (\Throwable) {
 

@@ -287,9 +287,10 @@ class LocalStorage extends BaseStorage
     /**
      * @param string|null $localPath
      * @param string|null $remotePath
+     * @param bool $override
      * @return StorageObject|null
      */
-    public function deploy(?string $localPath, ?string $remotePath): ?StorageObject
+    public function deploy(?string $localPath, ?string $remotePath, bool $override): ?StorageObject
     {
         try {
 
@@ -299,6 +300,15 @@ class LocalStorage extends BaseStorage
 
             if ($localPath === '' || $remotePath === '') {
                 return null;
+            }
+
+            if ($override === false) {
+
+                $fileRemoteCheck = new File($remotePath);
+                if ($fileRemoteCheck->exists()) {
+                    $remotePath = \str_replace('.' . $fileRemoteCheck->extension, '_' . \time() . '.' . $fileRemoteCheck->extension, $remotePath);
+                }
+
             }
 
             $fileLocal = new File($localPath);
@@ -395,7 +405,7 @@ class LocalStorage extends BaseStorage
         $file->write($content);
         $file->close();
 
-        $storageObject = $this->deploy($filePath, $filePath);
+        $storageObject = $this->deploy($filePath, $filePath, true);
         if ($storageObject instanceof StorageObject) {
             $this->synchronize($storageObject->uuid);
         }
@@ -413,7 +423,7 @@ class LocalStorage extends BaseStorage
     {
         $this->filesStorage->createDirectory($filePath);
 
-        $storageObject = $this->deploy($filePath, $filePath);
+        $storageObject = $this->deploy($filePath, $filePath, true);
         if ($storageObject instanceof StorageObject) {
             $this->synchronize($storageObject->uuid);
         }

@@ -12,7 +12,6 @@ use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageObject;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
-use Contao\File;
 use Contao\StringUtil;
 use Contao\Environment;
 use Contao\Config;
@@ -137,8 +136,13 @@ class AlpdeskCoreFilemanagement
 
         $target = $this->storageAdapter->sanitizePath($target);
 
-        if ($target === '/' || $target === '') {
-            $target = StringUtil::binToUuid($mandantInfo->getFilemount_uuid());
+        $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
+        if (!$objTargetBase instanceof StorageObject) {
+            throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
+        }
+
+        if (!Validator::isUuid($target)) {
+            $target = $objTargetBase->path . '/' . $target;
         }
 
         $objTarget = $this->storageAdapter->findByUuid($target);
@@ -150,9 +154,11 @@ class AlpdeskCoreFilemanagement
 
         $filesystem = new Filesystem();
 
-        if ($filesystem->exists($uploadFile->getPathName())) {
+        $sourcePath = $uploadFile->getRealPath() ?: $uploadFile->getPathname();
+        if ($filesystem->exists($sourcePath)) {
 
             $fileName = $uploadFile->getClientOriginalName();
+
             try {
                 $fileName = StringUtil::sanitizeFileName($fileName);
             } catch (\Exception $ex) {
@@ -172,32 +178,21 @@ class AlpdeskCoreFilemanagement
             }
 
             $tmpFileName = \time() . '_' . $fileName;
-            $uploadFile->move($this->storageAdapter->getRootDir() . '/' . $objTarget->path, $tmpFileName);
+            $uploadFile->move($this->storageAdapter->getRootDir() . '/tmp', $tmpFileName);
 
-            $tmpFile = new File($objTarget->path . '/' . $tmpFileName);
-            if (!$tmpFile->exists()) {
+            $uploadTarget = $this->storageAdapter->deploy('tmp/' . $tmpFileName, $objTarget->path . '/' . $fileName, false);
+            if (!$uploadTarget instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("error upload file");
             }
 
-            if ($filesystem->exists($mandantInfo->getRootDir() . '/' . $objTarget->path . '/' . $fileName)) {
-                $fileName = time() . '_' . $fileName;
-            }
-
-            $tmpFile->renameTo($objTarget->path . '/' . $fileName);
-
-            $nFile = new File($objTarget->path . '/' . $fileName);
-            if (!$nFile->exists()) {
+            $objFinalFile = $this->storageAdapter->findByUuid($uploadTarget->path);
+            if (!$objFinalFile instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("error upload file");
             }
 
-            $objnFile = $this->storageAdapter->findByUuid($objTarget->path . '/' . $fileName);
-            if (!$objnFile instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("error upload file");
-            }
-
-            $response->setUuid(StringUtil::binToUuid($objnFile->uuid));
-            $response->setRootFileName($objTarget->path . '/' . $fileName);
-            $response->setFileName($nFile->basename);
+            $response->setUuid(StringUtil::binToUuid($objFinalFile->uuid));
+            $response->setRootFileName($objFinalFile->path . '/' . $fileName);
+            $response->setFileName($objFinalFile->basename);
 
         } else {
             throw new AlpdeskCoreFilemanagementException("error upload file");

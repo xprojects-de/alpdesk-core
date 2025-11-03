@@ -33,7 +33,7 @@ abstract class BaseStorage
 
     abstract public function dbToUuid(?string $bin, bool $checkFileExists): ?string;
 
-    abstract public function deploy(?string $localPath, ?string $remotePath): ?StorageObject;
+    abstract public function deploy(?string $localPath, ?string $remotePath, bool $override): ?StorageObject;
 
     abstract public function synchronize(mixed $strUuid): void;
 
