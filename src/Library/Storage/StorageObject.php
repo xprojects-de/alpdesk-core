@@ -10,6 +10,8 @@ use Contao\Folder;
 class StorageObject
 {
     public ?string $path = null;
+    public ?string $basename = null;
+    public ?string $extension = null;
     public ?string $absolutePath = null;
     public ?string $name = null;
     public ?string $url = null;
@@ -19,4 +21,7 @@ class StorageObject
     public array|string|null $meta = null;
     public ?File $file = null;
     public ?Folder $folder = null;
+    public bool $isPublic = false;
+    public bool $isImage = false;
+    public int $size = 0;
 }

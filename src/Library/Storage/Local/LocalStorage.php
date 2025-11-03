@@ -79,6 +79,8 @@ class LocalStorage extends BaseStorage
                         $storageObject = new StorageObject();
 
                         $storageObject->path = $fileObject->path;
+                        $storageObject->basename = $file->basename;
+                        $storageObject->extension = $file->extension;
                         $storageObject->absolutePath = $fileObject->getAbsolutePath();
                         $storageObject->name = $fileObject->name;
                         $storageObject->filename = $file->filename;
@@ -87,6 +89,9 @@ class LocalStorage extends BaseStorage
                         $storageObject->file = $file;
                         $storageObject->type = 'file';
                         $storageObject->meta = $fileObject->meta;
+                        $storageObject->isPublic = $file->isUnprotected();
+                        $storageObject->size = $file->size;
+                        $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $file->path))?->isImage() ?? false);
 
                         return $storageObject;
 
@@ -99,6 +104,7 @@ class LocalStorage extends BaseStorage
                     $storageObject = new StorageObject();
 
                     $storageObject->path = $fileObject->path;
+                    $storageObject->basename = $folder->basename;
                     $storageObject->absolutePath = $fileObject->getAbsolutePath();
                     $storageObject->name = $fileObject->name;
                     $storageObject->filename = $folder->filename;
@@ -106,6 +112,7 @@ class LocalStorage extends BaseStorage
                     $storageObject->uuid = self::binToUuid($fileObject->uuid);
                     $storageObject->folder = $folder;
                     $storageObject->type = 'folder';
+                    $storageObject->isPublic = $folder->isUnprotected();
 
                     return $storageObject;
 
@@ -123,6 +130,8 @@ class LocalStorage extends BaseStorage
                     $storageObject = new StorageObject();
 
                     $storageObject->path = $objectFile->path;
+                    $storageObject->basename = $objectFile->basename;
+                    $storageObject->extension = $objectFile->extension;
                     $storageObject->absolutePath = $this->rootDir . '/' . $objectFile->path;
                     $storageObject->name = $objectFile->name;
                     $storageObject->filename = $objectFile->filename;
@@ -131,6 +140,9 @@ class LocalStorage extends BaseStorage
                     $storageObject->file = $objectFile;
                     $storageObject->type = 'file';
                     $storageObject->meta = $fileObject->meta;
+                    $storageObject->isPublic = $objectFile->isUnprotected();
+                    $storageObject->size = $objectFile->size;
+                    $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $objectFile->path))?->isImage() ?? false);
 
                     return $storageObject;
 
@@ -143,6 +155,7 @@ class LocalStorage extends BaseStorage
                     $storageObject = new StorageObject();
 
                     $storageObject->path = $objectFolder->path;
+                    $storageObject->basename = $objectFolder->basename;
                     $storageObject->absolutePath = $this->rootDir . '/' . $objectFolder->path;
                     $storageObject->name = $objectFolder->name;
                     $storageObject->filename = $objectFolder->filename;
@@ -150,6 +163,7 @@ class LocalStorage extends BaseStorage
                     $storageObject->uuid = null;
                     $storageObject->folder = $objectFolder;
                     $storageObject->type = 'folder';
+                    $storageObject->isPublic = $objectFolder->isUnprotected();
 
                     return $storageObject;
 
@@ -299,6 +313,8 @@ class LocalStorage extends BaseStorage
                 $model = $fileLocal->getModel();
 
                 $storageObject->path = $fileLocal->path;
+                $storageObject->basename = $fileLocal->basename;
+                $storageObject->extension = $fileLocal->extension;
                 $storageObject->absolutePath = $this->rootDir . '/' . $fileLocal->path;
                 $storageObject->name = $fileLocal->name;
                 $storageObject->filename = $fileLocal->filename;
@@ -306,6 +322,9 @@ class LocalStorage extends BaseStorage
                 $storageObject->uuid = ($model !== null ? self::binToUuid($model->uuid) : null);
                 $storageObject->file = $fileLocal;
                 $storageObject->type = 'file';
+                $storageObject->isPublic = $fileLocal->isUnprotected();
+                $storageObject->size = $fileLocal->size;
+                $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $fileLocal->path))?->isImage() ?? false);
 
             } else {
 
@@ -323,17 +342,22 @@ class LocalStorage extends BaseStorage
                 $model = $fileRemote->getModel();
 
                 $storageObject->path = $fileRemote->path;
+                $storageObject->basename = $fileRemote->basename;
+                $storageObject->extension = $fileRemote->extension;
                 $storageObject->absolutePath = $this->rootDir . '/' . $fileRemote->path;
                 $storageObject->name = $fileRemote->name;
                 $storageObject->filename = $fileRemote->filename;
                 $storageObject->url = $this->generateLocalUrl($fileRemote->path);
                 $storageObject->uuid = ($model !== null ? self::binToUuid($model->uuid) : null);
                 $storageObject->file = $fileRemote;
+                $storageObject->type = 'file';
+                $storageObject->isPublic = $fileRemote->isUnprotected();
+                $storageObject->size = $fileRemote->size;
+                $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $fileRemote->path))?->isImage() ?? false);
 
             }
 
             return $storageObject;
-
 
         } catch (\Throwable) {
         }

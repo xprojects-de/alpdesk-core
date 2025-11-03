@@ -17,13 +17,13 @@ use Contao\StringUtil;
 use Contao\Environment;
 use Contao\Config;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
+use Contao\Validator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
-use Symfony\Component\Uid\Uuid;
 
 class AlpdeskCoreFilemanagement
 {
@@ -303,13 +303,14 @@ class AlpdeskCoreFilemanagement
     /**
      * @param array $finderData
      * @param AlpdescCoreBaseMandantInfo $mandantInfo
-     * @param string|null $rootDir
      * @return array
      * @throws AlpdeskCoreFilemanagementException
      */
-    private function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo, ?string $rootDir = null): array
+    private function listFolder(array $finderData, AlpdescCoreBaseMandantInfo $mandantInfo): array
     {
         try {
+
+            $data = [];
 
             if (!\array_key_exists('src', $finderData)) {
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
@@ -317,83 +318,70 @@ class AlpdeskCoreFilemanagement
 
             $src = self::preparePath(((string)$finderData['src']));
 
-            $data = [];
-
-            $objTargetBase = $this->storageAdapter->findByUuid(StringUtil::binToUuid($mandantInfo->getFilemount_uuid()));
+            $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
             if (!$objTargetBase instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
             }
 
-            $path = $objTargetBase->path;
-
-            if ($src !== '' && $src !== '/') {
-
-                $objTargetSrc = $this->storageAdapter->findByUuid($src);
-                if (!$objTargetSrc instanceof StorageObject) {
-                    throw new AlpdeskCoreFilemanagementException("invalid src fileMount");
-                }
-
-                $this->checkFileMountPermission($objTargetBase->path, $objTargetSrc->path, $mandantInfo);
-
-                $path = $objTargetSrc->path;
-
-                if ($objTargetSrc->type !== 'folder') {
-                    throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
-                }
-
+            if (!Validator::isUuid($src)) {
+                $src = $objTargetBase->path . '/' . $src;
             }
 
-            $listPath = $path;
-            if ($rootDir !== null) {
-                $listPath = $rootDir . '/' . $path;
+            $objTargetSrc = $this->storageAdapter->findByUuid($src);
+            if (!$objTargetSrc instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("invalid src fileMount");
             }
+
+            $this->checkFileMountPermission($objTargetBase->path, $objTargetSrc->path, $mandantInfo);
+
+            if ($objTargetSrc->type !== 'folder') {
+                throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
+            }
+
+            $listPath = $this->storageAdapter->getRootDir() . '/' . $objTargetSrc->path;
 
             $files = self::scanDir($listPath);
 
             foreach ($files as $file) {
 
-                $objFileTmp = $this->storageAdapter->findByUuid($path . '/' . $file);
+                $objFileTmp = $this->storageAdapter->findByUuid($objTargetSrc->path . '/' . $file);
 
                 if ($objFileTmp instanceof StorageObject) {
 
-                    if ($objFileTmp->type === 'folder' && $objFileTmp->folder !== null) {
+                    if ($objFileTmp->type === 'folder') {
 
                         $data[] = [
-                            'name' => $objFileTmp->folder->basename,
-                            'path' => $objFileTmp->folder->path,
-                            'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileTmp->folder->path),
-                            'uuid' => Uuid::fromBinary($objFileTmp->folder->uuid),
+                            'name' => $objFileTmp->basename,
+                            'path' => $objFileTmp->path,
+                            'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileTmp->path),
+                            'uuid' => $objFileTmp->uuid,
                             'extention' => '',
-                            'public' => $objFileTmp->folder->isUnprotected(),
+                            'public' => $objFileTmp->isPublic,
                             'url' => '',
                             'isFolder' => true,
                             'size' => '',
                             'isimage' => false
                         ];
 
-                    } else if ($objFileTmp->type === 'file' && $objFileTmp->file !== null) {
-
-                        $url = '';
-                        if ($objFileTmp->file->isUnprotected() === true) {
-                            $url = Environment::get('base') . $objFileTmp->file->path;
-                        }
+                    } else if ($objFileTmp->type === 'file') {
 
                         $data[] = [
-                            'name' => $objFileTmp->file->basename,
-                            'path' => $objFileTmp->file->path,
-                            'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileTmp->file->path),
-                            'uuid' => Uuid::fromBinary($objFileTmp->uuid),
-                            'extention' => $objFileTmp->file->extension,
-                            'public' => $objFileTmp->file->isUnprotected(),
-                            'url' => $url,
+                            'name' => $objFileTmp->basename,
+                            'path' => $objFileTmp->path,
+                            'relativePath' => \str_replace($mandantInfo->getFilemount_path(), '', $objFileTmp->path),
+                            'uuid' => $objFileTmp->uuid,
+                            'extention' => $objFileTmp->extension,
+                            'public' => $objFileTmp->isPublic,
+                            'url' => ($objFileTmp->url ?? ''),
                             'isFolder' => false,
-                            'size' => $objFileTmp->file->size,
-                            'isimage' => ($objFileTmp->file->isCmykImage || $objFileTmp->file->isGdImage || $objFileTmp->file->isImage || $objFileTmp->file->isRgbImage || $objFileTmp->file->isSvgImage)
+                            'size' => $objFileTmp->size,
+                            'isimage' => $objFileTmp->isImage
                         ];
 
                     }
 
                 }
+
             }
 
             return $data;
@@ -905,7 +893,7 @@ class AlpdeskCoreFilemanagement
         switch ($mode) {
             case 'list':
             {
-                $finderResponseData = $this->listFolder($finderData, $mandantInfo, $this->storageAdapter->getRootDir());
+                $finderResponseData = $this->listFolder($finderData, $mandantInfo);
 
                 $event = new AlpdeskCoreFilemanagementFinderListEvent($finderData, $finderResponseData, $mandantInfo);
                 $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFilemanagementFinderListEvent::NAME);
