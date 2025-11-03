@@ -383,24 +383,26 @@ class AlpdeskCoreFilemanagement
 
             $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
             if (!$objTargetBase instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("invalid Mandant FileMount");
+                throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
             }
 
-            $filesystem = new Filesystem();
+            if (!Validator::isUuid($src)) {
+                $src = $objTargetBase->path . '/' . $src;
+            }
 
-            if ($filesystem->exists($mandantInfo->getRootDir() . '/' . $objTargetBase->path . '/' . $src)) {
+            if ($this->storageAdapter->existsByUuid($src)) {
                 throw new AlpdeskCoreFilemanagementException("target still exists");
             }
 
             if ($target === 'file') {
-                $this->storageAdapter->createFile($objTargetBase->path . '/' . $src, 'init');
+                $this->storageAdapter->createFile($src, 'init');
             } else if ($target === 'dir') {
-                $this->storageAdapter->createDirectory($objTargetBase->path . '/' . $src);
+                $this->storageAdapter->createDirectory($src);
             } else {
                 throw new AlpdeskCoreFilemanagementException("invalid targetMode");
             }
 
-            $objTargetModel = $this->storageAdapter->findByUuid($objTargetBase->path . '/' . $src);
+            $objTargetModel = $this->storageAdapter->findByUuid($src);
             if (!$objTargetModel instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("error create - target not found after create");
             }

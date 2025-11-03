@@ -421,14 +421,9 @@ class LocalStorage extends BaseStorage
      */
     public function createDirectory(string $filePath): ?StorageObject
     {
-        $this->filesStorage->createDirectory($filePath);
+        $this->filesStorage->createDirectory(\str_replace('files/', '', $filePath));
 
-        $storageObject = $this->deploy($filePath, $filePath, true);
-        if ($storageObject instanceof StorageObject) {
-            $this->synchronize($storageObject->uuid);
-        }
-
-        return $storageObject;
+        return $this->findByUuid($filePath);
 
     }
 
