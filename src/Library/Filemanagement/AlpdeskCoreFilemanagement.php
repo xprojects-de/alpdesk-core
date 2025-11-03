@@ -97,12 +97,47 @@ class AlpdeskCoreFilemanagement
     }
 
     /**
-     * @param string|null $basePath
+     * @param string $src
+     * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param bool $checkPermission
+     * @return string
+     * @throws \Exception
+     */
+    private function prepareSrcPath(string $src, AlpdescCoreBaseMandantInfo $mandantInfo, bool $checkPermission): string
+    {
+        $src = $this->storageAdapter->sanitizePath($src);
+
+        $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
+        if (!$objTargetBase instanceof StorageObject) {
+            throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
+        }
+
+        if (!Validator::isUuid($src)) {
+            $src = $objTargetBase->path . '/' . $src;
+        }
+
+        if ($checkPermission) {
+
+            $objTargetSrc = $this->storageAdapter->findByUuid($src);
+            if (!$objTargetSrc instanceof StorageObject) {
+                throw new \Exception("invalid src fileMount");
+            }
+
+            $this->checkFileMountPermission($objTargetSrc->path, $mandantInfo, $objTargetBase->path);
+
+        }
+
+        return $src;
+
+    }
+
+    /**
      * @param string $srcPath
      * @param AlpdescCoreBaseMandantInfo $mandantInfo
+     * @param string|null $basePath
      * @throws AlpdeskCoreFilemanagementException
      */
-    private function checkFileMountPermission(?string $basePath, string $srcPath, AlpdescCoreBaseMandantInfo $mandantInfo): void
+    private function checkFileMountPermission(string $srcPath, AlpdescCoreBaseMandantInfo $mandantInfo, ?string $basePath = null): void
     {
         if ($basePath === null) {
 
@@ -134,23 +169,12 @@ class AlpdeskCoreFilemanagement
             throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
         }
 
-        $target = $this->storageAdapter->sanitizePath($target);
-
-        $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
-        if (!$objTargetBase instanceof StorageObject) {
-            throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
-        }
-
-        if (!Validator::isUuid($target)) {
-            $target = $objTargetBase->path . '/' . $target;
-        }
+        $target = $this->prepareSrcPath($target, $mandantInfo, true);
 
         $objTarget = $this->storageAdapter->findByUuid($target);
         if (!$objTarget instanceof StorageObject) {
             throw new AlpdeskCoreFilemanagementException("invalid target fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
         }
-
-        $this->checkFileMountPermission(null, $objTarget->path, $mandantInfo);
 
         $filesystem = new Filesystem();
 
@@ -214,23 +238,12 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
             }
 
-            $target = $this->storageAdapter->sanitizePath($target);
-
-            $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
-            if (!$objTargetBase instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("invalid Mandant fileMount");
-            }
-
-            if (!Validator::isUuid($target)) {
-                $target = $objTargetBase->path . '/' . $target;
-            }
+            $target = $this->prepareSrcPath($target, $mandantInfo, true);
 
             $objTarget = $this->storageAdapter->findByUuid($target);
             if (!$objTarget instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid target fileMount");
             }
-
-            $this->checkFileMountPermission(null, $objTarget->path, $mandantInfo);
 
             if ($objTarget->type === 'folder') {
                 throw new AlpdeskCoreFilemanagementException("invalid src file - must be file");
@@ -274,23 +287,12 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = $this->storageAdapter->sanitizePath(((string)$finderData['src']));
-
-            $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
-            if (!$objTargetBase instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
-            }
-
-            if (!Validator::isUuid($src)) {
-                $src = $objTargetBase->path . '/' . $src;
-            }
+            $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
             $objTargetSrc = $this->storageAdapter->findByUuid($src);
             if (!$objTargetSrc instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("invalid src fileMount");
             }
-
-            $this->checkFileMountPermission($objTargetBase->path, $objTargetSrc->path, $mandantInfo);
 
             if ($objTargetSrc->type !== 'folder') {
                 throw new AlpdeskCoreFilemanagementException("invalid src folder - must be folder");
@@ -369,8 +371,6 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = $this->storageAdapter->sanitizePath((string)$finderData['src']);
-
             if (!\array_key_exists('target', $finderData)) {
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter target for finder");
             }
@@ -381,14 +381,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("No valid mode in target. Must be 'file' or 'dir'");
             }
 
-            $objTargetBase = $this->storageAdapter->findByUuid($mandantInfo->getFilemount_uuid());
-            if (!$objTargetBase instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("invalid Mandant filemount");
-            }
-
-            if (!Validator::isUuid($src)) {
-                $src = $objTargetBase->path . '/' . $src;
-            }
+            $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, false);
 
             if ($this->storageAdapter->existsByUuid($src)) {
                 throw new AlpdeskCoreFilemanagementException("target still exists");
@@ -437,21 +430,12 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = $this->storageAdapter->sanitizePath(((string)$finderData['src']));
+            $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
-            $objFileModelSrc = $this->storageAdapter->findByUuid($src);
-            if (!$objFileModelSrc instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("src not found");
-            }
+            $this->storageAdapter->deleteByUuid($src);
 
-            $this->checkFileMountPermission(null, $objFileModelSrc->path, $mandantInfo);
-
-            if ($objFileModelSrc->type === 'folder' && $objFileModelSrc->folder !== null) {
-                $objFileModelSrc->folder->delete();
-            } else if ($objFileModelSrc->type === 'file' && $objFileModelSrc->file !== null) {
-                $objFileModelSrc->file->delete();
-            } else {
-                throw new AlpdeskCoreFilemanagementException("error at copy - invalid source");
+            if ($this->storageAdapter->existsByUuid($src)) {
+                throw new AlpdeskCoreFilemanagementException("target still exists");
             }
 
         } catch (\Exception $ex) {
@@ -500,7 +484,7 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("src-File by uuid not found on server");
             }
 
-            $this->checkFileMountPermission(null, $objFileModelSrc->path, $mandantInfo);
+            $this->checkFileMountPermission($objFileModelSrc->path, $mandantInfo);
 
             $filesystem = new Filesystem();
 
@@ -604,14 +588,14 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
             }
 
-            $this->checkFileMountPermission(null, $objFileModelSrc->path, $mandantInfo);
+            $this->checkFileMountPermission($objFileModelSrc->path, $mandantInfo);
 
             $objFileModelTarget = $this->storageAdapter->findByUuid($target);
             if (!$objFileModelTarget instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
             }
 
-            $this->checkFileMountPermission(null, $objFileModelTarget->path, $mandantInfo);
+            $this->checkFileMountPermission($objFileModelTarget->path, $mandantInfo);
 
             if ($objFileModelTarget->type !== 'folder') {
                 throw new AlpdeskCoreFilemanagementException("error - target must be folder");
@@ -696,18 +680,12 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
-            $src = $this->storageAdapter->sanitizePath((string)$finderData['src']);
-
-            if ($src === '') {
-                throw new AlpdeskCoreFilemanagementException("invalid src");
-            }
+            $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
             $objFileModelSrc = $this->storageAdapter->findByUuid($src);
             if (!$objFileModelSrc instanceof StorageObject) {
                 throw new AlpdeskCoreFilemanagementException("src file by uuid not found");
             }
-
-            $this->checkFileMountPermission(null, $objFileModelSrc->path, $mandantInfo);
 
             if ($objFileModelSrc->type !== 'file' || $objFileModelSrc->file === null) {
                 throw new AlpdeskCoreFilemanagementException("error - src must be file");

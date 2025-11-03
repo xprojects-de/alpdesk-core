@@ -185,15 +185,16 @@ class LocalStorage extends BaseStorage
     public function deleteByUuid(mixed $strUuid): void
     {
         $fileObject = $this->findByUuid($strUuid);
-        if ($fileObject !== null) {
+        if ($fileObject instanceof StorageObject) {
 
             if ($fileObject->file !== null) {
-                $fileObject->file->delete();
+                $this->filesStorage->delete(\str_replace('files/', '', $fileObject->path));
             } else {
-                $fileObject->folder?->delete();
+                $this->filesStorage->deleteDirectory(\str_replace('files/', '', $fileObject->path));
             }
 
         }
+
     }
 
     /**
