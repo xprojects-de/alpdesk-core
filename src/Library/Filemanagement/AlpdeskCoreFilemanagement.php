@@ -120,12 +120,15 @@ class AlpdeskCoreFilemanagement
         $src = $this->storageAdapter->sanitizePath($src);
 
         $objTargetBase = $this->storageAdapter->get($mandantInfo->getFilemount_uuid(), $this->storageType);
-        if (!$objTargetBase instanceof StorageObject) {
+        if (!$objTargetBase instanceof StorageObject || !\is_string($objTargetBase->path)) {
             throw new AlpdeskCoreFilemanagementException("invalid Mandant fileMount");
         }
 
         if (!Validator::isUuid($src)) {
-            $src = $objTargetBase->path . '/' . $src;
+
+            $basePath = \rtrim((string)$objTargetBase->path, '/');
+            $src = $src === '' ? $basePath : $basePath . '/' . \ltrim($src, '/');
+
         }
 
         if ($checkPermission) {
