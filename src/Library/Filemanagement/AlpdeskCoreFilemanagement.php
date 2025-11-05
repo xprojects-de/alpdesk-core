@@ -202,7 +202,7 @@ class AlpdeskCoreFilemanagement
             }
 
             $response->setUuid($objFinalFile->uuid);
-            $response->setRootFileName($objFinalFile->path . '/' . $fileName);
+            $response->setRootFileName($objFinalFile->path);
             $response->setFileName($objFinalFile->basename);
 
         } else {
