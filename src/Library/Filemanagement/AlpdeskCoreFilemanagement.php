@@ -132,14 +132,7 @@ class AlpdeskCoreFilemanagement
         }
 
         if ($checkPermission) {
-
-            $objTargetSrc = $this->storageAdapter->get($src, $this->storageType);
-            if (!$objTargetSrc instanceof StorageObject) {
-                throw new \Exception("invalid src fileMount");
-            }
-
-            $this->storageAdapter->hasMountPermission($objTargetSrc->path, $objTargetBase->path, $this->storageType);
-
+            $this->storageAdapter->hasMountPermission($src, $objTargetBase->path, $this->storageType);
         }
 
         return $src;
@@ -160,6 +153,10 @@ class AlpdeskCoreFilemanagement
         }
 
         $target = $this->prepareSrcPath($target, $mandantInfo, true);
+
+        if (!$this->storageAdapter->exists($target, $this->storageType)) {
+            $this->storageAdapter->createDirectory($target, $this->storageType);
+        }
 
         $objTarget = $this->storageAdapter->get($target, $this->storageType);
         if (!$objTarget instanceof StorageObject) {
