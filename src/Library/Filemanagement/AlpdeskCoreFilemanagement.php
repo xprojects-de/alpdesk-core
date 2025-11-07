@@ -104,7 +104,7 @@ class AlpdeskCoreFilemanagement
         $mInfo->setAccessCopy($user->getAccessCopy());
         $mInfo->setAdditionalDatabaseInformation($mandantInfo->row());
 
-        $this->storageAdapter->addMandant($mInfo);
+        $this->storageAdapter->addMandant($mInfo, $this->storageType);
 
         return $mInfo;
 
