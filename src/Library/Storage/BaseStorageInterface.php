@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Storage;
 
+use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
+
 interface BaseStorageInterface
 {
     public function getRootDir(): string;
@@ -35,5 +37,7 @@ interface BaseStorageInterface
     public function generateLocalUrl(?string $path): ?string;
 
     public function listDir(string $path): array;
+
+    public function addMandant(?AlpdescCoreBaseMandantInfo $mandant): void;
 
 }

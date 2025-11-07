@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Storage\Local;
 
+use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Alpdesk\AlpdeskCore\Library\Storage\BaseStorageInterface;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageObject;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
@@ -21,6 +22,8 @@ class LocalStorage implements BaseStorageInterface
 {
     private VirtualFilesystemInterface $filesStorage;
     private string $rootDir;
+
+    protected ?AlpdescCoreBaseMandantInfo $mandant = null;
 
     /**
      * @param VirtualFilesystemInterface $filesStorage
@@ -553,6 +556,15 @@ class LocalStorage implements BaseStorageInterface
 
         return null;
 
+    }
+
+    /**
+     * @param AlpdescCoreBaseMandantInfo|null $mandant
+     * @return void
+     */
+    public function addMandant(?AlpdescCoreBaseMandantInfo $mandant): void
+    {
+        $this->mandant = $mandant;
     }
 
 }

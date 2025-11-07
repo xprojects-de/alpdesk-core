@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Storage;
 
+use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Contao\StringUtil;
 
 class StorageAdapter
@@ -308,6 +309,21 @@ class StorageAdapter
     {
         try {
             return $this->getStorage($currentStorage)->listDir($path);
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
+        }
+    }
+
+    /**
+     * @param AlpdescCoreBaseMandantInfo|null $mandant
+     * @param string $currentStorage
+     * @return void
+     * @throws \Exception
+     */
+    public function addMandant(?AlpdescCoreBaseMandantInfo $mandant, string $currentStorage = 'local'): void
+    {
+        try {
+            $this->getStorage($currentStorage)->addMandant($mandant);
         } catch (\Throwable $tr) {
             throw new \Exception($tr->getMessage());
         }
