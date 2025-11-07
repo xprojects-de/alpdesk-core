@@ -43,14 +43,18 @@ class StorageAdapter
     }
 
     /**
-     * @param string $srcPath
+     * @param string|null $srcPath
      * @param string $basePath
      * @param string $currentStorage
      * @return void
      * @throws \Exception
      */
-    public function hasMountPermission(string $srcPath, string $basePath, string $currentStorage = 'local'): void
+    public function hasMountPermission(?string $srcPath, string $basePath, string $currentStorage = 'local'): void
     {
+        if (!\is_string($srcPath)) {
+            throw new \Exception("invalid fileMount access - src is null");
+        }
+
         $baseObject = $this->get($basePath, $currentStorage);
         if (!$baseObject instanceof StorageObject) {
             throw new \Exception("invalid fileMount access");

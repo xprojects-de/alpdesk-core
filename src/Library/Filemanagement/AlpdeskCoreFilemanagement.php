@@ -131,10 +131,23 @@ class AlpdeskCoreFilemanagement
             $basePath = \rtrim((string)$objTargetBase->path, '/');
             $src = $src === '' ? $basePath : $basePath . '/' . \ltrim($src, '/');
 
+            if ($checkPermission) {
+                $this->storageAdapter->hasMountPermission($src, $objTargetBase->path, $this->storageType);
+            }
+
         }
 
-        if ($checkPermission) {
-            $this->storageAdapter->hasMountPermission($src, $objTargetBase->path, $this->storageType);
+        if (Validator::isUuid($src)) {
+
+            $srcUidObject = $this->storageAdapter->get($src, $this->storageType);
+            if (!$srcUidObject instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("invalid src file");
+            }
+
+            if ($checkPermission) {
+                $this->storageAdapter->hasMountPermission($srcUidObject->path, $objTargetBase->path, $this->storageType);
+            }
+
         }
 
         return $src;
