@@ -1,6 +1,6 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Alpdesk\AlpdeskCore\Library\Backend\PdfUtils;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantElementsModel;
@@ -40,5 +40,5 @@ $GLOBALS['BE_MOD']['alpdeskcore']['alpdeskcore_pdf'] = array(
         'tl_alpdeskcore_pdf',
         'tl_alpdeskcore_pdf_elements'
     ),
-    'generate_pdf_preview' => array(AlpdeskCoreDcaUtils::class, 'generatePdfPreview')
+    'generate_pdf_preview' => array(PdfUtils::class, 'generatePdfPreview')
 );
