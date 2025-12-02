@@ -1,6 +1,5 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
@@ -39,9 +38,6 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['alpdeskcore_fixtoken'] = [
     'search' => true,
     'inputType' => 'text',
     'eval' => ['unique' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
-    'save_callback' => [
-        [AlpdeskCoreDcaUtils::class, 'generateFixToken']
-    ],
     'sql' => "text NULL"
 ];
 

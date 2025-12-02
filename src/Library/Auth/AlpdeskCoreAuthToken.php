@@ -4,25 +4,19 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Auth;
 
-use Alpdesk\AlpdeskCore\Jwt\JwtToken;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
-use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
-class AlpdeskCoreAuthToken
+readonly class AlpdeskCoreAuthToken
 {
-    private PasswordHasherFactoryInterface $passwordHasherFactory;
-
-    /**
-     * @param PasswordHasherFactoryInterface $passwordHasherFactory
-     */
-    public function __construct(PasswordHasherFactoryInterface $passwordHasherFactory)
+    public function __construct(
+        private AlpdeskcoreUserProvider $userProvider
+    )
     {
-        $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
     private function setAuthSession(string $username, int $ttl_token = 3600): mixed
@@ -35,8 +29,8 @@ class AlpdeskCoreAuthToken
 
         $sessionModel->tstamp = time();
         $sessionModel->username = $username;
-        $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, $ttl_token);
-        $sessionModel->refresh_token = AlpdeskcoreUserProvider::createRefreshToken($username, $ttl_token);
+        $sessionModel->token = $this->userProvider->createToken($username, $ttl_token);
+        $sessionModel->refresh_token = $this->userProvider->createRefreshToken($username, $ttl_token);
         $sessionModel->save();
 
         return $sessionModel;
@@ -52,8 +46,8 @@ class AlpdeskCoreAuthToken
         $sessionModel = AlpdeskcoreSessionsModel::findBy(['tl_alpdeskcore_sessions.username=?', 'tl_alpdeskcore_sessions.token=?'], [$username, $token]);
 
         if ($sessionModel !== null) {
-            $sessionModel->token = AlpdeskcoreUserProvider::createToken($username, 1);
-            $sessionModel->refresh_token = AlpdeskcoreUserProvider::createRefreshToken($username, 1);
+            $sessionModel->token = $this->userProvider->createToken($username, 1);
+            $sessionModel->refresh_token = $this->userProvider->createRefreshToken($username, 1);
             $sessionModel->save();
         } else {
             $msg = 'Auth-Session not found for username:' . $username;
@@ -81,7 +75,7 @@ class AlpdeskCoreAuthToken
         $password = (string)AlpdeskcoreInputSecurity::secureValue($authdata['password']);
 
         try {
-            $alpdeskCoreUser = (new AlpdeskCoreMandantAuth($this->passwordHasherFactory))->login($username, $password);
+            $alpdeskCoreUser = $this->userProvider->login($username, $password, $ttlToken);
         } catch (AlpdeskCoreAuthException $ex) {
             throw new AlpdeskCoreAuthException($ex->getMessage(), $ex->getCode());
         }
@@ -119,13 +113,13 @@ class AlpdeskCoreAuthToken
         try {
 
             // Method also validate and verify the token
-            $tokenUsername = AlpdeskcoreUserProvider::extractUsernameFromToken($refreshToken);
+            $tokenUsername = $this->userProvider->extractUsernameFromToken($refreshToken);
             if ($tokenUsername !== $user->getUsername()) {
                 throw new AlpdeskCoreAuthException('refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
             // Check if it´s a refresh-Token
-            $isRefreshToken = JwtToken::getClaim($refreshToken, 'isRefreshToken');
+            $isRefreshToken = $this->userProvider->getClaimFromToken($refreshToken, 'isRefreshToken');
             if (!$isRefreshToken) {
                 throw new AlpdeskCoreAuthException('invalid refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
@@ -139,13 +133,13 @@ class AlpdeskCoreAuthToken
             $sessionRefreshToken = (string)$sessionModel->refresh_token;
 
             // Method also validate and verify the token
-            $sessionRefreshTokenUsername = AlpdeskcoreUserProvider::extractUsernameFromToken($sessionRefreshToken);
+            $sessionRefreshTokenUsername = $this->userProvider->extractUsernameFromToken($sessionRefreshToken);
             if ($sessionRefreshTokenUsername !== $tokenUsername) {
                 throw new AlpdeskCoreAuthException('session_refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }
 
             // Check if it´s a refresh-Token
-            $isSessionRefreshToken = JwtToken::getClaim($sessionRefreshToken, 'isRefreshToken');
+            $isSessionRefreshToken = $this->userProvider->getClaimFromToken($sessionRefreshToken, 'isRefreshToken');
             if (!$isSessionRefreshToken) {
                 throw new AlpdeskCoreAuthException('invalid session_refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
             }

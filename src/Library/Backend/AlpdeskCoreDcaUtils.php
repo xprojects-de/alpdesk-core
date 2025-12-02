@@ -4,58 +4,59 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Backend;
 
+use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Library\PDF\AlpdeskCorePDFCreator;
 use Alpdesk\AlpdeskCore\Model\PDF\AlpdeskcorePdfElementsModel;
-use Contao\DataContainer;
-use Contao\Backend;
-use Contao\Input;
-use Contao\Controller;
-use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
-use Alpdesk\AlpdeskCore\Jwt\JwtToken;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
+use Contao\Controller;
+use Contao\DataContainer;
+use Contao\Input;
 
-class AlpdeskCoreDcaUtils extends Backend
+readonly class AlpdeskCoreDcaUtils
 {
+    public function __construct(
+        private AlpdeskcoreUserProvider $userProvider
+    )
+    {
+    }
+
     /**
      * @param mixed $row
-     * @param mixed $label
-     * @param mixed $dc
-     * @param mixed $args
-     * @return array
+     * @return string
      */
-    public function showSessionValid(mixed $row, mixed $label, mixed $dc, mixed $args): array
+    public function sessionsLabel(mixed $row): string
     {
         try {
-            $validateAndVerify = JwtToken::validateAndVerify($args[1], AlpdeskcoreUserProvider::createJti($args[0]));
+            $validateAndVerify = $this->userProvider->getJwtToken()->validateWithJti($row['token'], AlpdeskcoreUserProvider::createJti($row['username']));
         } catch (\Exception) {
             $validateAndVerify = false;
         }
 
         $color = ($validateAndVerify === true ? 'green' : 'red');
 
-        $args[0] = '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $args[0];
-        $args[1] = substr($args[1], 0, 25) . ' ...';
+        $label = '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $row['username'];
+        $label .= \substr($row['token'], 0, 25) . ' ...';
 
-        return $args;
+        return $label;
     }
 
     /**
      * @param mixed $varValue
-     * @param mixed $dc
+     * @param DataContainer $dc
      * @return string
      */
-    public function generateFixToken(mixed $varValue, mixed $dc): string
+    public function generateFixToken(mixed $varValue, DataContainer $dc): string
     {
         if ($varValue === null || $varValue === '') {
 
             $username = 'invalid';
 
-            if ($dc->activeRecord->username !== null && $dc->activeRecord->username !== '') {
-                $username = $dc->activeRecord->username;
+            if ($dc->getCurrentRecord()->username !== null && $dc->getCurrentRecord()->username !== '') {
+                $username = $dc->getCurrentRecord()->username;
             }
 
             try {
-                $varValue = AlpdeskcoreUserProvider::createToken($username, 0);
+                $varValue = $this->userProvider->createToken($username, 0);
             } catch (\Exception $ex) {
                 $varValue = $ex->getMessage();
             }
@@ -66,11 +67,10 @@ class AlpdeskCoreDcaUtils extends Backend
 
     /**
      * @param mixed $varValue
-     * @param DataContainer $dc
      * @return string
      * @throws \Exception
      */
-    public function generateEncryptPassword(mixed $varValue, DataContainer $dc): string
+    public function generateEncryptPassword(mixed $varValue): string
     {
         if ($varValue === '') {
             return $varValue;

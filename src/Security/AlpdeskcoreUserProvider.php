@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Security;
 
+use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
+use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
+use Alpdesk\AlpdeskCore\Security\Jwt\JwtToken;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Alpdesk\AlpdeskCore\Jwt\JwtToken;
-use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
-use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
-use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Contao\User as ContaoUser;
 
 /**
  * @implements UserProviderInterface<AlpdeskcoreUser>
  */
-class AlpdeskcoreUserProvider implements UserProviderInterface
+readonly class AlpdeskcoreUserProvider implements UserProviderInterface
 {
-    private ContaoFramework $framework;
-    protected AlpdeskcoreLogger $logger;
-
-    public function __construct(ContaoFramework $framework, AlpdeskcoreLogger $logger)
+    public function __construct(
+        private ContaoFramework                $framework,
+        private PasswordHasherFactoryInterface $passwordHasherFactory,
+        private JwtToken                       $jwtToken
+    )
     {
-        $this->framework = $framework;
-        $this->logger = $logger;
     }
 
     public static function createJti(string $username): string
@@ -34,19 +34,46 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
         return \base64_encode('alpdesk_' . $username);
     }
 
-    public static function createToken(string $username, int $ttl): string
+    public function createToken(string $username, int $ttl): string
     {
-        return JwtToken::generate(self::createJti($username), $ttl, array('username' => $username));
+        return $this->jwtToken->generate(self::createJti($username), $ttl, array('username' => $username));
     }
 
-    public static function createRefreshToken(string $username, int $ttl): string
+    public function createRefreshToken(string $username, int $ttl): string
     {
-        return JwtToken::generate(self::createJti($username), $ttl, array('username' => $username, 'isRefreshToken' => true));
+        return $this->jwtToken->generate(self::createJti($username), $ttl, array('username' => $username, 'isRefreshToken' => true));
     }
 
-    public static function validateAndVerifyToken(string $jwtToken, string $username): bool
+    public function getClaimFromToken(string $jwtToken, string $claim): mixed
     {
-        return JwtToken::validateAndVerify($jwtToken, self::createJti($username));
+        return $this->jwtToken->getClaim($jwtToken, $claim);
+    }
+
+    public function getJwtToken(): JwtToken
+    {
+        return $this->jwtToken;
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @param int $ttl
+     * @return AlpdeskcoreUser
+     * @throws \Exception
+     */
+    public function login(string $username, string $password, int $ttl = 3600): AlpdeskcoreUser
+    {
+        $userInstance = $this->loadUserByUsername($username);
+
+        if (!$this->passwordHasherFactory->getPasswordHasher(ContaoUser::class)->verify($userInstance->getPassword(), $password)) {
+            throw new \Exception("error auth - invalid password for username:" . $username);
+        }
+
+        $jti = self::createJti($username);
+        $userInstance->setToken($this->jwtToken->generate($jti, $ttl, array('username' => $username)));
+
+        return $userInstance;
+
     }
 
     /**
@@ -54,15 +81,15 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
      * @return string
      * @throws \Exception
      */
-    public static function extractUsernameFromToken(string $jwtToken): string
+    public function extractUsernameFromToken(string $jwtToken): string
     {
-        $username = JwtToken::getClaim($jwtToken, 'username');
+        $username = $this->jwtToken->getClaim($jwtToken, 'username');
 
         if ($username === null || $username === '') {
             throw new AuthenticationException('invalid username');
         }
 
-        $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
+        $validateAndVerify = $this->jwtToken->validateWithJti($jwtToken, self::createJti($username));
 
         if ($validateAndVerify === false) {
             throw new AuthenticationException('invalid JWT-Token for username:' . $username);
@@ -88,7 +115,7 @@ class AlpdeskcoreUserProvider implements UserProviderInterface
             $sessionModel = AlpdeskcoreSessionsModel::findByUsername($alpdeskUser->getUsername());
             if (
                 $sessionModel !== null &&
-                self::validateAndVerifyToken($sessionModel->token, $alpdeskUser->getUsername())
+                $this->jwtToken->validateWithJti($sessionModel->token, $alpdeskUser->getUsername())
             ) {
                 $alpdeskUser->setToken($sessionModel->token);
             }

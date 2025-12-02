@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Auth;
 
-use Alpdesk\AlpdeskCore\Jwt\JwtToken;
+use Alpdesk\AlpdeskCore\Security\Jwt\JwtToken;
 
 class AlpdeskCoreAuthResponse
 {
@@ -64,12 +64,12 @@ class AlpdeskCoreAuthResponse
         $this->alpdesk_refresh_token = $alpdesk_refresh_token;
     }
 
-    public function getExp(): int
+    public function getExp(JwtToken $jwtToken): int
     {
         $exp = -1;
         if ($this->alpdesk_token !== '') {
 
-            $expvalue = JwtToken::getClaim($this->alpdesk_token, 'exp');
+            $expvalue = $jwtToken->getClaim($this->alpdesk_token, 'exp');
 
             if ($expvalue instanceof \DateTimeImmutable) {
 

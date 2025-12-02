@@ -1,6 +1,5 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
 use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
 use Contao\DC_Table;
@@ -108,14 +107,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
             'search' => false,
             'inputType' => 'text',
             'eval' => array('mandatory' => true, 'maxlength' => 250, 'tl_class' => 'w50', 'hideInput' => false),
-            'save_callback' => array
-            (
-                array(AlpdeskCoreDcaUtils::class, 'generateEncryptPassword')
-            ),
-            'load_callback' => array
-            (
-                array(AlpdeskCoreDcaUtils::class, 'regenerateEncryptPassword')
-            ),
             'sql' => "varchar(250) NOT NULL default ''"
         ),
         'databasemodel' => array

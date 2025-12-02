@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Alpdesk\AlpdeskCore\Matcher;
+namespace Alpdesk\AlpdeskCore\Security\Matcher;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;

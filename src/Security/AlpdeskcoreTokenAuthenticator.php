@@ -4,93 +4,57 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Security;
 
-use Alpdesk\AlpdeskCore\Jwt\JwtToken;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Alpdesk\AlpdeskCore\Security\Jwt\JwtToken;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
-use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface, InteractiveAuthenticatorInterface
+class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     private static string $prefix = 'Bearer';
     private static string $name = 'Authorization';
-
-    private ContaoFramework $framework;
-    private AlpdeskcoreLogger $logger;
-    /**
-     * @var UserProviderInterface<AlpdeskcoreUser>
-     */
-    private UserProviderInterface $userProvider;
 
     /**
      * @param ContaoFramework $framework
      * @param AlpdeskcoreLogger $logger
      * @param UserProviderInterface<AlpdeskcoreUser> $userProvider
+     * @param JwtToken $jwtToken
      */
     public function __construct(
-        ContaoFramework       $framework,
-        AlpdeskcoreLogger     $logger,
-        UserProviderInterface $userProvider
+        private readonly ContaoFramework       $framework,
+        private readonly AlpdeskcoreLogger     $logger,
+        /**
+         * @var UserProviderInterface<AlpdeskcoreUser>
+         */
+        private readonly UserProviderInterface $userProvider,
+        private readonly JwtToken              $jwtToken
     )
     {
-        $this->framework = $framework;
-        $this->logger = $logger;
-        $this->userProvider = $userProvider;
     }
 
     public function supports(Request $request): ?bool
     {
+        // !!! the scope has to be checked here and must return true. Otherwise, the contao frontend firewall will be used.
+        // normally, this is done in a RequestMatcher, but in this case, it must be done here because of multi firewalls in Contao
         return ('alpdeskapi' === $request->attributes->get('_scope'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $this->framework->initialize();
-
-        $username = '';
-
-        try {
-
-            $authorizationHeader = $request->headers->get(self::$name);
-            if (\is_string($authorizationHeader) && $authorizationHeader !== '') {
-
-                $headerParts = \explode(' ', $authorizationHeader);
-                if ((2 === \count($headerParts) && 0 === \strcasecmp($headerParts[0], self::$prefix))) {
-
-                    $apiToken = $headerParts[1];
-                    $username = (JwtToken::getClaim($apiToken, 'username') ?? '');
-
-                }
-
-            }
-
-        } catch (\Throwable) {
-        }
-
-        $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'username' => $username, 'message' => \strtr($exception->getMessage(), $exception->getMessageData())];
-
-        $logEntry = \strtr($exception->getMessage(), $exception->getMessageData());
-        if (\is_string($username) && $username !== '') {
-            $logEntry .= ' (Username: ' . $username . ')';
-        }
-
-        $this->logger->error($logEntry, __METHOD__);
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
-
+        return new JsonResponse(['message' => \strtr($exception->getMessage(), $exception->getMessageData())], Response::HTTP_FORBIDDEN);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -100,29 +64,28 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
 
     public function authenticate(Request $request): Passport
     {
-        $this->framework->initialize();
-
-        $authorizationHeader = $request->headers->get(self::$name);
-        if (!\is_string($authorizationHeader) || $authorizationHeader === '') {
-
-            $this->logger->error(self::$name . ' empty / not found in Header', __METHOD__);
-            throw new CustomUserMessageAuthenticationException(self::$name . ' empty / not found in Header');
-
-        }
-
-        $headerParts = \explode(' ', $authorizationHeader);
-        if (!(2 === \count($headerParts) && 0 === \strcasecmp($headerParts[0], self::$prefix))) {
-
-            $this->logger->error('no valid value for ' . self::$name . ' in Header', __METHOD__);
-            throw new CustomUserMessageAuthenticationException('no valid value for ' . self::$name . ' in Header');
-
-        }
-
-        $apiToken = $headerParts[1];
-
         try {
 
-            $username = AlpdeskcoreUserProvider::extractUsernameFromToken($apiToken);
+            $this->framework->initialize();
+
+            $authorizationHeader = $request->headers->get(self::$name);
+            if (!\is_string($authorizationHeader) || $authorizationHeader === '') {
+                throw new CustomUserMessageAuthenticationException(self::$name . ' empty / not found in Header');
+            }
+
+            $token = \substr($authorizationHeader, \strlen(self::$prefix));
+            if ($token === '') {
+                throw new CustomUserMessageAuthenticationException('no valid value for ' . self::$name . ' in Header');
+            }
+
+            if (!$this->jwtToken->validate($token)) {
+                throw new CustomUserMessageAuthenticationException('invalid token');
+            }
+
+            $username = $this->jwtToken->getClaim($token, 'username');
+            if (!\is_string($username) || $username === '') {
+                throw new CustomUserMessageAuthenticationException('invalid token: no username claim found');
+            }
 
             return new Passport(
                 new UserBadge($username, $this->userProvider->loadUserByIdentifier(...)), new CustomCredentials(
@@ -146,28 +109,25 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
                         return false;
 
                     },
-                    $apiToken
+                    $token
                 )
             );
 
         } catch (\Throwable $e) {
+
+            $this->logger->error('error at authenticate - ' . $e->getMessage(), __METHOD__);
             throw new CustomUserMessageAuthenticationException($e->getMessage());
+
         }
 
     }
 
     public function start(Request $request, AuthenticationException $authException = null): JsonResponse
     {
-        $this->framework->initialize();
-
         $data = ['type' => AlpdeskCoreConstants::$ERROR_INVALID_AUTH, 'message' => 'Auth required'];
         $this->logger->info('Auth required', __METHOD__);
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
-    public function isInteractive(): bool
-    {
-        return false;
-    }
 }

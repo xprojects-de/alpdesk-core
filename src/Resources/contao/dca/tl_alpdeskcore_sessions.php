@@ -1,6 +1,5 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
 use Contao\DC_Table;
 use Contao\DataContainer;
 
@@ -31,8 +30,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
         'label' => array
         (
             'fields' => array('username', 'token'),
-            'showColumns' => true,
-            'label_callback' => array(AlpdeskCoreDcaUtils::class, 'showSessionValid')
+            'showColumns' => true
         ),
         'global_operations' => array
         (

@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskCore\Controller\Auth;
 
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthRefreshEvent;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,28 +24,17 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMemberResponse;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 use Contao\MemberModel;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreAuthController extends AbstractController
 {
-    protected ContaoFramework $framework;
-    protected AlpdeskCoreEventService $eventService;
-    protected AlpdeskcoreLogger $logger;
-    protected PasswordHasherFactoryInterface $passwordHasherFactory;
-
     public function __construct(
-        ContaoFramework                $framework,
-        AlpdeskCoreEventService        $eventService,
-        AlpdeskcoreLogger              $logger,
-        PasswordHasherFactoryInterface $passwordHasherFactory
+        private readonly ContaoFramework         $framework,
+        private readonly AlpdeskCoreEventService $eventService,
+        private readonly AlpdeskcoreLogger       $logger,
+        private readonly AlpdeskcoreUserProvider $userProvider
     )
     {
-        $this->framework = $framework;
-
-        $this->eventService = $eventService;
-        $this->logger = $logger;
-        $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
     /**
@@ -59,7 +49,7 @@ class AlpdeskCoreAuthController extends AbstractController
             'alpdesk_token' => $data->getAlpdesk_token(),
             'verify' => $data->getVerify(),
             'invalid' => $data->getInvalid(),
-            'expires' => ($data->getInvalid() === true ? 0 : $data->getExp())
+            'expires' => ($data->getInvalid() === true ? 0 : $data->getExp($this->userProvider->getJwtToken()))
         ), $statusCode
         ));
     }
@@ -92,7 +82,7 @@ class AlpdeskCoreAuthController extends AbstractController
             // $request->getContent() must always be a valid JSON
             $authData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->generateToken($authData);
+            $response = (new AlpdeskCoreAuthToken($this->userProvider))->generateToken($authData);
 
             $event = new AlpdeskCoreAuthSuccessEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthSuccessEvent::NAME);
@@ -104,7 +94,7 @@ class AlpdeskCoreAuthController extends AbstractController
                 'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
                 'verify' => $event->getResultData()->getVerify(),
                 'invalid' => $event->getResultData()->getInvalid(),
-                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp())
+                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp($this->userProvider->getJwtToken()))
             ), AlpdeskCoreConstants::$STATUSCODE_OK
             ));
 
@@ -168,7 +158,7 @@ class AlpdeskCoreAuthController extends AbstractController
             // $request->getContent() must always be a valid JSON
             $refreshData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->refreshToken($refreshData, $user);
+            $response = (new AlpdeskCoreAuthToken($this->userProvider))->refreshToken($refreshData, $user);
 
             $event = new AlpdeskCoreAuthRefreshEvent($response);
             $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthRefreshEvent::NAME);
@@ -177,7 +167,7 @@ class AlpdeskCoreAuthController extends AbstractController
             return (new JsonResponse(array(
                 'alpdesk_token' => $event->getResultData()->getAlpdesk_token(),
                 'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
-                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp())
+                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp($this->userProvider->getJwtToken()))
             ), AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Exception $exception) {
@@ -294,7 +284,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            $response = (new AlpdeskCoreAuthToken($this->passwordHasherFactory))->invalidToken($user);
+            $response = (new AlpdeskCoreAuthToken($this->userProvider))->invalidToken($user);
 
             $event = new AlpdeskCoreAuthInvalidEvent($response);
 

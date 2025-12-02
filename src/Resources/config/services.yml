@@ -1,3 +1,7 @@
+parameters:
+  alpdesk_core.app_name: 'Alpdesk'
+  alpdesk_core.url: 'https://alpdesk.de'
+
 services:
 
   _defaults:
@@ -5,7 +9,29 @@ services:
     autowire: true
 
   alpdeskcore.routing.scope_matcher:
-    class: Alpdesk\AlpdeskCore\Matcher\AlpdeskCoreRequestMatcher
+    class: Alpdesk\AlpdeskCore\Security\Matcher\AlpdeskCoreRequestMatcher
+
+  alpdeskcore.security.jwt:
+    class: Alpdesk\AlpdeskCore\Security\Jwt\JwtToken
+    arguments:
+      - '%kernel.project_dir%'
+      - '%alpdesk_core.app_name%'
+      - '%alpdesk_core.url%'
+
+  alpdeskcore.security.user_provider:
+    class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider
+    arguments:
+      - '@contao.framework'
+      - '@security.password_hasher_factory'
+      - '@alpdeskcore.security.jwt'
+
+  alpdeskcore.security.token_authenticator:
+    class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreTokenAuthenticator
+    arguments:
+      - '@contao.framework'
+      - '@alpdeskcore.loggingservice'
+      - '@alpdeskcore.security.user_provider'
+      - '@alpdeskcore.security.jwt'
 
   alpdeskcore.eventservice:
     class: Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService
@@ -21,19 +47,6 @@ services:
       - '%kernel.environment%'
     public: true
 
-  alpdeskcore.security.user_provider:
-    class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider
-    arguments:
-      - '@contao.framework'
-      - '@alpdeskcore.loggingservice'
-
-  alpdeskcore.security.token_authenticator:
-    class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreTokenAuthenticator
-    arguments:
-      - '@contao.framework'
-      - '@alpdeskcore.loggingservice'
-      - '@alpdeskcore.security.user_provider'
-
   alpdeskcore.storage_adapter:
     class: Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter
 
@@ -45,12 +58,22 @@ services:
     tags:
       - { name: 'alpdeskcore.storage', alias: 'local' }
 
+  alpdeskcore.dca_utils:
+    class: Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils
+    arguments:
+      - '@alpdeskcore.security.user_provider'
+    tags:
+      - { name: contao.callback, table: tl_alpdeskcore_sessions, target: list.label.label, method: sessionsLabel }
+      - { name: contao.callback, table: tl_member, target: fields.alpdeskcore_fixtoken.save, method: generateFixToken }
+      - { name: contao.callback, table: tl_alpdeskcore_databasemanager, target: fields.password.save, method: generateEncryptPassword }
+      - { name: contao.callback, table: tl_alpdeskcore_databasemanager, target: fields.password.load, method: generateEncryptPassword }
+
   Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:
     arguments:
       - '@contao.framework'
       - '@alpdeskcore.eventservice'
       - '@alpdeskcore.loggingservice'
-      - '@security.password_hasher_factory'
+      - '@alpdeskcore.security.user_provider'
     tags:
       - controller.service_arguments
 
