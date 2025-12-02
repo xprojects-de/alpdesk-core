@@ -24,6 +24,7 @@ services:
       - '@contao.framework'
       - '@security.password_hasher_factory'
       - '@alpdeskcore.security.jwt'
+      - '@contao.security.frontend_user_provider'
 
   alpdeskcore.security.token_authenticator:
     class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreTokenAuthenticator

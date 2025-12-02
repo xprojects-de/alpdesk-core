@@ -79,7 +79,6 @@ class AlpdeskCoreAuthController extends AbstractController
 
             $this->framework->initialize();
 
-            // $request->getContent() must always be a valid JSON
             $authData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
             $response = (new AlpdeskCoreAuthToken($this->userProvider))->generateToken($authData);
