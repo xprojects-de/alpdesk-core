@@ -34,10 +34,7 @@ readonly class AlpdeskCoreDcaUtils
 
         $color = ($validateAndVerify === true ? 'green' : 'red');
 
-        $label = '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $row['username'];
-        $label .= \substr($row['token'], 0, 25) . ' ...';
-
-        return $label;
+        return '<span style="display:inline-block;width:20px;height:20px;margin-right:10px;background-color:' . $color . ';">&nbsp;</span>' . $row['username'] . ' - ' . \substr($row['token'], 0, 25) . ' ...';
     }
 
     /**
@@ -49,10 +46,14 @@ readonly class AlpdeskCoreDcaUtils
     {
         if ($varValue === null || $varValue === '') {
 
-            $username = 'invalid';
+            $currentRecord = $dc->getCurrentRecord();
+            if (!\is_array($currentRecord)) {
+                return '';
+            }
 
-            if ($dc->getCurrentRecord()->username !== null && $dc->getCurrentRecord()->username !== '') {
-                $username = $dc->getCurrentRecord()->username;
+            $username = $currentRecord['username'] ?? null;
+            if (!\is_string($username) || $username === '') {
+                return '';
             }
 
             try {
@@ -91,12 +92,13 @@ readonly class AlpdeskCoreDcaUtils
             return $varValue;
         }
 
-        if ($dc->activeRecord) {
-            $crypto = new Cryption(true);
-            $varValue = $crypto->safeDecrypt($varValue);
+        $currentRecord = $dc->getCurrentRecord();
+        if (!\is_array($currentRecord)) {
+            return $varValue;
         }
 
-        return $varValue;
+        return (new Cryption(true))->safeDecrypt($varValue);
+
     }
 
     /**

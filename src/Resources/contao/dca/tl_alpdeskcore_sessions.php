@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_sessions'] = array
         'label' => array
         (
             'fields' => array('username', 'token'),
-            'showColumns' => true
+            'showColumns' => false
         ),
         'global_operations' => array
         (
