@@ -284,8 +284,8 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
             throw new \Exception('user account is disabled');
         }
 
-        $mandantId = (int)$cUser->alpdeskcore_mandant;
-        $isAdmin = ((int)$cUser->alpdeskcore_admin === 1);
+        $mandantId = (int)($cUser->alpdeskcore_mandant ?? 0);
+        $isAdmin = ((int)($cUser->alpdeskcore_admin ?? 0) === 1);
 
         if ($mandantId <= 0 && $isAdmin === false) {
             throw new \Exception("error auth - member has no mandant", AlpdeskCoreConstants::$ERROR_INVALID_MEMBER);
@@ -300,13 +300,13 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
         $alpdeskUser->setLastname($cUser->lastname);
         $alpdeskUser->setEmail($cUser->email);
         $alpdeskUser->setMandantPid($mandantId);
-        $alpdeskUser->setFixToken($cUser->alpdeskcore_fixtoken);
+        $alpdeskUser->setFixToken($cUser->alpdeskcore_fixtoken ?? '');
 
         $alpdeskUser->setIsAdmin($isAdmin);
 
         if ($alpdeskUser->getIsAdmin()) {
 
-            $mandantWhitelist = $cUser->alpdeskcore_mandantwhitelist;
+            $mandantWhitelist = $cUser->alpdeskcore_mandantwhitelist ?? null;
             if ($mandantWhitelist !== null && $mandantWhitelist !== '') {
 
                 $mandantWhitelistArray = StringUtil::deserialize($mandantWhitelist);
@@ -328,58 +328,60 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
             }
         }
 
-        $invalidElements = $cUser->alpdeskcore_elements;
+        $invalidElements = $cUser->alpdeskcore_elements ?? null;
         if ($invalidElements !== null && $invalidElements !== '') {
+
             $invalidElementsArray = StringUtil::deserialize($invalidElements);
             if (\is_array($invalidElementsArray) && \count($invalidElementsArray) > 0) {
                 $alpdeskUser->setInvalidElements($invalidElementsArray);
             }
+
         }
 
         if ($cUser->assignDir && $cUser->homeDir !== null) {
             $alpdeskUser->setHomeDir($cUser->homeDir);
         }
 
-        if ($cUser->alpdeskcore_download !== null && (int)$cUser->alpdeskcore_download === 1) {
+        if ((int)($cUser->alpdeskcore_download ?? 1) === 1) {
             $alpdeskUser->setAccessDownload(false);
         }
 
-        if ($cUser->alpdeskcore_upload !== null && (int)$cUser->alpdeskcore_upload === 1) {
+        if ((int)($cUser->alpdeskcore_upload ?? 1) === 1) {
             $alpdeskUser->setAccessUpload(false);
         }
 
-        if ($cUser->alpdeskcore_create !== null && (int)$cUser->alpdeskcore_create === 1) {
+        if ((int)($cUser->alpdeskcore_create ?? 1) === 1) {
             $alpdeskUser->setAccessCreate(false);
         }
 
-        if ($cUser->alpdeskcore_delete !== null && (int)$cUser->alpdeskcore_delete === 1) {
+        if ((int)($cUser->alpdeskcore_delete ?? 1) === 1) {
             $alpdeskUser->setAccessDelete(false);
         }
 
-        if ($cUser->alpdeskcore_rename !== null && (int)$cUser->alpdeskcore_rename === 1) {
+        if ((int)($cUser->alpdeskcore_rename ?? 1) === 1) {
             $alpdeskUser->setAccessRename(false);
         }
 
-        if ($cUser->alpdeskcore_move !== null && (int)$cUser->alpdeskcore_move === 1) {
+        if ((int)($cUser->alpdeskcore_move ?? 1) === 1) {
             $alpdeskUser->setAccessMove(false);
         }
 
-        if ($cUser->alpdeskcore_copy !== null && (int)$cUser->alpdeskcore_copy === 1) {
+        if ((int)($cUser->alpdeskcore_copy ?? 1) === 1) {
             $alpdeskUser->setAccessCopy(false);
         }
 
-        if ($cUser->alpdeskcore_crudOperations !== null && $cUser->alpdeskcore_crudOperations !== '') {
+        if (($cUser->alpdeskcore_crudOperations ?? '') !== '') {
 
-            $memberCrudOperations = StringUtil::deserialize($cUser->alpdeskcore_crudOperations);
+            $memberCrudOperations = StringUtil::deserialize($cUser->alpdeskcore_crudOperations ?? '');
             if (\is_array($memberCrudOperations) && \count($memberCrudOperations) > 0) {
                 $alpdeskUser->setCrudOperations($memberCrudOperations);
             }
 
         }
 
-        if ($cUser->alpdeskcore_crudTables !== null && $cUser->alpdeskcore_crudTables !== '') {
+        if (($cUser->alpdeskcore_crudTables ?? '') !== '') {
 
-            $memberCrudTables = StringUtil::deserialize($cUser->alpdeskcore_crudTables);
+            $memberCrudTables = StringUtil::deserialize($cUser->alpdeskcore_crudTables ?? '');
             if (\is_array($memberCrudTables) && \count($memberCrudTables) > 0) {
                 $alpdeskUser->setCrudTables($memberCrudTables);
             }
