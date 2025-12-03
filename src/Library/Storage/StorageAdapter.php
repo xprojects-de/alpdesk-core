@@ -319,6 +319,18 @@ class StorageAdapter
     }
 
     /**
+     * @param mixed $contents
+     * @param string $path
+     * @param string $currentStorage
+     * @return void
+     * @throws \Exception
+     */
+    public function write(mixed $contents, string $path, string $currentStorage = 'local'): void
+    {
+        $this->getStorage($currentStorage)->write($path, $contents);
+    }
+
+    /**
      * @param AlpdescCoreBaseMandantInfo|null $mandant
      * @param string $currentStorage
      * @return void

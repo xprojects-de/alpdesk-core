@@ -9,6 +9,7 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFilemanagement;
@@ -71,7 +72,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             $uploadFile = $request->files->get('file');
             $target = $request->get('target');
 
-            if ($uploadFile !== null && $target !== null) {
+            if ($uploadFile instanceof UploadedFile && $target !== null) {
 
                 $response = (new AlpdeskCoreFilemanagement($this->storageAdapter, $this->eventService))->upload($uploadFile, $target, $user);
 

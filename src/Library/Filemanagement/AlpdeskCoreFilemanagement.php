@@ -155,78 +155,6 @@ class AlpdeskCoreFilemanagement
     }
 
     /**
-     * @param UploadedFile $uploadFile
-     * @param string $target
-     * @param AlpdescCoreBaseMandantInfo $mandantInfo
-     * @param AlpdeskCoreFileuploadResponse $response
-     * @throws \Exception
-     */
-    private function copyToTarget(UploadedFile $uploadFile, string $target, AlpdescCoreBaseMandantInfo $mandantInfo, AlpdeskCoreFileuploadResponse $response): void
-    {
-        if ($mandantInfo->getAccessUpload() === false) {
-            throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
-        }
-
-        $target = $this->prepareSrcPath($target, $mandantInfo, true);
-
-        if (!$this->storageAdapter->exists($target, $this->storageType)) {
-            $this->storageAdapter->createDirectory($target, $this->storageType);
-        }
-
-        $objTarget = $this->storageAdapter->get($target, $this->storageType);
-        if (!$objTarget instanceof StorageObject) {
-            throw new AlpdeskCoreFilemanagementException("invalid target fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
-        }
-
-        $filesystem = new Filesystem();
-
-        $sourcePath = $uploadFile->getRealPath() ?: $uploadFile->getPathname();
-        if ($filesystem->exists($sourcePath)) {
-
-            $fileName = $uploadFile->getClientOriginalName();
-
-            try {
-                $fileName = StringUtil::sanitizeFileName($fileName);
-            } catch (\Exception $ex) {
-                throw new AlpdeskCoreFilemanagementException($ex->getMessage());
-            }
-
-            $maxlength_kb = \min(UploadedFile::getMaxFilesize(), Config::get('maxFileSize'));
-            $fileSize = $uploadFile->getSize();
-            if ($fileSize > $maxlength_kb) {
-                throw new AlpdeskCoreFilemanagementException('file is to large. max. ' . $maxlength_kb, AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
-            }
-
-            $fileExt = \strtolower(\substr($fileName, \strrpos($fileName, '.') + 1));
-            $allowedFileTypes = StringUtil::trimsplit(',', \strtolower(Config::get('uploadTypes')));
-            if (!\in_array($fileExt, $allowedFileTypes, true)) {
-                throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.', AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
-            }
-
-            $tmpFileName = \time() . '_' . $fileName;
-            $uploadFile->move($this->storageAdapter->getRootDir($this->storageType) . '/tmp', $tmpFileName);
-
-            $uploadTarget = $this->storageAdapter->deploy('tmp/' . $tmpFileName, $objTarget->path . '/' . $fileName, false, $this->storageType);
-            if (!$uploadTarget instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("error upload file");
-            }
-
-            $objFinalFile = $this->storageAdapter->get($uploadTarget->path, $this->storageType);
-            if (!$objFinalFile instanceof StorageObject) {
-                throw new AlpdeskCoreFilemanagementException("error upload file");
-            }
-
-            $response->setUuid($objFinalFile->uuid);
-            $response->setRootFileName($objFinalFile->path);
-            $response->setFileName($objFinalFile->basename);
-
-        } else {
-            throw new AlpdeskCoreFilemanagementException("error upload file");
-        }
-
-    }
-
-    /**
      * @param string $target
      * @param AlpdescCoreBaseMandantInfo $mandantInfo
      * @return BinaryFileResponse
@@ -676,8 +604,53 @@ class AlpdeskCoreFilemanagement
 
             $response = new AlpdeskCoreFileuploadResponse();
 
-            $this->copyToTarget($uploadFile, $target, $mandantInfo, $response);
+            if ($mandantInfo->getAccessUpload() === false) {
+                throw new AlpdeskCoreFilemanagementException("access denied", AlpdeskCoreConstants::$ERROR_ACCESS_DENIED);
+            }
 
+            $target = $this->prepareSrcPath($target, $mandantInfo, true);
+
+            if (!$this->storageAdapter->exists($target, $this->storageType)) {
+                $this->storageAdapter->createDirectory($target, $this->storageType);
+            }
+
+            $objTarget = $this->storageAdapter->get($target, $this->storageType);
+            if (!$objTarget instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("invalid target fileMount", AlpdeskCoreConstants::$ERROR_INVALID_PATH);
+            }
+
+            $filesystem = new Filesystem();
+
+            $sourcePath = $uploadFile->getRealPath() ?: $uploadFile->getPathname();
+            if (!$filesystem->exists($sourcePath)) {
+                throw new AlpdeskCoreFilemanagementException("error upload file");
+            }
+
+            $fileName = StringUtil::sanitizeFileName($uploadFile->getClientOriginalName());
+
+            $maxlength_kb = \min(UploadedFile::getMaxFilesize(), Config::get('maxFileSize'));
+            $fileSize = $uploadFile->getSize();
+            if ($fileSize > $maxlength_kb) {
+                throw new AlpdeskCoreFilemanagementException('file is to large. max. ' . $maxlength_kb, AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
+            }
+
+            $fileExt = \strtolower(\substr($fileName, \strrpos($fileName, '.') + 1));
+            $allowedFileTypes = StringUtil::trimsplit(',', \strtolower(Config::get('uploadTypes')));
+            if (!\in_array($fileExt, $allowedFileTypes, true)) {
+                throw new AlpdeskCoreFilemanagementException('filetype ' . $fileExt . ' not allowed.', AlpdeskCoreConstants::$ERROR_INVALID_INPUT);
+            }
+
+            $targetPath = $objTarget->path . '/' . $fileName;
+            $this->storageAdapter->write($targetPath, $uploadFile->getContent(), $this->storageType);
+
+            $objFinalFile = $this->storageAdapter->get($targetPath, $this->storageType);
+            if (!$objFinalFile instanceof StorageObject) {
+                throw new AlpdeskCoreFilemanagementException("error upload file");
+            }
+
+            $response->setUuid($objFinalFile->uuid);
+            $response->setRootFileName($objFinalFile->path);
+            $response->setFileName($objFinalFile->basename);
             $response->setUsername($user->getUsername());
             $response->setAlpdesk_token($user->getUsedToken());
             $response->setMandantInfo($mandantInfo);

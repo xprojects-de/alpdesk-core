@@ -40,4 +40,6 @@ interface BaseStorageInterface
 
     public function addMandant(?AlpdescCoreBaseMandantInfo $mandant): void;
 
+    public function write(mixed $contents, string $path): void;
+
 }

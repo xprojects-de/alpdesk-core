@@ -163,10 +163,10 @@ class LocalStorage implements BaseStorageInterface
 
                     $storageObject->uuid = null;
                     $storageObject->type = 'file';
-                    $storageObject->meta = $fileObject->meta;
+                    $storageObject->meta = null;
                     $storageObject->isPublic = $objectFile->isUnprotected();
                     $storageObject->size = $objectFile->size;
-                    $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $objectFile->path))?->isImage() ?? false);
+                    $storageObject->isImage = $objectFile->isImage;
 
                     return $storageObject;
 
@@ -373,10 +373,11 @@ class LocalStorage implements BaseStorageInterface
      */
     public function createDirectory(string $filePath): ?StorageObject
     {
-        $this->filesStorage->createDirectory(\str_replace('files/', '', $filePath));
+        // not working because of Contao DBFS sync also for not synchronized folders
+        // $this->filesStorage->createDirectory(\str_replace('files/', '', $filePath));
 
-        return $this->get($filePath);
-
+        $folder = new Folder($filePath);
+        return $this->get($folder->path);
     }
 
     /**
@@ -525,6 +526,22 @@ class LocalStorage implements BaseStorageInterface
 
         return $arrReturn;
 
+    }
+
+    /**
+     * @param mixed $contents
+     * @param string $path
+     * @return void
+     * @throws \Exception
+     */
+    public function write(mixed $contents, string $path): void
+    {
+        $file = new File($path);
+        $file->write($contents);
+        $file->close();
+
+        // Cannot be used because it sync the files wth DBFS also for not synchronized folders
+        // $this->filesStorage->write(\str_replace('files/', '', $path), $contents);
     }
 
     /**
