@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 
 class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
-    private static string $prefix = 'Bearer';
+    private static string $prefix = 'Bearer ';
     private static string $name = 'Authorization';
 
     /**

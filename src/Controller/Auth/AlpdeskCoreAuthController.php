@@ -131,7 +131,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -169,7 +169,7 @@ class AlpdeskCoreAuthController extends AbstractController
                 'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $this->userProvider->getExp($event->getResultData()->getAlpdesk_token()))
             ), AlpdeskCoreConstants::$STATUSCODE_OK));
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -261,7 +261,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             return (new JsonResponse($event->getResultData()->getData(), AlpdeskCoreConstants::$STATUSCODE_OK));
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -292,7 +292,7 @@ class AlpdeskCoreAuthController extends AbstractController
 
             return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
