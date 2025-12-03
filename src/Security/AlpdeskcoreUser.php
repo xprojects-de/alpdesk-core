@@ -18,6 +18,7 @@ class AlpdeskcoreUser implements UserInterface
     private string $email = '';
     private string $token = '';
     private string $fixToken = '';
+    private string $refreshToken = '';
     private bool $fixTokenAuth = false;
     private array $invalidElements = [];
     private mixed $homeDir = null;
@@ -70,6 +71,16 @@ class AlpdeskcoreUser implements UserInterface
     public function setToken(string $token): void
     {
         $this->token = $token;
+    }
+
+    public function getRefreshToken(): string
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken(string $refreshToken): void
+    {
+        $this->refreshToken = $refreshToken;
     }
 
     public function setUsername(string $username): void

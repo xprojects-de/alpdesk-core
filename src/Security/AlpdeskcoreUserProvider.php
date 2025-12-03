@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Security;
 
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
+use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Alpdesk\AlpdeskCore\Security\Jwt\JwtToken;
@@ -73,10 +74,85 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
             throw new \Exception("error auth - invalid password for username:" . $username);
         }
 
-        $jti = self::createJti($username);
-        $userInstance->setToken($this->jwtToken->generate($jti, $ttl, array('username' => $username)));
+        $token = $this->jwtToken->generate(self::createJti($username), $ttl, array('username' => $username));
+        $refreshToken = $this->createRefreshToken($userInstance->getUsername(), $ttl);
+
+        $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
+
+        if ($sessionModel === null) {
+            $sessionModel = new AlpdeskcoreSessionsModel();
+        }
+
+        $sessionModel->tstamp = \time();
+        $sessionModel->username = $userInstance->getUsername();
+        $sessionModel->token = $token;
+        $sessionModel->refresh_token = $refreshToken;
+        $sessionModel->save();
+
+        $userInstance->setToken($token);
+        $userInstance->setRefreshToken($refreshToken);
 
         return $userInstance;
+
+    }
+
+    /**
+     * @param AlpdeskcoreUser $user
+     * @param string $refreshToken
+     * @param int $ttl
+     * @return void
+     * @throws \Exception
+     */
+    public function refresh(AlpdeskcoreUser $user, string $refreshToken, int $ttl = 3600): void
+    {
+        $tokenUsername = $this->extractUsernameFromToken($refreshToken);
+        if ($tokenUsername !== $user->getUsername()) {
+            throw new AlpdeskCoreAuthException('refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+        }
+
+        $isRefreshToken = $this->getClaimFromToken($refreshToken, 'isRefreshToken');
+        if (!$isRefreshToken) {
+            throw new AlpdeskCoreAuthException('invalid refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+        }
+
+        $sessionModel = AlpdeskcoreSessionsModel::findByUsername($user->getUsername());
+        if ($sessionModel === null) {
+            throw new AlpdeskCoreAuthException('invalid member session', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+        }
+
+        $sessionRefreshToken = (string)$sessionModel->refresh_token;
+
+        $sessionRefreshTokenUsername = $this->extractUsernameFromToken($sessionRefreshToken);
+        if ($sessionRefreshTokenUsername !== $tokenUsername) {
+            throw new AlpdeskCoreAuthException('session_refresh_token does not match with username', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+        }
+
+        $isSessionRefreshToken = $this->getClaimFromToken($sessionRefreshToken, 'isRefreshToken');
+        if (!$isSessionRefreshToken) {
+            throw new AlpdeskCoreAuthException('invalid session_refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+        }
+
+        if ($refreshToken !== $sessionRefreshToken) {
+            throw new AlpdeskCoreAuthException('refresh_token does not match with session_refresh_token', AlpdeskCoreConstants::$ERROR_INVALID_AUTH);
+        }
+
+        $token = $this->jwtToken->generate(self::createJti($user->getUsername()), $ttl, array('username' => $user->getUsername()));
+        $refreshToken = $this->createRefreshToken($user->getUsername(), $ttl);
+
+        $sessionModel = AlpdeskcoreSessionsModel::findByUsername($user->getUsername());
+
+        if ($sessionModel === null) {
+            $sessionModel = new AlpdeskcoreSessionsModel();
+        }
+
+        $sessionModel->tstamp = \time();
+        $sessionModel->username = $user->getUsername();
+        $sessionModel->token = $token;
+        $sessionModel->refresh_token = $refreshToken;
+        $sessionModel->save();
+
+        $user->setToken($token);
+        $user->setRefreshToken($refreshToken);
 
     }
 
