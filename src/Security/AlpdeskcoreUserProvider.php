@@ -157,6 +157,29 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
     }
 
     /**
+     * @param AlpdeskcoreUser $user
+     * @return void
+     * @throws \Exception
+     */
+    public function logout(AlpdeskcoreUser $user): void
+    {
+        $sessionModel = AlpdeskcoreSessionsModel::findOneBy(['tl_alpdeskcore_sessions.username=?', 'tl_alpdeskcore_sessions.token=?'], [$user->getUsername(), $user->getToken()]);
+
+        if ($sessionModel !== null) {
+
+            $token = $this->jwtToken->generate(self::createJti($user->getUsername()), 1, array('username' => $user->getUsername()));
+            $refreshToken = $this->createRefreshToken($user->getUsername(), 1);
+
+            $sessionModel->token = $token;
+            $sessionModel->refresh_token = $refreshToken;
+            $sessionModel->save();
+
+        } else {
+            throw new \Exception('Auth-Session not found for username:' . $user->getUsername(), AlpdeskCoreConstants::$ERROR_COMMON);
+        }
+    }
+
+    /**
      * @param string $jwtToken
      * @return string
      * @throws \Exception
@@ -270,7 +293,7 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
 
         $alpdeskUser = new AlpdeskcoreUser();
 
-        $alpdeskUser->setMemberId((int)$cUser->id);
+        $alpdeskUser->setMemberId($cUser->id);
         $alpdeskUser->setUsername($cUser->username);
         $alpdeskUser->setPassword($cUser->password);
         $alpdeskUser->setFirstname($cUser->firstname);
