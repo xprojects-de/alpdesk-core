@@ -291,4 +291,29 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
 
     }
 
+    /**
+     * @param mixed $token
+     * @return int
+     */
+    public function getExp(mixed $token): int
+    {
+        $exp = -1;
+        if (\is_string($token) && $token !== '') {
+
+            $expValue = $this->jwtToken->getClaim($token, 'exp');
+
+            if ($expValue instanceof \DateTimeImmutable) {
+
+                $exp = $expValue->getTimestamp() - time();
+                if ($exp < 0) {
+                    $exp = 0;
+                }
+
+            }
+
+        }
+
+        return $exp;
+    }
+
 }

@@ -49,7 +49,7 @@ class AlpdeskCoreAuthController extends AbstractController
             'alpdesk_token' => $data->getAlpdesk_token(),
             'verify' => $data->getVerify(),
             'invalid' => $data->getInvalid(),
-            'expires' => ($data->getInvalid() === true ? 0 : $data->getExp($this->userProvider->getJwtToken()))
+            'expires' => ($data->getInvalid() === true ? 0 : $this->userProvider->getExp($data->getAlpdesk_token()))
         ), $statusCode
         ));
     }
@@ -93,11 +93,11 @@ class AlpdeskCoreAuthController extends AbstractController
                 'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
                 'verify' => $event->getResultData()->getVerify(),
                 'invalid' => $event->getResultData()->getInvalid(),
-                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp($this->userProvider->getJwtToken()))
+                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $this->userProvider->getExp($event->getResultData()->getAlpdesk_token()))
             ), AlpdeskCoreConstants::$STATUSCODE_OK
             ));
 
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
 
             $this->logger->error($exception->getMessage(), __METHOD__);
             return $this->outputError($exception->getMessage(), $exception->getCode(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
@@ -166,7 +166,7 @@ class AlpdeskCoreAuthController extends AbstractController
             return (new JsonResponse(array(
                 'alpdesk_token' => $event->getResultData()->getAlpdesk_token(),
                 'alpdesk_refresh_token' => $event->getResultData()->getAlpdeskRefreshToken(),
-                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $event->getResultData()->getExp($this->userProvider->getJwtToken()))
+                'expires' => ($event->getResultData()->getInvalid() === true ? 0 : $this->userProvider->getExp($event->getResultData()->getAlpdesk_token()))
             ), AlpdeskCoreConstants::$STATUSCODE_OK));
 
         } catch (\Exception $exception) {
