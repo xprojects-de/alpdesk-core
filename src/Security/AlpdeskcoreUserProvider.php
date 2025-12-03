@@ -120,7 +120,7 @@ readonly class AlpdeskcoreUserProvider implements UserProviderInterface
             $sessionModel = AlpdeskcoreSessionsModel::findByUsername($alpdeskUser->getUsername());
             if (
                 $sessionModel !== null &&
-                $this->jwtToken->validateWithJti($sessionModel->token, $alpdeskUser->getUsername())
+                $this->jwtToken->validateWithJti($sessionModel->token, self::createJti($alpdeskUser->getUsername()))
             ) {
                 $alpdeskUser->setToken($sessionModel->token);
             }
