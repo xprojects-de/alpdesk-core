@@ -70,7 +70,7 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             $this->framework->initialize();
 
             $uploadFile = $request->files->get('file');
-            $target = $request->get('target');
+            $target = $request->request->get('target');
 
             if ($uploadFile instanceof UploadedFile && $target !== null) {
 

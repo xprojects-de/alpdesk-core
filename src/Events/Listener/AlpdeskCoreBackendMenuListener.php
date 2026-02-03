@@ -64,7 +64,7 @@ class AlpdeskCoreBackendMenuListener
                     ->setLinkAttribute('title', 'Logs')
                     ->setLinkAttribute('class', 'alpdesk_logs_backend')
                     ->setLinkAttribute('data-turbo-prefetch', 'false')
-                    ->setCurrent($request->get('_route') === 'alpdesk_logs_backend');
+                    ->setCurrent($request->attributes->get('_route') === 'alpdesk_logs_backend');
 
                 $contentNode->addChild($logNode);
 

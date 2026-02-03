@@ -544,7 +544,7 @@ class LocalStorage implements BaseStorageInterface
             throw new \Exception('File could not be written');
         }
 
-        // Cannot be used because it sync the files wth DBFS also for not synchronized folders
+        // Cannot be used because it is sync the files wth DBFS also for not synchronized folders
         // $this->filesStorage->write(\str_replace('files/', '', $path), $contents);
     }
 

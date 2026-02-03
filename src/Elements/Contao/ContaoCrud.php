@@ -31,7 +31,7 @@ class ContaoCrud
      * @return ContaoCrud
      * @throws \Exception
      */
-    public function setCrudOperations(?array $crudOperations): ContaoCrud
+    public function setCrudOperations(?array $crudOperations): self
     {
         if (!\is_array($crudOperations)) {
             throw new \Exception('invalid crudOperations - no permission');
@@ -45,7 +45,7 @@ class ContaoCrud
      * @param array|null $crudTables
      * @return $this
      */
-    public function setCrudTables(?array $crudTables): ContaoCrud
+    public function setCrudTables(?array $crudTables): self
     {
         $this->crudTables = $crudTables;
         $this->useCrudTablePermission = true;
