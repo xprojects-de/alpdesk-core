@@ -14,7 +14,7 @@ class AlpdeskCoreFileuploadResponse
     private string $fileName = '';
     private string $rootFileName = '';
     private array $data = array();
-    private string $uuid = '';
+    private ?string $uuid = null;
 
     public function getAlpdesk_token(): string
     {
@@ -76,12 +76,12 @@ class AlpdeskCoreFileuploadResponse
         $this->rootFileName = $rootFileName;
     }
 
-    public function getUuid(): string
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): void
+    public function setUuid(?string $uuid): void
     {
         $this->uuid = $uuid;
     }

@@ -8,7 +8,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AlpdeskCoreRegisterPlugin extends Event
 {
-    public const NAME = 'alpdesk.registerplugin';
+    public const string NAME = 'alpdesk.registerplugin';
 
     private array $pluginData;
     private array $pluginInfo;

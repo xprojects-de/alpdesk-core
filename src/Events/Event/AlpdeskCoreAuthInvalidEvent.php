@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 
 class AlpdeskCoreAuthInvalidEvent extends Event
 {
-    public const NAME = 'alpdesk.auth_invalid';
+    public const string NAME = 'alpdesk.auth_invalid';
 
     private AlpdeskCoreAuthResponse $resultData;
 

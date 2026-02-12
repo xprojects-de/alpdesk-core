@@ -9,7 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AlpdeskCoreFilemanagementFinderMetaEvent extends Event
 {
-    public const NAME = 'alpdesk.finder_meta';
+    public const string NAME = 'alpdesk.finder_meta';
 
     private array $inputData;
     private array $resultData;

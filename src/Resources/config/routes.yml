@@ -13,6 +13,14 @@ alpdesk_lazylogs_backend:
     _token_check: false
   methods: [ POST ]
 
+alpdesk_database_backend:
+  path: /contao/alpdeskcoredatabase
+  defaults:
+    _controller: Alpdesk\AlpdeskCore\Controller\Database\AlpdeskcoreDatabaseController::endpoint
+    _scope: backend
+    _token_check: false
+  methods: [ GET ]
+
 alpdesk_auth:
   path: /auth
   defaults:

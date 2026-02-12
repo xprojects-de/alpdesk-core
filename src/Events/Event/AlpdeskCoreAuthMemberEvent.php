@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMemberResponse;
 
 class AlpdeskCoreAuthMemberEvent extends Event
 {
-    public const NAME = 'alpdesk.auth_member';
+    public const string NAME = 'alpdesk.auth_member';
 
     private AlpdeskCoreMemberResponse $resultData;
 

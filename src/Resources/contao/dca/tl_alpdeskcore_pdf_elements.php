@@ -1,6 +1,6 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
 use Contao\DC_Table;
 
@@ -18,59 +18,38 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
                 'id' => 'primary',
                 'pid' => 'index'
             )
-        ),
-        'onload_callback' => array
-        (
-            array(AlpdeskCoreDcaUtils::class, 'pdfElementsloadCallback')
-        ),
+        )
     ),
     'list' => array
     (
         'sorting' => array
         (
             'mode' => DataContainer::MODE_PARENT,
-            'fields' => array('sorting'),
             'headerFields' => array('title'),
-            'panelLayout' => 'filter;search,limit',
-            'child_record_callback' => array(AlpdeskCoreDcaUtils::class, 'listPDFElements')
+            'fields' => array('sorting'),
+            'panelLayout' => 'filter;search,limit'
+        ),
+        'label' => array
+        (
+            'fields' => array('name'),
+            'showColumns' => false
         ),
         'global_operations' => array
         (
-            'all' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            )
+            'all'
         ),
         'operations' => array
         (
-            'edit' => array
+            'edit',
+            'copy',
+            'delete',
+            'generate_pdf_preview' => array
             (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.gif'
-            ),
-            'copy' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['copy'],
-                'href' => 'act=copy',
-                'icon' => 'copy.gif'
-            ),
-            'delete' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if (!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\')) return false;Backend.getScrollOffset();"'
-            ),
-            'generatetestpdf' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['generatetestpdf'],
                 'icon' => 'redirect.gif',
-                'href' => 'act=generatetestpdf',
-                'button_callback' => array(AlpdeskCoreDcaUtils::class, 'generatetestpdfLinkCallback')
+                'href' => 'key=generate_pdf_preview',
+                'attributes' => (new HtmlAttributes())->set('data-turbo', 'false'),
+                'method' => 'GET',
+                'prefetch' => false,
             ),
         )
     ),
@@ -99,7 +78,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'name' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['name'],
             'inputType' => 'text',
             'exclude' => true,
             'search' => true,
@@ -108,7 +86,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'pdfauthor' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['pdfauthor'],
             'inputType' => 'text',
             'exclude' => true,
             'search' => true,
@@ -117,7 +94,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'margins' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['margins'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 3, 'tl_class' => 'w50'),
@@ -125,7 +101,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'font' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['font'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 3, 'tl_class' => 'w50'),
@@ -133,7 +108,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'autobreak_margin' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['autobreak_margin'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => false, 'tl_class' => 'w50'),
@@ -141,7 +115,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'html' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['html'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -151,7 +124,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'header_text' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['header_text'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -161,7 +133,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'header_globalsize' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['header_globalsize'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50'),
@@ -169,7 +140,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'header_globalfont' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['header_globalfont'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 4, 'tl_class' => 'w50'),
@@ -177,7 +147,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'header_margin' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['header_margin'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => false, 'tl_class' => 'w50'),
@@ -185,7 +154,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'footer_text' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_text'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -195,7 +163,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'footer_globalsize' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_globalsize'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50'),
@@ -203,7 +170,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'footer_globalfont' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_globalfont'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => true, 'size' => 4, 'tl_class' => 'w50'),
@@ -211,7 +177,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf_elements'] = array
         ),
         'footer_margin' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_margin'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => array('multiple' => false, 'tl_class' => 'w50'),

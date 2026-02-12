@@ -9,7 +9,7 @@ use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugincallResponse;
 
 class AlpdeskCorePlugincallEvent extends Event
 {
-    public const NAME = 'alpdesk.plugincall';
+    public const string NAME = 'alpdesk.plugincall';
 
     private AlpdeskCorePlugincallResponse $resultData;
 

@@ -35,25 +35,9 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
         ),
         'operations' => array
         (
-            'edit' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['edit'],
-                'href' => 'table=tl_alpdeskcore_mandant_elements',
-                'icon' => 'edit.gif'
-            ),
-            'editheader' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['editheader'],
-                'href' => 'act=edit',
-                'icon' => 'header.gif',
-            ),
-            'delete' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
-            ),
+            'edit',
+            'children',
+            'delete'
         )
     ),
     'palettes' => array
@@ -72,7 +56,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
         ),
         'mandant' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['mandant'],
             'exclude' => true,
             'search' => true,
             'sorting' => true,
@@ -82,7 +65,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_mandant'] = array
         ),
         'filemount' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_mandant']['filemount'],
             'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => array('multiple' => false, 'fieldType' => 'radio', 'mandatory' => true),

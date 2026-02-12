@@ -1,6 +1,6 @@
 <?php
 
-use Alpdesk\AlpdeskCore\Library\Backend\AlpdeskCoreDcaUtils;
+use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
 use Contao\DC_Table;
 
@@ -34,23 +34,13 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'operations' => array
         (
-            'edit' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.gif'
-            ),
-            'delete' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
-            ),
+            'edit',
+            'delete',
             'backupDatabase' => array
             (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['backupDatabase'],
-                'href' => 'act=backup',
+                'route' => 'alpdesk_database_backend',
+                'prefetch' => false,
+                'attributes' => (new HtmlAttributes())->set('data-turbo', 'false'),
                 'icon' => 'theme_export.svg'
             )
         )
@@ -71,7 +61,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'title' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['title'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -80,7 +69,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'host' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['host'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -90,7 +78,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'port' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['port'],
             'exclude' => true,
             'search' => false,
             'inputType' => 'text',
@@ -100,7 +87,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'database' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['database'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -109,7 +95,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'username' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['username'],
             'exclude' => true,
             'search' => false,
             'inputType' => 'text',
@@ -118,24 +103,14 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_databasemanager'] = array
         ),
         'password' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['password'],
             'exclude' => true,
             'search' => false,
             'inputType' => 'text',
             'eval' => array('mandatory' => true, 'maxlength' => 250, 'tl_class' => 'w50', 'hideInput' => false),
-            'save_callback' => array
-            (
-                array(AlpdeskCoreDcaUtils::class, 'generateEncryptPassword')
-            ),
-            'load_callback' => array
-            (
-                array(AlpdeskCoreDcaUtils::class, 'regenerateEncryptPassword')
-            ),
             'sql' => "varchar(250) NOT NULL default ''"
         ),
         'databasemodel' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_databasemanager']['databasemodel'],
             'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => [

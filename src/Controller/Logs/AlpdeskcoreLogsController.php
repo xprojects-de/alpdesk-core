@@ -258,6 +258,9 @@ class AlpdeskcoreLogsController extends AbstractBackendController
             }
 
             $filterValue = ($requestBodyObject['filterValue'] ?? null);
+            if (\is_string($filterValue) && $filterValue !== '') {
+                $filterValue = StringUtil::specialchars($filterValue);
+            }
 
             $filteredLines = [];
 

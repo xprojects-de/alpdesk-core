@@ -19,5 +19,5 @@ $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['footer_margin'] = array('Foo
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['new'] = array('Neue Vorlage', 'Neue Vorlage hinzufügen');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['edit'] = array('Vorlage bearbeiten', 'Vorlage ID %s bearbeiten');
 $GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['delete'] = array('Vorlage löschen', 'Vorlage ID %s löschen');
-$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['generatetestpdf'] = array('Test-PDF generieren', 'Test-PDF ID %s generieren');
+$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf_elements']['generate_pdf_preview'] = array('Preview-PDF generieren', 'Preview-PDF ID %s generieren');
 

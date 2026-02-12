@@ -12,6 +12,7 @@ use Contao\StringUtil;
 use Contao\File;
 use Contao\Dbafs;
 use Contao\System;
+use Symfony\Component\Filesystem\Filesystem;
 
 class AlpdeskCorePDFCreator extends \TCPDF
 {
@@ -352,11 +353,12 @@ class AlpdeskCorePDFCreator extends \TCPDF
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
         $xdir = $rootDir . "/" . $path;
 
-        if (!\is_dir($xdir)) {
-            /** @phpstan-ignore-next-line */
-            if (!\mkdir($xdir) && !\is_dir($xdir)) {
-                throw new \Exception(\sprintf('Directory "%s" was not created', $xdir));
-            }
+        $filesystem = new Filesystem();
+
+        try {
+            $filesystem->mkdir($xdir, 0755);
+        } catch (\Exception $e) {
+            throw new \Exception(sprintf('Directory "%s" was not created: %s', $xdir, $e->getMessage()));
         }
 
         $this->Output($xdir . '/' . $filename, 'F');

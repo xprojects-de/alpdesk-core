@@ -6,8 +6,7 @@ namespace Alpdesk\AlpdeskCore\Database;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Schema\Comparator;
+use Doctrine\DBAL\Schema\ComparatorConfig;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Schema\Table;
@@ -29,9 +28,16 @@ class AlpdeskcoreMigration
      */
     public function executeMigrations(array $commands): void
     {
-        foreach ($commands as $command) {
-            $this->connection->executeQuery($command);
+        try {
+
+            foreach ($commands as $command) {
+                $this->connection->executeQuery($command);
+            }
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
+
     }
 
     /**
@@ -40,16 +46,18 @@ class AlpdeskcoreMigration
      */
     public function showMigrations(): array
     {
-        $schemaManager = $this->connection->createSchemaManager();
-        $fromSchema = $schemaManager->introspectSchema();
+        try {
 
-        $databasePlatForm = $this->connection->getDatabasePlatform();
+            $schemaManager = $this->connection->createSchemaManager();
+            $fromSchema = $schemaManager->introspectSchema();
 
-        if (!$databasePlatForm instanceof AbstractPlatform) {
-            throw new \Exception('invalid DatabasePlatform');
+            $comparator = $schemaManager->createComparator(new ComparatorConfig(false, false));
+
+            return $this->connection->getDatabasePlatform()->getAlterSchemaSQL($comparator->compareSchemas($fromSchema, $this->parseSql()));
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
-
-        return $databasePlatForm->getAlterSchemaSQL((new Comparator())->compareSchemas($fromSchema, $this->parseSql()));
 
     }
 
@@ -137,17 +145,12 @@ class AlpdeskcoreMigration
                                     \is_array($columnMatching['constraint']) && \count($columnMatching['constraint']) > 0
                                 ) {
 
-                                    // Only one per Table // Maybe @TODO
-                                    $cCounter = 0;
-                                    foreach ($columnMatching['constraint'] as $localColumn => $foreignColumn) {
+                                    $constraints = $columnMatching['constraint'];
+                                    $localColumn = \array_key_first($constraints);
+                                    if ($localColumn !== null) {
 
+                                        $foreignColumn = $constraints[$localColumn];
                                         $table->addForeignKeyConstraint($foreignTable, [$localColumn], [$foreignColumn], $options);
-                                        $cCounter++;
-
-                                        /** @phpstan-ignore-next-line */
-                                        if ($cCounter > 0) {
-                                            break;
-                                        }
 
                                     }
 
@@ -192,98 +195,101 @@ class AlpdeskcoreMigration
      */
     private function parseField(Table $table, string $field, array $fieldattributes): void
     {
-        $dbType = $fieldattributes['type'];
+        try {
 
-        $length = null;
-        if (\array_key_exists('length', $fieldattributes)) {
-            $length = (int)$fieldattributes['length'];
-            $dbType = $fieldattributes['type'] . '(' . $length . ')';
-        }
+            $dbType = $fieldattributes['type'];
 
-        $fixed = false;
-        $scale = null;
-        $precision = null;
-        $unsigned = false;
-
-        if (
-            \array_key_exists('unsigned', $fieldattributes) &&
-            $fieldattributes['unsigned'] === true &&
-            \in_array(strtolower($fieldattributes['type']), array('tinyint', 'smallint', 'mediumint', 'int', 'bigint'))
-        ) {
-            $unsigned = true;
-        }
-
-        $autoincrement = false;
-        if (\array_key_exists('autoincrement', $fieldattributes) && $fieldattributes['autoincrement'] === true) {
-            $autoincrement = true;
-        }
-
-        $default = null;
-        if (\array_key_exists('default', $fieldattributes)) {
-
-            $default = $fieldattributes['default'];
-            if ($autoincrement === true || $default === 'NULL') {
-                $default = null;
+            $length = null;
+            if (\array_key_exists('length', $fieldattributes)) {
+                $length = (int)$fieldattributes['length'];
+                $dbType = $fieldattributes['type'] . '(' . $length . ')';
             }
 
+            $fixed = false;
+            $scale = null;
+            $precision = null;
+            $unsigned = false;
+
+            if (
+                \array_key_exists('unsigned', $fieldattributes) &&
+                $fieldattributes['unsigned'] === true &&
+                \in_array(strtolower($fieldattributes['type']), array('tinyint', 'smallint', 'mediumint', 'int', 'bigint'))
+            ) {
+                $unsigned = true;
+            }
+
+            $autoincrement = false;
+            if (\array_key_exists('autoincrement', $fieldattributes) && $fieldattributes['autoincrement'] === true) {
+                $autoincrement = true;
+            }
+
+            $default = null;
+            if (\array_key_exists('default', $fieldattributes)) {
+
+                $default = $fieldattributes['default'];
+                if ($autoincrement === true || $default === 'NULL') {
+                    $default = null;
+                }
+
+            }
+
+            $this->setLengthAndPrecisionByType($fieldattributes['type'], $dbType, $length, $scale, $precision, $fixed);
+
+            $type = $this->connection->getDatabasePlatform()->getDoctrineTypeMapping($fieldattributes['type']);
+
+            if (0 === $length) {
+                $length = null;
+            }
+
+            $notNull = false;
+            if (\array_key_exists('notnull', $fieldattributes)) {
+                $notNull = $fieldattributes['notnull'];
+            }
+
+            $options = [
+                'length' => $length,
+                'unsigned' => $unsigned,
+                'fixed' => $fixed,
+                'default' => $default,
+                'notnull' => $notNull,
+                'autoincrement' => $autoincrement
+            ];
+
+            if (null !== $scale) {
+                $options['scale'] = $scale;
+            }
+
+            if (null !== $precision) {
+                $options['precision'] = $precision;
+            }
+
+            $comment = $fieldattributes['comment'] ?? null;
+            if (null !== $comment) {
+                $options['comment'] = $comment;
+            }
+
+            $platformOptions = [];
+
+            $collation = $fieldattributes['collation'] ?? null;
+            $charset = $fieldattributes['charset'] ?? null;
+
+            if (null !== $charset) {
+                $platformOptions['charset'] = $charset;
+            }
+
+            if (null !== $collation) {
+                $platformOptions['collation'] = $collation;
+            }
+
+            if (!empty($platformOptions)) {
+                $options['platformOptions'] = $platformOptions;
+            }
+
+            $table->addColumn($field, $type, $options);
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
-
-        $this->setLengthAndPrecisionByType($fieldattributes['type'], $dbType, $length, $scale, $precision, $fixed);
-
-        /** @phpstan-ignore-next-line */
-        $type = $this->connection->getDatabasePlatform()?->getDoctrineTypeMapping($fieldattributes['type']);
-        if ($type === null) {
-            throw new \Exception('invalid type for ' . $fieldattributes['type']);
-        }
-
-        if (0 === $length) {
-            $length = null;
-        }
-
-        $notNull = false;
-        if (\array_key_exists('notnull', $fieldattributes)) {
-            $notNull = $fieldattributes['notnull'];
-        }
-
-        $comment = $fieldattributes['comment'] ?? null;
-
-        $options = [
-            'length' => $length,
-            'unsigned' => $unsigned,
-            'fixed' => $fixed,
-            'default' => $default,
-            'notnull' => $notNull,
-            'scale' => null,
-            'precision' => null,
-            'autoincrement' => $autoincrement,
-            'comment' => $comment,
-        ];
-
-        if (null !== $scale && null !== $precision) {
-
-            $options['scale'] = $scale;
-            $options['precision'] = $precision;
-
-        }
-
-        $platformOptions = [];
-
-        $collation = $fieldattributes['collation'] ?? null;
-        $charset = $fieldattributes['charset'] ?? null;
-
-        if (null !== $charset) {
-            $platformOptions['charset'] = $charset;
-        }
-
-        if (null !== $collation) {
-            $platformOptions['collation'] = $collation;
-        }
-
-        if (!empty($platformOptions)) {
-            $options['platformOptions'] = $platformOptions;
-        }
-
-        $table->addColumn($field, $type, $options);
 
     }
 
@@ -300,10 +306,10 @@ class AlpdeskcoreMigration
             case 'real':
             case 'numeric':
             case 'decimal':
-                if (\preg_match('/[a-z]+\((\d+),(\d+)\)/i', $dbType, $match)) {
+                if (\preg_match('/[a-z]+\((\d+),(\d+)\)/i', $dbType, $match) === 1) {
                     $length = null;
-                    /** @phpstan-ignore-next-line */
-                    [, $precision, $scale] = $match;
+                    $precision = (int)$match[1];
+                    $scale = (int)$match[2];
                 }
                 break;
 
@@ -350,88 +356,96 @@ class AlpdeskcoreMigration
      */
     public function hasConfigurationError(string &$dbversion): void
     {
-        [$version] = \explode('-', $this->connection->fetchOne('SELECT @@version'));
-        $dbversion = $version;
+        try {
 
-        // The database version is too old
-        if (\version_compare($version, '5.1.0', '<')) {
-            throw new \Exception('Error: Version < 5.1.0');
-        }
+            [$version] = \explode('-', $this->connection->fetchOne('SELECT @@version'));
+            $dbversion = $version;
 
-        $schema = $this->connection->createSchemaManager();
-
-        $schemaConfig = $schema->createSchemaConfig();
-        $options = $schemaConfig->getDefaultTableOptions();
-
-        // Check the collation if the user has configured it
-        if (isset($options['collate'])) {
-            $row = $this->connection->fetchAssociative("SHOW COLLATION LIKE '" . $options['collate'] . "'");
-            // The configured collation is not installed
-            if (false === $row) {
-                throw new \Exception('Error: configured collation is not installed');
+            // The database version is too old
+            if (\version_compare($version, '5.1.0', '<')) {
+                throw new \Exception('Error: Version < 5.1.0');
             }
-        }
 
-        // Check the engine if the user has configured it
-        if (isset($options['engine'])) {
-            $engineFound = false;
-            $rows = $this->connection->fetchAllAssociative('SHOW ENGINES');
+            $schema = $this->connection->createSchemaManager();
 
-            foreach ($rows as $row) {
-                if ($options['engine'] === $row['Engine']) {
-                    $engineFound = true;
-                    break;
+            $schemaConfig = $schema->createSchemaConfig();
+            $options = $schemaConfig->getDefaultTableOptions();
+
+            // Check the collation if the user has configured it
+            if (isset($options['collate'])) {
+                $row = $this->connection->fetchAssociative("SHOW COLLATION LIKE '" . $options['collate'] . "'");
+                // The configured collation is not installed
+                if (false === $row) {
+                    throw new \Exception('Error: configured collation is not installed');
                 }
             }
 
-            // The configured engine is not available
-            if (!$engineFound) {
-                throw new \Exception('Error: configured engine is not available');
+            // Check the engine if the user has configured it
+            if (isset($options['engine'])) {
+                $engineFound = false;
+                $rows = $this->connection->fetchAllAssociative('SHOW ENGINES');
+
+                foreach ($rows as $row) {
+                    if ($options['engine'] === $row['Engine']) {
+                        $engineFound = true;
+                        break;
+                    }
+                }
+
+                // The configured engine is not available
+                if (!$engineFound) {
+                    throw new \Exception('Error: configured engine is not available');
+                }
             }
+
+            // Check if utf8mb4 can be used if the user has configured it
+            if (isset($options['engine'], $options['collate']) && 0 === \strncmp($options['collate'], 'utf8mb4', 7)) {
+
+                if ('innodb' !== \strtolower($options['engine'])) {
+                    throw new \Exception('Error: utf8mb4 can be used');
+                }
+
+                $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_large_prefix'");
+
+                // The variable no longer exists as of MySQL 8 and MariaDB 10.3
+                if (false === $row || '' === $row['Value']) {
+                    throw new \Exception('Error: innodb_large_prefix not supported');
+                }
+
+                // As there is no reliable way to get the vendor (see #84), we are
+                // guessing based on the version number. The check will not be run
+                // as of MySQL 8 and MariaDB 10.3, so this should be safe.
+                $vok = \version_compare($version, '10', '>=') ? '10.2.2' : '5.7.7';
+
+                // Large prefixes are always enabled as of MySQL 5.7.7 and MariaDB 10.2.2
+                if (\version_compare($version, $vok, '>=')) {
+                    throw new \Exception('Error: invalid version');
+                }
+
+                // The innodb_large_prefix option is disabled
+                if (!\in_array(\strtolower((string)$row['Value']), ['1', 'on'], true)) {
+                    throw new \Exception('Error: innodb_large_prefix option is disabled');
+                }
+
+                $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_file_per_table'");
+
+                // The innodb_file_per_table option is disabled
+                if (!\in_array(\strtolower((string)$row['Value']), ['1', 'on'], true)) {
+                    throw new \Exception('Error: innodb_file_per_table option is disabled');
+                }
+
+                $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_file_format'");
+
+                // The InnoDB file format is not Barracuda
+                if ('' !== $row['Value'] && 'barracuda' !== \strtolower((string)$row['Value'])) {
+                    throw new \Exception('Error: InnoDB file format is not Barracuda');
+                }
+            }
+
+        } catch (\Throwable $tr) {
+            throw new \Exception($tr->getMessage());
         }
 
-        // Check if utf8mb4 can be used if the user has configured it
-        if (isset($options['engine'], $options['collate']) && 0 === \strncmp($options['collate'], 'utf8mb4', 7)) {
-
-            if ('innodb' !== \strtolower($options['engine'])) {
-                throw new \Exception('Error: utf8mb4 can be used');
-            }
-
-            $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_large_prefix'");
-
-            // The variable no longer exists as of MySQL 8 and MariaDB 10.3
-            if (false === $row || '' === $row['Value']) {
-                throw new \Exception('Error: innodb_large_prefix not supported');
-            }
-
-            // As there is no reliable way to get the vendor (see #84), we are
-            // guessing based on the version number. The check will not be run
-            // as of MySQL 8 and MariaDB 10.3, so this should be safe.
-            $vok = \version_compare($version, '10', '>=') ? '10.2.2' : '5.7.7';
-
-            // Large prefixes are always enabled as of MySQL 5.7.7 and MariaDB 10.2.2
-            if (\version_compare($version, $vok, '>=')) {
-                throw new \Exception('Error: invalid version');
-            }
-
-            // The innodb_large_prefix option is disabled
-            if (!\in_array(\strtolower((string)$row['Value']), ['1', 'on'], true)) {
-                throw new \Exception('Error: innodb_large_prefix option is disabled');
-            }
-
-            $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_file_per_table'");
-
-            // The innodb_file_per_table option is disabled
-            if (!\in_array(\strtolower((string)$row['Value']), ['1', 'on'], true)) {
-                throw new \Exception('Error: innodb_file_per_table option is disabled');
-            }
-
-            $row = $this->connection->fetchAssociative("SHOW VARIABLES LIKE 'innodb_file_format'");
-
-            // The InnoDB file format is not Barracuda
-            if ('' !== $row['Value'] && 'barracuda' !== \strtolower((string)$row['Value'])) {
-                throw new \Exception('Error: InnoDB file format is not Barracuda');
-            }
-        }
     }
+
 }

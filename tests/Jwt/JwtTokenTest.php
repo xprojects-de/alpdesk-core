@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jwt;
 
-use Alpdesk\AlpdeskCore\Jwt\JwtToken;
+use Alpdesk\AlpdeskCore\Security\Jwt\JwtToken;
 use Contao\System;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -148,15 +148,17 @@ class JwtTokenTest extends TestCase
      */
     public function testJwt(): void
     {
+        $jwt = new JwtToken('.', 'alpdesk_core', 'alpdesk_core_users');
+
         $username = 'test';
         $jti = \base64_encode('alpdesk_' . $username);
         $nbf = 3600;
-        $token = JwtToken::generate($jti, $nbf, array('username' => $username));
+        $token = $jwt->generate($jti, $nbf, array('username' => $username));
 
-        $this->assertSame($username, JwtToken::getClaim($token, 'username'));
-        $this->assertTrue(JwtToken::validateAndVerify($token, $jti));
+        $this->assertSame($username, $jwt->getClaim($token, 'username'));
+        $this->assertTrue($jwt->validateWithJti($token, $jti));
 
-        $expValue = JwtToken::getClaim($token, 'exp');
+        $expValue = $jwt->getClaim($token, 'exp');
         if ($expValue !== null) {
             if ($expValue instanceof \DateTimeImmutable) {
                 $exp = $expValue->getTimestamp() - time();

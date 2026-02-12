@@ -8,7 +8,7 @@ use Contao\System;
 
 class Cryption
 {
-    private string $key;
+    private ?string $key = null;
 
     /**
      * @param bool $useContaoKey
@@ -21,6 +21,7 @@ class Cryption
         }
 
         if ($useContaoKey) {
+
             $key = System::getContainer()->getParameter('kernel.secret');
             $key = \substr($key, 0, 32);
 
@@ -29,7 +30,9 @@ class Cryption
             }
 
             $this->key = $key;
+
         }
+
     }
 
     /**
@@ -43,6 +46,7 @@ class Cryption
         }
 
         $this->key = $key;
+
     }
 
     /**
@@ -53,6 +57,10 @@ class Cryption
      */
     public function safeEncrypt(string $message, bool $zeroKey = true): string
     {
+        if (!\is_string($this->key)) {
+            throw new \Exception('Encryption key is not set.');
+        }
+
         $nonce = \random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
 
         $cipher = \base64_encode(
@@ -67,11 +75,11 @@ class Cryption
         \sodium_memzero($message);
 
         if ($zeroKey) {
-            /** @phpstan-ignore-next-line */
             \sodium_memzero($this->key);
         }
 
         return $cipher;
+
     }
 
     /**
@@ -82,6 +90,10 @@ class Cryption
      */
     public function safeDecrypt(string $encrypted, bool $zeroKey = true): string
     {
+        if (!\is_string($this->key)) {
+            throw new \Exception('Encryption key is not set.');
+        }
+
         if ($encrypted === '') {
             return '';
         }
@@ -103,10 +115,11 @@ class Cryption
         \sodium_memzero($ciphertext);
 
         if ($zeroKey) {
-            /** @phpstan-ignore-next-line */
             \sodium_memzero($this->key);
         }
 
         return $plain;
+
     }
+
 }

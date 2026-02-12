@@ -36,35 +36,13 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf'] = array
         ),
         'global_operations' => array
         (
-            'all' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            )
+            'all'
         ),
         'operations' => array
         (
-            'edit' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf']['edit'],
-                'href' => 'table=tl_alpdeskcore_pdf_elements',
-                'icon' => 'edit.gif'
-            ),
-            'editheader' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf']['editheader'],
-                'href' => 'act=edit',
-                'icon' => 'header.gif',
-            ),
-            'delete' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
-            ),
+            'edit',
+            'children',
+            'delete'
         )
     ),
     'palettes' => array
@@ -83,7 +61,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskcore_pdf'] = array
         ),
         'title' => array
         (
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskcore_pdf']['title'],
             'exclude' => true,
             'search' => true,
             'sorting' => true,
