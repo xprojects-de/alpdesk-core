@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadDelegateEvent;
+use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadDelegateResponse;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -68,6 +70,16 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             }
 
             $this->framework->initialize();
+
+            $delegateEvent = new AlpdeskCoreFileuploadDelegateEvent(new AlpdeskCoreFileuploadDelegateResponse($request, $user));
+            $this->eventService->getDispatcher()->dispatch($delegateEvent, AlpdeskCoreFileuploadDelegateEvent::NAME);
+
+            if ($delegateEvent->getDelegateResponse()->getResponse() instanceof JsonResponse) {
+
+                $this->logger->info('Upload delegated for user:' . $user->getUsername(), __METHOD__);
+                return $delegateEvent->getDelegateResponse()->getResponse();
+
+            }
 
             $uploadFile = $request->files->get('file');
             $target = $request->request->get('target');
