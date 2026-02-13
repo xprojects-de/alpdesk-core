@@ -70,17 +70,21 @@ class AlpdeskCorePlugin
 
             $mInfo = new AlpdescCoreBaseMandantInfo();
 
-            $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
+            $fileMount = $mandantInfo->filemount ?? null;
+            if ($fileMount !== null) {
 
-            $pathRootPath = $rootPath->path ?? '';
+                $rootPath = FilesModel::findByUuid($mandantInfo->filemount);
+                $pathRootPath = $rootPath->path ?? '';
 
-            $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
-            $mInfo->setFilemountmandant_path($pathRootPath);
-            $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $pathRootPath);
+                $mInfo->setFilemountmandant_uuid($mandantInfo->filemount);
+                $mInfo->setFilemountmandant_path($pathRootPath);
+                $mInfo->setFilemountmandant_rootpath($this->rootDir . '/' . $pathRootPath);
 
-            $mInfo->setFilemount_uuid($mandantInfo->filemount);
-            $mInfo->setFilemount_path($pathRootPath);
-            $mInfo->setFilemount_rootpath($this->rootDir . '/' . $pathRootPath);
+                $mInfo->setFilemount_uuid($mandantInfo->filemount);
+                $mInfo->setFilemount_path($pathRootPath);
+                $mInfo->setFilemount_rootpath($this->rootDir . '/' . $pathRootPath);
+
+            }
 
             if ($user->getHomeDir() !== null) {
 
