@@ -418,19 +418,19 @@ class LocalStorage implements BaseStorageInterface
     {
         $srcObject = $this->get($srcPath);
         if (!$srcObject instanceof StorageObject) {
-            throw new \Exception('src file/folder to move not found.');
+            throw new \Exception('src file/folder to move/copy not found.');
         }
 
         $destObject = $this->get($destPath);
         if (!$destObject instanceof StorageObject) {
-            throw new \Exception('dest file/folder to move not found.');
+            throw new \Exception('dest file/folder to move/copy not found.');
         }
 
         if ($srcObject->type === 'file') {
 
             $fileLocal = new File($srcObject->path);
             if (!$fileLocal->exists()) {
-                throw new \Exception('src file/folder to move not found.');
+                throw new \Exception('src file/folder to move/copy not found.');
             }
 
             $remoteFile = $destObject->path . '/' . $fileLocal->name;
@@ -440,17 +440,19 @@ class LocalStorage implements BaseStorageInterface
                 $remoteFile = \str_replace('.' . $fileRemoteCheck->extension, '_' . \time() . '.' . $fileRemoteCheck->extension, $remoteFile);
             }
 
-            if ($fileLocal->copyTo($remoteFile) === false) {
-                throw new \Exception('error on move file.');
+            if ($isMove) {
+
+                if (!$fileLocal->renameTo($remoteFile)) {
+                    throw new \Exception('error on move file.');
+                }
+
+            } else if (!$fileLocal->copyTo($remoteFile)) {
+                throw new \Exception('error on copy file.');
             }
 
             $fileRemote = new File($remoteFile);
             if (!$fileRemote->exists()) {
                 throw new \Exception('error on move file.');
-            }
-
-            if ($isMove) {
-                $fileLocal->delete();
             }
 
             return $this->get($remoteFile);
@@ -464,12 +466,14 @@ class LocalStorage implements BaseStorageInterface
 
             $remoteFolderPath = $remoteFolder->path . '/' . $localFolder->name;
 
-            if ($localFolder->copyTo($remoteFolderPath) === false) {
-                throw new \Exception('error on move folder.');
-            }
-
             if ($isMove) {
-                $localFolder->delete();
+
+                if (!$localFolder->renameTo($remoteFolderPath)) {
+                    throw new \Exception('error on move folder.');
+                }
+
+            } else if (!$localFolder->copyTo($remoteFolderPath)) {
+                throw new \Exception('error on copy folder.');
             }
 
             return $this->get($remoteFolderPath);
