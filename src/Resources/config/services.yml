@@ -1,6 +1,7 @@
 parameters:
   alpdesk_core.app_name: 'Alpdesk'
   alpdesk_core.url: 'https://alpdesk.de'
+  env(ALPDESK_CORE_ONLY_SYNCED_FILES): 'true'
 
 services:
 
@@ -56,6 +57,7 @@ services:
     arguments:
       - '@contao.filesystem.virtual.files'
       - '%kernel.project_dir%'
+      - '%env(bool:ALPDESK_CORE_ONLY_SYNCED_FILES)%'
     tags:
       - { name: 'alpdeskcore.storage', alias: 'local' }
 

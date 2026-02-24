@@ -22,20 +22,24 @@ class LocalStorage implements BaseStorageInterface
 {
     private VirtualFilesystemInterface $filesStorage;
     private string $rootDir;
+    private bool $onlyUseSyncedFiles;
 
     protected ?AlpdescCoreBaseMandantInfo $mandant = null;
 
     /**
      * @param VirtualFilesystemInterface $filesStorage
      * @param string $rootDir
+     * @param bool $onlyUseSyncedFiles
      */
     public function __construct(
         VirtualFilesystemInterface $filesStorage,
-        string                     $rootDir
+        string                     $rootDir,
+        bool                       $onlyUseSyncedFiles
     )
     {
         $this->filesStorage = $filesStorage;
         $this->rootDir = $rootDir;
+        $this->onlyUseSyncedFiles = $onlyUseSyncedFiles;
     }
 
     /**
@@ -142,7 +146,11 @@ class LocalStorage implements BaseStorageInterface
             }
 
             // Maybe it's a local file without database sync
-            if ($isPath === true && (new Filesystem())->exists($this->rootDir . '/' . $strUuid)) {
+            if (
+                $isPath === true &&
+                $this->onlyUseSyncedFiles === false &&
+                (new Filesystem())->exists($this->rootDir . '/' . $strUuid)
+            ) {
 
                 if (\is_file($this->rootDir . '/' . $strUuid)) {
 
