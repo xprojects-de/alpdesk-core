@@ -13,6 +13,11 @@ class AlpdeskCoreRegisterPluginListener
         $data = $event->getPluginData();
         $info = $event->getPluginInfo();
 
+        $data['hello'] = $GLOBALS['TL_LANG']['ADME']['helloPlugin'];
+        $info['hello'] = [
+            'customTemplate' => false
+        ];
+
         $data['contaoCrud'] = $GLOBALS['TL_LANG']['ADME']['contaoCrudPlugin'];
         $info['contaoCrud'] = ['customTemplate' => false];
 
