@@ -15,8 +15,7 @@ class AlpdeskCoreRequestMatcher implements RequestMatcherInterface
      */
     public function matches(Request $request): bool
     {
-        $scope = $request->attributes->get('_scope');
-        return $scope === 'alpdeskapi';
+        return $request->attributes->get('_scope') === 'alpdeskapi';
     }
 
 }

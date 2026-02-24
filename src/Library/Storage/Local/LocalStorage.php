@@ -22,20 +22,24 @@ class LocalStorage implements BaseStorageInterface
 {
     private VirtualFilesystemInterface $filesStorage;
     private string $rootDir;
+    private bool $onlyUseSyncedFiles;
 
     protected ?AlpdescCoreBaseMandantInfo $mandant = null;
 
     /**
      * @param VirtualFilesystemInterface $filesStorage
      * @param string $rootDir
+     * @param bool $onlyUseSyncedFiles
      */
     public function __construct(
         VirtualFilesystemInterface $filesStorage,
-        string                     $rootDir
+        string                     $rootDir,
+        bool                       $onlyUseSyncedFiles
     )
     {
         $this->filesStorage = $filesStorage;
         $this->rootDir = $rootDir;
+        $this->onlyUseSyncedFiles = $onlyUseSyncedFiles;
     }
 
     /**
@@ -142,7 +146,11 @@ class LocalStorage implements BaseStorageInterface
             }
 
             // Maybe it's a local file without database sync
-            if ($isPath === true && (new Filesystem())->exists($this->rootDir . '/' . $strUuid)) {
+            if (
+                $isPath === true &&
+                $this->onlyUseSyncedFiles === false &&
+                (new Filesystem())->exists($this->rootDir . '/' . $strUuid)
+            ) {
 
                 if (\is_file($this->rootDir . '/' . $strUuid)) {
 
@@ -211,14 +219,34 @@ class LocalStorage implements BaseStorageInterface
         if ($fileObject instanceof StorageObject) {
 
             if ($fileObject->type === 'file') {
+
+                $f = new File($fileObject->path);
+                if ($f->exists()) {
+                    $f->delete();
+                }
+
+            } else if ($fileObject->type === 'folder') {
+
+                $f = new Folder($fileObject->path);
+                $f->delete();
+
+            } else {
+                throw new \Exception('file type not supported');
+            }
+
+            // not working because of Contao DBFS sync also for not synchronized folders
+            /*
+            if ($fileObject->type === 'file') {
                 $this->filesStorage->delete(\str_replace('files/', '', $fileObject->path));
             } else if ($fileObject->type === 'folder') {
                 $this->filesStorage->deleteDirectory(\str_replace('files/', '', $fileObject->path));
             } else {
                 throw new \Exception('file type not supported');
             }
+            */
 
         }
+
 
     }
 
@@ -237,97 +265,11 @@ class LocalStorage implements BaseStorageInterface
      * @param string|null $remotePath
      * @param bool $override
      * @return StorageObject|null
+     * @throws \Exception
      */
     public function deploy(?string $localPath, ?string $remotePath, bool $override): ?StorageObject
     {
-        try {
-
-            if (!\is_string($localPath) || !\is_string($remotePath)) {
-                return null;
-            }
-
-            if ($localPath === '' || $remotePath === '') {
-                return null;
-            }
-
-            if ($override === false) {
-
-                $fileRemoteCheck = new File($remotePath);
-                if ($fileRemoteCheck->exists()) {
-                    $remotePath = \str_replace('.' . $fileRemoteCheck->extension, '_' . \time() . '.' . $fileRemoteCheck->extension, $remotePath);
-                }
-
-            }
-
-            $fileLocal = new File($localPath);
-            if (!$fileLocal->exists()) {
-                return null;
-            }
-
-            $storageObject = new StorageObject();
-
-            if ($localPath === $remotePath) {
-
-                $model = $fileLocal->getModel();
-
-                $storageObject->path = $fileLocal->path;
-                $storageObject->basename = $fileLocal->basename;
-                $storageObject->extension = $fileLocal->extension;
-                $storageObject->absolutePath = $this->rootDir . '/' . $fileLocal->path;
-                $storageObject->name = $fileLocal->name;
-                $storageObject->filename = $fileLocal->filename;
-
-                if ($fileLocal->isUnprotected()) {
-                    $storageObject->url = $this->generateLocalUrl($fileLocal->path);
-                }
-
-                $storageObject->uuid = ($model !== null ? self::binToUuid($model->uuid) : null);
-                $storageObject->type = 'file';
-                $storageObject->isPublic = $fileLocal->isUnprotected();
-                $storageObject->size = $fileLocal->size;
-                $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $fileLocal->path))?->isImage() ?? false);
-
-            } else {
-
-                if ($fileLocal->copyTo($remotePath) === false) {
-                    return null;
-                }
-
-                $fileLocal->delete();
-
-                $fileRemote = new File($remotePath);
-                if (!$fileRemote->exists()) {
-                    return null;
-                }
-
-                $model = $fileRemote->getModel();
-
-                $storageObject->path = $fileRemote->path;
-                $storageObject->basename = $fileRemote->basename;
-                $storageObject->extension = $fileRemote->extension;
-                $storageObject->absolutePath = $this->rootDir . '/' . $fileRemote->path;
-                $storageObject->name = $fileRemote->name;
-                $storageObject->filename = $fileRemote->filename;
-
-                if ($fileRemote->isUnprotected()) {
-                    $storageObject->url = $this->generateLocalUrl($fileRemote->path);
-                }
-
-                $storageObject->uuid = ($model !== null ? self::binToUuid($model->uuid) : null);
-                $storageObject->type = 'file';
-                $storageObject->isPublic = $fileRemote->isUnprotected();
-                $storageObject->size = $fileRemote->size;
-                $storageObject->isImage = ($this->filesStorage->get(\str_replace('files/', '', $fileRemote->path))?->isImage() ?? false);
-
-            }
-
-            return $storageObject;
-
-        } catch (\Throwable) {
-        }
-
-        return null;
-
+        throw new \Exception("not supported");
     }
 
     /**
@@ -355,14 +297,8 @@ class LocalStorage implements BaseStorageInterface
      */
     public function createFile(string $filePath, mixed $content): ?StorageObject
     {
-        $this->filesStorage->write(\str_replace('files/', '', $filePath), $content);
-
-        $storageObject = $this->deploy($filePath, $filePath, true);
-        if ($storageObject instanceof StorageObject) {
-            $this->synchronize($storageObject->uuid);
-        }
-
-        return $storageObject;
+        $this->write($filePath, $content);
+        return $this->get($filePath);
 
     }
 
@@ -457,7 +393,7 @@ class LocalStorage implements BaseStorageInterface
      */
     public function move(string $srcPath, string $destPath): ?StorageObject
     {
-        return $this->deploy($srcPath, $destPath, false);
+        return $this->copyMove($srcPath, $destPath, true);
     }
 
     /**
@@ -468,7 +404,84 @@ class LocalStorage implements BaseStorageInterface
      */
     public function copy(string $srcPath, string $destPath): ?StorageObject
     {
-        return $this->deploy($srcPath, $destPath, false);
+        return $this->copyMove($srcPath, $destPath);
+    }
+
+    /**
+     * @param string $srcPath
+     * @param string $destPath
+     * @param bool $isMove
+     * @return StorageObject|null
+     * @throws \Exception
+     */
+    private function copyMove(string $srcPath, string $destPath, bool $isMove = false): ?StorageObject
+    {
+        $srcObject = $this->get($srcPath);
+        if (!$srcObject instanceof StorageObject) {
+            throw new \Exception('src file/folder to move/copy not found.');
+        }
+
+        $destObject = $this->get($destPath);
+        if (!$destObject instanceof StorageObject) {
+            throw new \Exception('dest file/folder to move/copy not found.');
+        }
+
+        if ($srcObject->type === 'file') {
+
+            $fileLocal = new File($srcObject->path);
+            if (!$fileLocal->exists()) {
+                throw new \Exception('src file/folder to move/copy not found.');
+            }
+
+            $remoteFile = $destObject->path . '/' . $fileLocal->name;
+
+            $fileRemoteCheck = new File($remoteFile);
+            if ($fileRemoteCheck->exists()) {
+                $remoteFile = \str_replace('.' . $fileRemoteCheck->extension, '_' . \time() . '.' . $fileRemoteCheck->extension, $remoteFile);
+            }
+
+            if ($isMove) {
+
+                if (!$fileLocal->renameTo($remoteFile)) {
+                    throw new \Exception('error on move file.');
+                }
+
+            } else if (!$fileLocal->copyTo($remoteFile)) {
+                throw new \Exception('error on copy file.');
+            }
+
+            $fileRemote = new File($remoteFile);
+            if (!$fileRemote->exists()) {
+                throw new \Exception('error on move file.');
+            }
+
+            return $this->get($remoteFile);
+
+        }
+
+        if ($srcObject->type === 'folder') {
+
+            $localFolder = new Folder($srcObject->path);
+            $remoteFolder = new Folder($destObject->path);
+
+            $remoteFolderPath = $remoteFolder->path . '/' . $localFolder->name;
+
+            if ($isMove) {
+
+                if (!$localFolder->renameTo($remoteFolderPath)) {
+                    throw new \Exception('error on move folder.');
+                }
+
+            } else if (!$localFolder->copyTo($remoteFolderPath)) {
+                throw new \Exception('error on copy folder.');
+            }
+
+            return $this->get($remoteFolderPath);
+
+        }
+
+        throw new \Exception('file type not supported');
+
     }
 
     /**
@@ -537,6 +550,13 @@ class LocalStorage implements BaseStorageInterface
     public function write(mixed $contents, string $path): void
     {
         $file = new File($path);
+
+        if ($file->exists()) {
+
+            $newFilePath = \str_replace('.' . $file->extension, '_' . \time() . '.' . $file->extension, $file->path);
+            $file = new File($newFilePath);
+        }
+
         $file->write($contents);
         $file->close();
 
@@ -560,13 +580,13 @@ class LocalStorage implements BaseStorageInterface
                 return null;
             }
 
-            if (Validator::isStringUuid($bin) === true) {
+            if (Validator::isStringUuid($bin)) {
                 return $bin;
             }
 
             $uuid = StringUtil::binToUuid($bin);
 
-            if (Validator::isStringUuid($uuid) === false) {
+            if (!Validator::isStringUuid($uuid)) {
                 return null;
             }
 

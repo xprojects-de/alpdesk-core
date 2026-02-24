@@ -217,6 +217,11 @@ class AlpdeskCoreFilemanagement
                 throw new AlpdeskCoreFilemanagementException("invalid key-parameter src for finder");
             }
 
+            $src = $finderData['src'] ?? null;
+            if ($src === null) {
+                throw new AlpdeskCoreFilemanagementException("invalid src fileMount");
+            }
+
             $src = $this->prepareSrcPath((string)$finderData['src'], $mandantInfo, true);
 
             $objTargetSrc = $this->storageAdapter->get($src, $this->storageType);

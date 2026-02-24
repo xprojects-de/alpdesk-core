@@ -8,6 +8,7 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Utils\Utils;
 use Contao\BackendUser;
 use Contao\Controller;
+use Contao\CoreBundle\Controller\Backend\AbstractBackendController;
 use Contao\File;
 use Contao\Input;
 use Contao\StringUtil;
@@ -21,7 +22,6 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Contao\CoreBundle\Controller\AbstractBackendController;
 
 class AlpdeskcoreLogsController extends AbstractBackendController
 {

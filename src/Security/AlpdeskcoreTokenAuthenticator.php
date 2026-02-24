@@ -49,7 +49,7 @@ class AlpdeskcoreTokenAuthenticator extends AbstractAuthenticator implements Aut
     {
         // !!! the scope has to be checked here and must return true. Otherwise, the contao frontend firewall will be used.
         // normally, this is done in a RequestMatcher, but in this case, it must be done here because of multi firewalls in Contao
-        return ('alpdeskapi' === $request->attributes->get('_scope'));
+        return 'alpdeskapi' === $request->attributes->get('_scope');
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

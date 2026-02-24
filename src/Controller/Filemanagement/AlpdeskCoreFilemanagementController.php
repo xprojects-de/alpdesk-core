@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Controller\Filemanagement;
 
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFiledownloadDelegateEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadDelegateEvent;
+use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFinderDelegateEvent;
+use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFiledownloadDelegateResponse;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadDelegateResponse;
+use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFinderDelegateResponse;
 use Alpdesk\AlpdeskCore\Library\Storage\StorageAdapter;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -130,6 +134,19 @@ class AlpdeskCoreFilemanagementController extends AbstractController
 
             $this->framework->initialize();
 
+            $delegateEvent = new AlpdeskCoreFiledownloadDelegateEvent(new AlpdeskCoreFiledownloadDelegateResponse($request, $user));
+            $this->eventService->getDispatcher()->dispatch($delegateEvent, AlpdeskCoreFiledownloadDelegateEvent::NAME);
+
+            if (
+                $delegateEvent->getDelegateResponse()->getResponse() instanceof JsonResponse ||
+                $delegateEvent->getDelegateResponse()->getResponse() instanceof BinaryFileResponse
+            ) {
+
+                $this->logger->info('Download delegated for user:' . $user->getUsername(), __METHOD__);
+                return $delegateEvent->getDelegateResponse()->getResponse();
+
+            }
+
             $downloadData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
             $file = (new AlpdeskCoreFilemanagement($this->storageAdapter, $this->eventService))->download($user, $downloadData);
@@ -159,6 +176,16 @@ class AlpdeskCoreFilemanagementController extends AbstractController
             }
 
             $this->framework->initialize();
+
+            $delegateEvent = new AlpdeskCoreFinderDelegateEvent(new AlpdeskCoreFinderDelegateResponse($request, $user));
+            $this->eventService->getDispatcher()->dispatch($delegateEvent, AlpdeskCoreFinderDelegateEvent::NAME);
+
+            if ($delegateEvent->getDelegateResponse()->getResponse() instanceof JsonResponse) {
+
+                $this->logger->info('Finder delegated for user:' . $user->getUsername(), __METHOD__);
+                return $delegateEvent->getDelegateResponse()->getResponse();
+
+            }
 
             $finderData = (array)\json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
