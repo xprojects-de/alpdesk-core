@@ -546,6 +546,13 @@ class LocalStorage implements BaseStorageInterface
     public function write(mixed $contents, string $path): void
     {
         $file = new File($path);
+
+        if ($file->exists()) {
+
+            $newFilePath = \str_replace('.' . $file->extension, '_' . \time() . '.' . $file->extension, $file->path);
+            $file = new File($newFilePath);
+        }
+
         $file->write($contents);
         $file->close();
 
