@@ -198,11 +198,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php81" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/cmsig/seal" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/cmsig/seal-loupe-adapter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/cmsig/seal-symfony-bundle" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/loupe/loupe" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/mjaschen/phpgeo" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/nitotm/efficient-language-detector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
@@ -212,8 +208,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/spomky-labs/pki-framework" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/serializer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/validator" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/toflar/state-set-index" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/wamania/php-stemmer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/cose-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/webauthn-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/web-auth/webauthn-stimulus" />
@@ -221,8 +215,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/enshrined/svg-sanitize" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php84" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/joomla/string" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/loupe/matcher" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-feed-io/feed-io" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/beberlei/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/debril/feed-io" />
@@ -233,6 +225,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/voku/portable-utf8" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php85" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/form" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-intl-icu" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
